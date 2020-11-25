@@ -15,7 +15,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 class UserRepositoryEloquent extends AppRepository implements UserRepository
 {
     protected $fieldSearchable = [
-        // 'username' => 'like',
+        'username' => 'like',
         'name' => 'like',
         'email' => 'like',
         'roles.name' => 'like',

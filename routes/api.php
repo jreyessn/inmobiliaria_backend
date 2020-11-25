@@ -67,6 +67,10 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('providersUpdate', 'Provider\ProviderController@update');
     Route::apiResource('providers', 'Provider\ProviderController');
 
+    Route::put('applicant_providers/change_status/{id}', 'ApplicantProviders\ApplicantProvidersController@changeStatus');
+    Route::get('applicant_providers/download_authorization/{id}', 'ApplicantProviders\ApplicantProvidersController@downloadAuthorization');
+    Route::apiResource('applicant_providers', 'ApplicantProviders\ApplicantProvidersController');
+
     // endpoins relativos a la funcionalidad de dar de alta de proveedores para sap
 
     Route::get('providers_sap/authorizations/{provider_sap_id}', 'Provider\ProviderSapAuthorizationController@show');

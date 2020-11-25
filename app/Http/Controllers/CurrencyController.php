@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Currency;
 use Illuminate\Http\Request;
-use App\Repositories\Currency\CurrencyRepositoryEloquent;
 
 class CurrencyController extends Controller
 {
-    private $repository;
 
-    function __construct(
-        CurrencyRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +16,8 @@ class CurrencyController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = Currency::all();
+
+        return $response;
     }
 }

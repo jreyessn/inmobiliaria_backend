@@ -25,7 +25,8 @@ class User extends Authenticatable
         'username',
         'avatar',
         'password_changed_at',
-        'phone'
+        'phone',
+        'type_provider_id'
     ];
 
     /**
@@ -66,5 +67,10 @@ class User extends Authenticatable
 
     public function getCreatedAtFormatAttribute(){
         return Carbon::parse($this->created_at)->format('d/m/Y H:i');
+    }
+
+    public function type_provider()
+    {
+        return $this->belongsTo(TypeProvider::class);
     }
 }

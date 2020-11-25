@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RetentionIndicator;
 use Illuminate\Http\Request;
-use App\Repositories\RetentionIndicator\RetentionIndicatorRepositoryEloquent;
 
 class RetentionIndicatorController extends Controller
 {
-    private $repository;
 
-    function __construct(RetentionIndicatorRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -21,6 +16,8 @@ class RetentionIndicatorController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = RetentionIndicator::all();
+
+        return $response;
     }
 }

@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Organization;
 use Illuminate\Http\Request;
-use App\Repositories\Organization\OrganizationRepositoryEloquent;
 
 class OrganizationController extends Controller
 {
-    private $repository;
 
-    function __construct(
-        OrganizationRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +16,8 @@ class OrganizationController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = Organization::all();
+
+        return $response;
     }
 }

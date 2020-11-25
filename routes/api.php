@@ -77,34 +77,34 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::apiResource('users','UserController');
     Route::apiResource('roles','RoleController');
 
-    // Métodos no tienen crud, solo list
-    
-    Route::get('business_types', 'BusinessTypeController');
-    Route::get('accounts_group', 'AccountsGroupController');
-    Route::get('associated_account', 'AssociatedAccountController');
-    Route::get('bank', 'BankController');
-    Route::get('bank_country', 'BankCountryController');
-    Route::get('currency', 'CurrencyController');
-    Route::get('treasury_groups', 'TreasuryController');
-
     Route::get('document', 'DocumentController@index');
     Route::post('document', 'DocumentController@update');
     Route::delete('document/{id}', 'DocumentController@destroy');
     Route::get('document/{id}/{download?}', 'DocumentController@show');
 
-    Route::get('organization', 'OrganizationController');
-    Route::get('payment_condition', 'PaymentConditionController');
-    Route::get('payment_method', 'PaymentMethodController');
-    Route::get('retention_country', 'RetentionCountryController');
+    /* Invokes */
+    
+    Route::get('business_types', 'BusinessTypeController');
+    Route::get('treasury_groups', 'TreasuryController');
+    Route::get('bank_country', 'BankCountryController');
+    Route::get('bank', 'BankController');
     Route::get('retention_indicator', 'RetentionIndicatorController');
     Route::get('retention_type', 'RetentionTypeController');
+    Route::get('accounts_group', 'AccountsGroupController');
+    Route::get('organization', 'OrganizationController');
     Route::get('society', 'SocietyController');
-    Route::get('tolerance_group', 'ToleranceGroupController');
     Route::get('treatment', 'TreatmentController');
+    Route::get('associated_account', 'AssociatedAccountController');
+    Route::get('payment_condition', 'PaymentConditionController');
+    Route::get('payment_method', 'PaymentMethodController');
+    Route::get('tolerance_group', 'ToleranceGroupController');
+    Route::get('currency', 'CurrencyController');
     Route::get('type_bank_interlocutor', 'TypeBankInterlocutorController');
+    Route::get('type_providers', 'TypeProviderController');
 
     Route::get('countries', 'CountriesController@getCountries');
     Route::get('states', 'CountriesController@getStates');
     Route::get('cities', 'CountriesController@getCities');
+
 
 });

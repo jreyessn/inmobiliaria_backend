@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\File;
-use Illuminate\Http\Request;
+use App\Models\BusinessType;
 
 use App\Repositories\BusinessType\BusinessTypeRepositoryEloquent;
 
 class BusinessTypeController extends Controller
 {
-    private $fileRepository;
 
-    public function __construct(
-        BusinessTypeRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Display a listing of the resource.
      *
@@ -23,7 +16,9 @@ class BusinessTypeController extends Controller
      */
     public function __invoke()
     {
-        return $this->repository->customPaginate();
+        $response['data'] = BusinessType::all();
+
+        return $response;
     }
 
 

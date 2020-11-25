@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Treatment\TypeBankInterlocutorRepositoryEloquent;
+use App\Models\TypeBankInterlocutor;
 
 class TypeBankInterlocutorController extends Controller
 {
-    private $repository;
-
-    function __construct(
-        TypeBankInterlocutorRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -21,6 +14,8 @@ class TypeBankInterlocutorController extends Controller
      */
     public function __invoke()
     {
-        return $this->repository->customPaginate();
+        $response['data'] = TypeBankInterlocutor::all();
+
+        return $response;
     }
 }

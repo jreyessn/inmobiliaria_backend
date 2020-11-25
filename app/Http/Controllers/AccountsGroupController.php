@@ -2,19 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountsGroup;
 use Illuminate\Http\Request;
-use App\Repositories\AccountsGroup\AccountsGroupRepositoryEloquent;
 
 class AccountsGroupController extends Controller
 {
 
-    private $repository;
-
-    function __construct(
-        AccountsGroupRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -23,6 +16,8 @@ class AccountsGroupController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = AccountsGroup::all();
+
+        return $response;
     }
 }

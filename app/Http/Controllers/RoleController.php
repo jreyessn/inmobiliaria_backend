@@ -30,9 +30,11 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->repository->scopeQuery(function($query){
+        $response['data'] = $this->repository->scopeQuery(function($query){
             return $query->whereNotIn('id', [1, 8]);
-        })->customPaginate();
+        })->get();
+
+        return $response;
     }
 
     /**

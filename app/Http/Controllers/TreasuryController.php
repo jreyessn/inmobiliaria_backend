@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\ToleranceGroup\TreasuryGroupRepositoryEloquent;
+use App\Models\TreasuryGroup;
 use Illuminate\Http\Request;
 
 class TreasuryController extends Controller
 {
-    private $repository;
-
-    function __construct(
-        TreasuryGroupRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
 
     /**
      * Handle the incoming request.
@@ -21,8 +14,10 @@ class TreasuryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request)
+    public function __invoke()
     {
-        return $this->repository->customPaginate();
+        $response['data'] = TreasuryGroup::with('group')->get();
+
+        return $response;
     }
 }

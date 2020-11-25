@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentCondition;
 use Illuminate\Http\Request;
-use App\Repositories\PaymentCondition\PaymentConditionRepositoryEloquent;
 
 class PaymentConditionController extends Controller
 {
-    private $repository;
 
-    function __construct(
-        PaymentConditionRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +16,8 @@ class PaymentConditionController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = PaymentCondition::all();
+
+        return $response;
     }
 }

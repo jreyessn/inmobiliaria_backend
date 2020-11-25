@@ -92,7 +92,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions'])->find($id);
+        return $this->repository->with(['roles.permissions', 'type_provider'])->find($id);
     }
 
     /**

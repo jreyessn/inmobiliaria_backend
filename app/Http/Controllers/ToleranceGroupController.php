@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ToleranceGroup;
 use Illuminate\Http\Request;
-use App\Repositories\ToleranceGroup\ToleranceGroupRepositoryEloquent;
 
 class ToleranceGroupController extends Controller
 {
-    private $repository;
 
-    function __construct(
-        ToleranceGroupRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +16,8 @@ class ToleranceGroupController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = ToleranceGroup::all();
+
+        return $response;
     }
 }

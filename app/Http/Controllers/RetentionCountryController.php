@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RetentionCountry;
 use Illuminate\Http\Request;
-use App\Repositories\RetentionCountry\RetentionCountryRepositoryEloquent;
 
 class RetentionCountryController extends Controller
 {
-    private $repository;
 
-    function __construct(
-        RetentionCountryRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +16,8 @@ class RetentionCountryController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = RetentionCountry::all();
+
+        return $response;
     }
 }

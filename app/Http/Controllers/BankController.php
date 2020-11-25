@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use Illuminate\Http\Request;
-use App\Repositories\Bank\BankRepositoryEloquent;
 
 class BankController extends Controller
 {
-    private $repository;
-
-    function __construct(
-        BankRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -22,6 +15,8 @@ class BankController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = Bank::all();
+
+        return $response;
     }
 }

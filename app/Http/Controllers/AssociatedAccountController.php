@@ -2,19 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssociatedAccount;
 use Illuminate\Http\Request;
 use App\Repositories\AssociatedAccount\AssociatedAccountRepositoryEloquent;
 
 class AssociatedAccountController extends Controller
 {
 
-    private $repository;
-
-    function __construct(
-        AssociatedAccountRepositoryEloquent $repository
-    ){
-        $this->repository = $repository;
-    }
     /**
      * Handle the incoming request.
      *
@@ -23,6 +17,8 @@ class AssociatedAccountController extends Controller
      */
     public function __invoke(Request $request)
     {
-        return $this->repository->customPaginate();
+        $response['data'] = AssociatedAccount::orderBy('default', 'desc')->get();
+
+        return $response;
     }
 }

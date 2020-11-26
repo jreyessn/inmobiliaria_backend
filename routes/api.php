@@ -43,6 +43,7 @@ Route::group([
     Route::get('find/{token}', 'ResetPasswordController@find');
 });
 
+Route::get('type_providers', 'TypeProviderController');
 
 Route::group(['middleware' => 'auth:api'], function(){
 
@@ -104,7 +105,6 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('tolerance_group', 'ToleranceGroupController');
     Route::get('currency', 'CurrencyController');
     Route::get('type_bank_interlocutor', 'TypeBankInterlocutorController');
-    Route::get('type_providers', 'TypeProviderController');
 
     Route::get('countries', 'CountriesController@getCountries');
     Route::get('states', 'CountriesController@getStates');

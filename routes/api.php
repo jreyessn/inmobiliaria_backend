@@ -43,7 +43,9 @@ Route::group([
     Route::get('find/{token}', 'ResetPasswordController@find');
 });
 
+
 Route::get('type_providers', 'TypeProviderController');
+Route::apiResource('applicant_providers', 'ApplicantProviders\ApplicantProvidersController');
 
 Route::group(['middleware' => 'auth:api'], function(){
 
@@ -70,7 +72,6 @@ Route::group(['middleware' => 'auth:api'], function(){
 
     Route::put('applicant_providers/change_status/{id}', 'ApplicantProviders\ApplicantProvidersController@changeStatus');
     Route::get('applicant_providers/download_authorization/{id}', 'ApplicantProviders\ApplicantProvidersController@downloadAuthorization');
-    Route::apiResource('applicant_providers', 'ApplicantProviders\ApplicantProvidersController');
 
     // endpoins relativos a la funcionalidad de dar de alta de proveedores para sap
 

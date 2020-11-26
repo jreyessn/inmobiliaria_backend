@@ -27,6 +27,9 @@ class ApplicantProvidersController extends Controller
         UserRepositoryEloquent $userRepository
     )
     {
+
+        $this->middleware('auth:api', ['except' => ['store']]);
+
         $this->repository = $repository;
         $this->userRepository = $userRepository;
     }

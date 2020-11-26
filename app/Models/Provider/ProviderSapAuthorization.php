@@ -12,6 +12,7 @@ class ProviderSapAuthorization extends Model
     protected $fillable = [
         'provider_sap_id',
         'approved',
+        'approved_at',
         'note',
         'user_id',
         'role_id'

@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Users\UserRepositoryEloquent;
 use App\Http\Requests\Provider\ProviderStoreRequest;
 use App\Models\Provider\ProviderDocument;
+use App\Notifications\Providers\Contracted;
 use App\Repositories\Provider\ProviderRepositoryEloquent;
 use App\Repositories\Provider\ProviderSapAuthoRepositoryEloquent;
 use Carbon\Carbon;
@@ -151,6 +152,10 @@ class ProviderController extends Controller
 
             $provider->fill($fillData);
             $provider->save();
+
+            if($request->contracted == 1){
+                $provider->user->notify(new Contracted);
+            }
 
             return response()->json([
                 "message" => "Contratación éxitosa",

@@ -34,7 +34,7 @@ class ApplicantStoreRequest extends FormRequest
             "fullname_applicant" => 'required|max:155',
             "email_applicant" => 'required|email|unique:applicant_providers,email_applicant,NULL,id,deleted_at,NULL|max:155',
             "microbusiness" => 'required|max:200',
-            "authorization_file" => 'required|file|mimes:pdf',
+            "authorization_file" => 'required|file|mimes:pdf,png,jpg',
         ];
     }
 
@@ -51,6 +51,13 @@ class ApplicantStoreRequest extends FormRequest
             "email_applicant" => 'Correo de Solicitante',
             "microbusiness" => 'Micronegocio al que Pertenece',
             "authorization_file" => 'Autorización',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'authorization_file.required' => 'El archivo de :attribute es requerido',
         ];
     }
 }

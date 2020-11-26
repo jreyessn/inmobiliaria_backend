@@ -16,6 +16,20 @@ use Illuminate\Http\File;
  */
 class ApplicantProviderRepositoryEloquent extends BaseRepository implements ApplicantProviderRepository
 {
+
+    protected $fieldSearchable = [
+        'reason' => 'like',
+        'type_provider' => 'like',
+        "tradename" => 'like',
+        "business_name" => 'like',
+        "name_contact" => 'like',
+        "phone_provider" => 'like',
+        "email_provider" => 'like',
+        "fullname_applicant" => 'like',
+        "email_applicant" => 'like',
+        "microbusiness" => 'like',
+    ];
+
     /**
      * Specify Model class name
      *
@@ -40,7 +54,7 @@ class ApplicantProviderRepositoryEloquent extends BaseRepository implements Appl
     {
         $perPage = (int) request()->get('perPage', config('repository.pagination.limit', 10));
 
-        return $this->paginate($perPage);
+        return $this->with(['user_approver', 'user'])->paginate($perPage);
     }
 
     public function save($data)

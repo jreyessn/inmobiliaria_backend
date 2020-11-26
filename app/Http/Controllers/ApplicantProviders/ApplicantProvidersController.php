@@ -77,7 +77,7 @@ class ApplicantProvidersController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with('user')->find($id);
+        return $this->repository->with(['user', 'user_approver'])->find($id);
     }
 
     /**

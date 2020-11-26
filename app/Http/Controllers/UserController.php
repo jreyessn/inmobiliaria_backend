@@ -40,7 +40,9 @@ class UserController extends Controller
             'sortBy'        =>  'nullable|in:desc,asc'
         ]);
 
-        return $this->repository->with('roles')->customPaginate();
+        return $this->repository->with('roles')->whereHas('roles', function($query){
+            $query->where('role_id', '!=', 2);
+        })->customPaginate();
 
     }
 

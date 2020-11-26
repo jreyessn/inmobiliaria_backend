@@ -8,6 +8,7 @@ use App\Repositories\Provider\ProviderSapRepositoryEloquent;
 use Illuminate\Http\Request;
 use App\Exports\SapExport;
 use App\Notifications\Providers\RejectAuthorization;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProviderSapAuthorizationController extends Controller
@@ -35,6 +36,7 @@ class ProviderSapAuthorizationController extends Controller
             $data = $request->all();
             $data['user_id'] = $request->user()->id;
             $data['role_id'] = $request->user()->roles[0]->id;
+            $data['approved_at'] = Carbon::now();
 
             $found = $this->sapAuthoRepository->where([
                 'provider_sap_id' => $data['provider_sap_id'],

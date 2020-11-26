@@ -17,6 +17,7 @@ class ProviderDocument extends Model
         'name',
         'date',
         'approved',
+        'approved_at',
         'note',
         'approver_by_user_id'
     ];

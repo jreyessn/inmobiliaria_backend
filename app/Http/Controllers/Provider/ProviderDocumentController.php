@@ -8,6 +8,7 @@ use Illuminate\Http\File;
 
 use App\Models\Provider\ProviderDocument;
 use App\Notifications\Providers\RejectDocument;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderDocumentController extends Controller
@@ -31,6 +32,7 @@ class ProviderDocumentController extends Controller
             }
 
             $providerDocument->approved = $request->status;
+            $providerDocument->approved_at = Carbon::now();
             $providerDocument->note = $request->note;
             $providerDocument->approver_by_user_id = $request->user()->id;
             $providerDocument->save();
@@ -38,7 +40,6 @@ class ProviderDocumentController extends Controller
             return response()->json(['message' => 'Se ha cambiado el estado del documento con éxito'], 200);
 
         } catch (\Throwable $th) {
-            dd($th);
             return response()->json(['message' => 'Ocurrió un error al guardar. Contactar con soporte.'], 500);
         }
         
@@ -53,6 +54,7 @@ class ProviderDocumentController extends Controller
             $name =  basename(Storage::disk('local')->putFileAs($providerDocument->document->folder, $file, "{$providerDocument->id}-{$file->hashName()}"));
         
             $providerDocument->name = $name;
+            $providerDocument->approved_at = null;
             $providerDocument->approved = 0;
             $providerDocument->note = null;
             $providerDocument->approver_by_user_id = null;

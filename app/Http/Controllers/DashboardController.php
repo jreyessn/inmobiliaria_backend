@@ -80,16 +80,16 @@ class DashboardController extends Controller
                                         AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
                                     FROM(
                                     SELECT * FROM (
-                                    SELECT 
-                                        provider_sap_authorizations.provider_sap_id,
-                                        min(provider_sap_authorizations.approved) as approved,
-                                        provider_sap_authorizations.created_at,
-                                        max(provider_sap_authorizations.approved_at) as approved_at
-                                    FROM provider_sap_authorizations
-                                    GROUP BY provider_sap_id
-                                    ) as tablita
-                                    WHERE approved = 1
-                                    ) as tablitaagrupada");
+                                        SELECT 
+                                            provider_id,
+                                            min(approved) as approved,
+                                            created_at,
+                                            max(approved_at) as approved_at
+                                        FROM provider_documents
+                                        GROUP BY provider_id
+                                        ) as tablita
+                                        WHERE approved = 1
+                                        ) as tablitaagrupada");
 
         $timePhase =  CarbonInterval::create(0,0,0,0,0,0, (int) $secondsPhase[0]->average);
 
@@ -135,7 +135,7 @@ class DashboardController extends Controller
         $timeHours = ((float) $data['phase1']['hours'] + (float) $data['phase2']['hours'] + (float) $data['phase3']['hours'] + (float) $data['phase4']['hours']) / 4;
 
         $data['phase5'] = [
-            'name' => 'Promedio de Horas Totales',
+            'name' => 'Promedio total de etapas',
             'hours' => number_format($timeHours, 2),
             'description' => CarbonInterval::seconds($timeHours * 60 * 60)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
@@ -202,8 +202,7 @@ class DashboardController extends Controller
                                     GROUP BY provider_sap_id
                                     ) as tablita
                                     WHERE approved = 1
-                                    ) as tablitaagrupada
-                                    GROUP BY provider_sap_id");
+                                    ) as tablitaagrupada");
 
            $phaseDocuments = DB::select("SELECT 
                                             AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
@@ -218,8 +217,8 @@ class DashboardController extends Controller
                                             GROUP BY provider_id
                                             ) as tablita
                                             WHERE approved = 1
-                                            ) as tablitaagrupada
-                                            GROUP BY provider_id");
+                                            ) as tablitaagrupada");
+                                            
            $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisters[0]->average);
            $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisterDocuments[0]->average);
            $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseAuthorizations[0]->average);

@@ -49,9 +49,11 @@ class DashboardController extends Controller
         $data['phase1'] = [
             'name' => 'Promedio que compras acepta la solicitud de registro de usuarios para proveedores',
             'hours' => number_format($timePhase->totalHours, 2),
+            'minutes' => $timePhase->totalMinutes,
+            'seconds' => $timePhase->totalSeconds,
             'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
-        
+
         /* 
         * Etapa 2.
         * Tiempo que tarda el proveedor en enviar su informacion y documentos
@@ -68,6 +70,8 @@ class DashboardController extends Controller
         $data['phase2'] = [
             'name' => 'Promedio que proveedores dan de alta su información y documentos',
             'hours' => number_format($timePhase->totalHours, 2),
+            'minutes' => $timePhase->totalMinutes,
+            'seconds' => $timePhase->totalSeconds,
             'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
@@ -96,6 +100,8 @@ class DashboardController extends Controller
         $data['phase3'] = [
             'name' => 'Promedio en que compras aprueba los documentos',
             'hours' => number_format($timePhase->totalHours, 2),
+            'minutes' => $timePhase->totalMinutes,
+            'seconds' => $timePhase->totalSeconds,
             'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
@@ -124,6 +130,8 @@ class DashboardController extends Controller
         $data['phase4'] = [
             'name' => 'Promedio en que las áreas autorizan a SAP',
             'hours' => number_format($timePhase->totalHours, 2),
+            'minutes' => $timePhase->totalMinutes,
+            'seconds' => $timePhase->totalSeconds,
             'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
@@ -132,12 +140,15 @@ class DashboardController extends Controller
         * Tiempo total
         */
 
-        $timeHours = ((float) $data['phase1']['hours'] + (float) $data['phase2']['hours'] + (float) $data['phase3']['hours'] + (float) $data['phase4']['hours']) / 4;
+        $sumSeconds = ((int) $data['phase1']['seconds'] + (int) $data['phase2']['seconds'] + (int) $data['phase3']['seconds'] + (int) $data['phase4']['seconds']) / 4;
+        $timeTotal = CarbonInterval::create(0,0,0,0,0,0, $sumSeconds);
 
         $data['phase5'] = [
             'name' => 'Promedio total de etapas',
-            'hours' => number_format($timeHours, 2),
-            'description' => CarbonInterval::seconds($timeHours * 60 * 60)->cascade()->forHumans(['parts' => 3, 'short' => true])
+            'hours' => number_format($timeTotal->totalHours, 2),
+            'minutes' => $timeTotal->totalMinutes,
+            'seconds' => $timeTotal->totalSeconds,
+            'description' => CarbonInterval::seconds($timeTotal->totalSeconds)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
         $data['months'] = $this->timesAllMonths();
@@ -219,18 +230,10 @@ class DashboardController extends Controller
                                             WHERE approved = 1
                                             ) as tablitaagrupada");
                                             
-           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisters[0]->average);
-           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisterDocuments[0]->average);
-           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseAuthorizations[0]->average);
-           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseDocuments[0]->average);
-                                            
-           $sumHours = array_reduce($timePhase, function($sum, $time){
-             return $time->totalHours + $sum;
-           }, 0);
 
-           $sumHours = $sumHours / 4;
-
-           $months[$key]['total_hours'] = number_format($sumHours, 2, '.', '');
+           $sumSeconds = ((int) $phaseRegisters[0]->average + (int) $phaseRegisterDocuments[0]->average + (int) $phaseAuthorizations[0]->average + (int) $phaseDocuments[0]->average) / 4;
+           $timeTotal = CarbonInterval::create(0,0,0,0,0,0, (int) $sumSeconds);
+           $months[$key]['total_hours'] = number_format($timeTotal->totalHours, 2, '.', '');
        }
 
        return $months;

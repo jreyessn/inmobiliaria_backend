@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\CarbonInterval;
 use App\Models\BusinessType;
 use App\Models\Provider\Provider;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -43,10 +44,12 @@ class DashboardController extends Controller
         $secondsPhase = DB::select("SELECT AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average 
                                       FROM (SELECT approved_at, created_at FROM `applicant_providers`) as tablita");
 
+        $timePhase =  CarbonInterval::create(0,0,0,0,0,0, (int) $secondsPhase[0]->average);
+
         $data['phase1'] = [
             'name' => 'Promedio que compras acepta la solicitud de registro de usuarios para proveedores',
-            'minutes' => (int) (((int) $secondsPhase[0]->average) / 60),
-            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans()
+            'hours' => number_format($timePhase->totalHours, 2),
+            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
         
         /* 
@@ -60,11 +63,12 @@ class DashboardController extends Controller
                                         users.created_at as users_created_at,  
                                         providers.created_at as providers_created_at 
                                         FROM `providers` LEFT JOIN users ON users.id = providers.user_id) as tablita");
+        $timePhase =  CarbonInterval::create(0,0,0,0,0,0, (int) $secondsPhase[0]->average);
 
         $data['phase2'] = [
             'name' => 'Promedio que proveedores dan de alta su información y documentos',
-            'minutes' => (int) (((int) $secondsPhase[0]->average) / 60),
-            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans()
+            'hours' => number_format($timePhase->totalHours, 2),
+            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
         /* 
@@ -72,13 +76,27 @@ class DashboardController extends Controller
         * Tiempo de aprobación de documentos
         */
 
-       $secondsPhase = DB::select("SELECT AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average 
-                                   FROM (SELECT created_at, approved_at FROM `provider_documents` where approved = 1) as tablita");
+       $secondsPhase = DB::select("SELECT 
+                                        AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
+                                    FROM(
+                                    SELECT * FROM (
+                                    SELECT 
+                                        provider_sap_authorizations.provider_sap_id,
+                                        min(provider_sap_authorizations.approved) as approved,
+                                        provider_sap_authorizations.created_at,
+                                        max(provider_sap_authorizations.approved_at) as approved_at
+                                    FROM provider_sap_authorizations
+                                    GROUP BY provider_sap_id
+                                    ) as tablita
+                                    WHERE approved = 1
+                                    ) as tablitaagrupada");
+
+        $timePhase =  CarbonInterval::create(0,0,0,0,0,0, (int) $secondsPhase[0]->average);
 
         $data['phase3'] = [
             'name' => 'Promedio en que compras aprueba los documentos',
-            'minutes' => (int) (((int) $secondsPhase[0]->average) / 60),
-            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans()
+            'hours' => number_format($timePhase->totalHours, 2),
+            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
         /* 
@@ -86,16 +104,137 @@ class DashboardController extends Controller
         * Tiempo de aprobación de áreas
         */
 
-       $secondsPhase = DB::select("SELECT AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average 
-                                   FROM (SELECT created_at, approved_at FROM `provider_sap_authorizations` where approved = 1) as tablita");
+       $secondsPhase = DB::select("SELECT 
+                                        AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
+                                    FROM(
+                                    SELECT * FROM (
+                                    SELECT 
+                                        provider_sap_authorizations.provider_sap_id,
+                                        min(provider_sap_authorizations.approved) as approved,
+                                        provider_sap_authorizations.created_at,
+                                        max(provider_sap_authorizations.approved_at) as approved_at
+                                    FROM provider_sap_authorizations
+                                    GROUP BY provider_sap_id
+                                    ) as tablita
+                                    WHERE approved = 1
+                                    ) as tablitaagrupada");
+
+        $timePhase =  CarbonInterval::create(0,0,0,0,0,0, (int) $secondsPhase[0]->average);
 
         $data['phase4'] = [
             'name' => 'Promedio en que las áreas autorizan a SAP',
-            'minutes' => (int) (((int) $secondsPhase[0]->average) / 60),
-            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans()
+            'hours' => number_format($timePhase->totalHours, 2),
+            'description' => CarbonInterval::seconds($secondsPhase[0]->average)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
+        /* 
+        * Total etapas.
+        * Tiempo total
+        */
+
+        $timeHours = ((float) $data['phase1']['hours'] + (float) $data['phase2']['hours'] + (float) $data['phase3']['hours'] + (float) $data['phase4']['hours']) / 4;
+
+        $data['phase5'] = [
+            'name' => 'Promedio de Horas Totales',
+            'hours' => number_format($timeHours, 2),
+            'description' => CarbonInterval::hours($timeHours)->cascade()->forHumans(['parts' => 3, 'short' => true])
+        ];
+
+        $data['months'] = $this->timesAllMonths();
+
         return $data;
+    }
+
+    private function timesAllMonths()
+    {
+
+        /* Se busca el rango de meses que se han registrado los solicitantes */
+
+        $firstCreateRegister = DB::table('applicant_providers')->orderBy('created_at', 'asc')->limit(1)->first();
+
+        $period = \Carbon\CarbonPeriod::create($firstCreateRegister->created_at, '1 month', Carbon::now());
+        $months = [];
+
+        foreach ($period as $dt) {
+            array_push($months, [
+                'month_year' => $dt->format("Y-m"),
+                'first_day' => $dt->format("Y-m-01"),
+                'end_day' =>  $dt->format("Y-m-{$dt->endOfMonth()->format('d')}"),
+                'description' => ucwords("{$dt->year} - {$dt->monthName}")
+            ]);
+       }
+
+       /* Se consulta por cada mes */
+
+       foreach ($months as $key => $month) {
+
+           $phaseRegisters = DB::select("SELECT 
+                                    AVG(TIMESTAMPDIFF(SECOND, create_applicant, approved_applicant)) as average
+                                FROM (
+                                SELECT 
+                                    applicant_providers.approved_at as approved_applicant, 
+                                    applicant_providers.created_at as create_applicant
+                                FROM `applicant_providers`
+                                WHERE date(applicant_providers.created_at) BETWEEN '{$month['first_day']}' AND '{$month['end_day']}'
+                                ) as tablita");
+
+           $phaseRegisterDocuments = DB::select("SELECT 
+                                    AVG(TIMESTAMPDIFF(SECOND, users_created, providers_created)) as average
+                                FROM (
+                                SELECT 
+                                    users.created_at as users_created,
+                                    providers.created_at as providers_created
+                                FROM `users`
+                                LEFT JOIN providers ON providers.user_id = users.id
+                                WHERE date(users.created_at) BETWEEN '{$month['first_day']}' AND '{$month['end_day']}'
+                                ) as tablita");
+            
+           $phaseAuthorizations = DB::select("SELECT 
+                                        AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
+                                    FROM(
+                                    SELECT * FROM (
+                                    SELECT 
+                                        provider_sap_authorizations.provider_sap_id,
+                                        min(provider_sap_authorizations.approved) as approved,
+                                        provider_sap_authorizations.created_at,
+                                        max(provider_sap_authorizations.approved_at) as approved_at
+                                    FROM provider_sap_authorizations
+                                    GROUP BY provider_sap_id
+                                    ) as tablita
+                                    WHERE approved = 1
+                                    ) as tablitaagrupada
+                                    GROUP BY provider_sap_id");
+
+           $phaseDocuments = DB::select("SELECT 
+                                            AVG(TIMESTAMPDIFF(SECOND, created_at, approved_at)) as average
+                                        FROM(
+                                        SELECT * FROM (
+                                            SELECT 
+                                               provider_id,
+                                               min(approved) as approved,
+                                               created_at,
+                                               max(approved_at) as approved_at
+                                            FROM provider_documents
+                                            GROUP BY provider_id
+                                            ) as tablita
+                                            WHERE approved = 1
+                                            ) as tablitaagrupada
+                                            GROUP BY provider_id");
+           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisters[0]->average);
+           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseRegisterDocuments[0]->average);
+           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseAuthorizations[0]->average);
+           $timePhase[] = CarbonInterval::create(0,0,0,0,0,0, (int) $phaseDocuments[0]->average);
+                                            
+           $sumHours = array_reduce($timePhase, function($sum, $time){
+             return $time->totalHours + $sum;
+           }, 0);
+
+           $sumHours = $sumHours / 4;
+
+           $months[$key]['total_hours'] = number_format($sumHours, 2, '.', '');
+       }
+
+       return $months;
     }
 
 }

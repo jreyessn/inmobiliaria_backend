@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Notifications\Providers;
+namespace App\Notifications\ApplicantProvider;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class RejectAuthorization extends Notification
+class NotifyToPurchases extends Notification
 {
     use Queueable;
+
+    private $applicant;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($motivo)
+    public function __construct($applicant)
     {
-        // $this->provider = $provider;
-        $this->motivo = $motivo;
+        $this->applicant = $applicant;
     }
 
     /**
@@ -42,14 +44,10 @@ class RejectAuthorization extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'))
-                    ->subject("Información Rechazada - Norson Alimentos")
-                    ->greeting("Buen día.")
-                    ->line("Su registro de proveedor está en fase de autorización.")
-                    ->line("La información que ha suministrado se encuentra errada. Es necesario que actualice sus datos en función del siguiente motivo.")
-                    ->line($this->motivo)
+                    ->subject("Nueva Solicitud para Alta de Proveedor - Norson Compras")
+                    ->line(new HtmlString('Se ha registrado una nueva solicitud de proveedor por parte del solicitante: <strong>' . $this->applicant . '</strong>'))
                     ->action('Entrar', getenv('APP_FRONTEND'))
-                    ->line('¡Gracias por querer ser parte de nosotros!');
+                    ->salutation('-');
     }
 
     /**

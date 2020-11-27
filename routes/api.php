@@ -111,5 +111,6 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('states', 'CountriesController@getStates');
     Route::get('cities', 'CountriesController@getCities');
 
+    Route::post('sendmails', 'SendMailController');
 
 });

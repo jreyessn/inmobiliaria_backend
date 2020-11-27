@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Notifications\Providers;
+namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RejectAuthorization extends Notification
+class SendLinkRegister extends Notification
 {
     use Queueable;
 
@@ -16,10 +16,9 @@ class RejectAuthorization extends Notification
      *
      * @return void
      */
-    public function __construct($motivo)
+    public function __construct($link)
     {
-        // $this->provider = $provider;
-        $this->motivo = $motivo;
+        $this->link = $link;
     }
 
     /**
@@ -42,14 +41,11 @@ class RejectAuthorization extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'))
-                    ->subject("Información Rechazada - Norson Alimentos")
+                    ->subject("Enlace para Solicitud de Alta de Proveedor - Norson Alimentos")
                     ->greeting("Buen día.")
-                    ->line("Su registro de proveedor está en fase de autorización.")
-                    ->line("La información que ha suministrado se encuentra errada. Es necesario que actualice sus datos en función del siguiente motivo.")
-                    ->line($this->motivo)
-                    ->action('Entrar', getenv('APP_FRONTEND'))
-                    ->line('¡Gracias por querer ser parte de nosotros!');
+                    ->line('Se envía enlace para iniciar con el Proceso de Alta de Proveedor de Norson.')
+                    ->action('Entrar', $this->link)
+                    ->salutation('');
     }
 
     /**

@@ -43,8 +43,7 @@ class RejectCreateUser extends Notification
                 ->subject("Proceso de Alta de Proveedor - Norson Alimentos")
                 ->greeting("Buen día.")
                 ->line('Lamentamos informar que su solicitud para iniciar el proceso de registro para ser proveedor de norson ha sido rechazado.')
-                ->line("Motivo: {$this->reason}")
-                ->line("Por favor, si tienes dudas sobre el caso y desea más información sobre el proceso de registro, le recomendamos contactarnos al siguiente correo: example@example.com");
+                ->line("Motivo: {$this->reason}");
     }
 
     /**

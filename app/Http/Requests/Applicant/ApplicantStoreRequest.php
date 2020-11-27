@@ -27,7 +27,7 @@ class ApplicantStoreRequest extends FormRequest
             'reason' => 'required|max:200',
             'type_provider' => 'required|string|max:100',
             "tradename" => 'required|max:255',
-            "business_name" => 'required|max:200',
+            "business_name" => 'nullable|max:200',
             "name_contact" => 'required|max:200',
             "phone_provider" => 'required|max:200',
             "email_provider" => 'required|email|max:100',

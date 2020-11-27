@@ -57,7 +57,7 @@ class Provider extends Model
     ];
 
     public function setRetentionAttribute($value){
-        return is_null($value)? 0 : $value;
+        $this->attributes['retention'] = is_null($value)? 0 :  $value;
     }
 
     public function account_bank(){

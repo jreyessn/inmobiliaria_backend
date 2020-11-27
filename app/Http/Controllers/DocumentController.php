@@ -33,8 +33,16 @@ class DocumentController extends Controller
 
         if(!$download)
             return $document;
-        return Storage::disk('local')->download('examples_documents/'.$document->example, $document->example);
 
+        try {
+
+            return Storage::disk('local')->download('examples_documents/'.$document->example, $document->example);
+
+        } catch (\Throwable $th) {
+            return response()->json(null, 404);
+        }
+        
+            
     }
 
     public function update(DocumentUpdateRequest $request){

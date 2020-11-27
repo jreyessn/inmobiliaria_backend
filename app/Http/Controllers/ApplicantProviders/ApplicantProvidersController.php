@@ -14,6 +14,7 @@ use App\Repositories\Users\UserRepositoryEloquent;
 use App\Http\Requests\Applicant\ApplicantStoreRequest;
 use App\Notifications\ApplicantProvider\RejectCreateUser;
 use App\Notifications\ApplicantProvider\ApprovedCreateUser;
+use App\Notifications\ApplicantProvider\NotifyToPurchases;
 use App\Repositories\ApplicantProvider\ApplicantProviderRepositoryEloquent;
 
 class ApplicantProvidersController extends Controller
@@ -56,10 +57,23 @@ class ApplicantProvidersController extends Controller
             DB::beginTransaction();
             
             $data = $request->all();
+        
+            $existType = TypeProvider::where('description', $data['type_provider'])->get()->count();
+
+            /* Se buscan aquellos usuarios de compras que tienen el mismo tipo de proveedor para notificarles */
+
+            if($existType == 0){
+                $users = $this->userRepository->getUsersPermissionPurchases();
+            }
+            else{
+                $users =  $this->userRepository->getUsersPurchasesByTypeProvider($data['type_provider']);
+            }
 
             $store = $this->repository->save($data);   
-
+            
             DB::commit();
+            
+            Notification::send($users, new NotifyToPurchases($data['fullname_applicant']));
 
             return response()->json([
                 "message" => "Registro éxitoso",
@@ -153,12 +167,12 @@ class ApplicantProvidersController extends Controller
 
                 /* Se crea el usuario automaticamente */
                 
-                $username = preg_replace('/@.*?$/', '', $applicant->email_applicant);
+                $username = preg_replace('/@.*?$/', '', $applicant->email_provider);
                 $password = strtoupper(Str::random(6));
                 
                 $user = $this->userRepository->create([
                     'name' => $applicant->business_name,
-                    'email' => $applicant->email_applicant,
+                    'email' => $applicant->email_provider,
                     'username' => "{$username}-{$applicant->id}",
                     'password' => $password,
                 ]);

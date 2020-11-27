@@ -20,7 +20,8 @@ class ProviderSapAuthorization extends Model
 
     protected $appends = [
         'created_at_format',
-        'approved_text'
+        'approved_text',
+        'updated_at_format'
     ];
 
     protected $with = [

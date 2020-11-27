@@ -48,12 +48,12 @@ class RequestEditInformation extends Notification
 
         return (new MailMessage)
                     ->from(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME').' - Compras')
-                    ->subject("Solicitud de Edición - {$this->data->provider->business_name}")
+                    ->subject("Solicitud de Edición - {$this->data->provider->business_name} - Norson Compras")
                     ->line("El proveedor {$this->data->provider->business_name} ha solicitado modificar su información.")
                     ->line("Motivo: {$this->data->reason}.")
                     ->line("Ingrese al sistema para aprobar/rechazar esta solicitud")
                     ->action('Entrar', $aproved_edit.$this->data->id)
-                    ->salutation('');
+                    ->salutation('-');
 
     }
 

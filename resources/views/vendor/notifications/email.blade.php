@@ -35,7 +35,7 @@
 
 {{-- Salutation --}}
 @if (! empty($salutation))
-{{ $salutation }}
+{{ $salutation == '-'? '' : $saludation }}
 @else
 @lang('Se despide'),<br>
  Norson Alimentos

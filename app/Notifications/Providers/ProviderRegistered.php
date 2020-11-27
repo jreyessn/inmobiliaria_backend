@@ -3,27 +3,23 @@
 namespace App\Notifications\Providers;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class RejectDocument extends Notification
+class ProviderRegistered extends Notification
 {
     use Queueable;
-
-    private $provider;
-    private $document;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($provider, $document, string $note = '')
+    public function __construct($tradename)
     {
-        $this->provider = $provider;
-        $this->document = $document;
-        $this->note = $note;
+        $this->tradename = $tradename;
     }
 
     /**
@@ -46,13 +42,9 @@ class RejectDocument extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'))
-                    ->subject("Documento Rechazado - Norson Alimentos")
-                    ->line("El documento {$this->document->title} de su registro como proveedor ha sido rechazado. Por favor ingrese al sistema para volver a adjuntar el archivo.")
-                    ->line("Motivo: {$this->note}")
-                    ->action('Entrar', getenv('APP_FRONTEND'))
-                    ->line('¡Gracias por querer ser parte de nosotros!');
-
+                    ->subject("Proveedor ha enviado su información y documentos - Norson Compras")
+                    ->line(new HtmlString('El proveedor <strong>' . $this->tradename . '</strong> ha registrado su información recientemente. Entre al sistema para realizar la aprobación de documentos'))
+                    ->action('Entrar', getenv('APP_FRONTEND'));
     }
 
     /**

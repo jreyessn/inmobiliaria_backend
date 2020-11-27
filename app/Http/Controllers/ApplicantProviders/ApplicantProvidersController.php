@@ -14,6 +14,7 @@ use App\Repositories\Users\UserRepositoryEloquent;
 use App\Http\Requests\Applicant\ApplicantStoreRequest;
 use App\Notifications\ApplicantProvider\RejectCreateUser;
 use App\Notifications\ApplicantProvider\ApprovedCreateUser;
+use App\Notifications\ApplicantProvider\ApprovedCreateUserToApplicant;
 use App\Notifications\ApplicantProvider\NotifyToPurchases;
 use App\Repositories\ApplicantProvider\ApplicantProviderRepositoryEloquent;
 
@@ -71,9 +72,9 @@ class ApplicantProvidersController extends Controller
 
             $store = $this->repository->save($data);   
             
-            DB::commit();
-            
             Notification::send($users, new NotifyToPurchases($data['fullname_applicant']));
+
+            DB::commit();
 
             return response()->json([
                 "message" => "Registro éxitoso",
@@ -182,6 +183,8 @@ class ApplicantProvidersController extends Controller
                     'email' => $user->email,
                     'password' => $password
                 ])); 
+
+                Notification::route('mail', $applicant->email_applicant)->notify(new ApprovedCreateUserToApplicant($applicant->tradename));
                 
                 $applicant->update(['user_id' => $user->id]);
             }

@@ -1,29 +1,25 @@
 <?php
 
-namespace App\Notifications\Providers;
+namespace App\Notifications\ApplicantProvider;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class RejectDocument extends Notification
+class ApprovedCreateUserToApplicant extends Notification
 {
     use Queueable;
-
-    private $provider;
-    private $document;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($provider, $document, string $note = '')
+    public function __construct($tradename)
     {
-        $this->provider = $provider;
-        $this->document = $document;
-        $this->note = $note;
+        $this->tradename = $tradename;
     }
 
     /**
@@ -46,13 +42,10 @@ class RejectDocument extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->from(getenv('MAIL_FROM_ADDRESS'), getenv('MAIL_FROM_NAME'))
-                    ->subject("Documento Rechazado - Norson Alimentos")
-                    ->line("El documento {$this->document->title} de su registro como proveedor ha sido rechazado. Por favor ingrese al sistema para volver a adjuntar el archivo.")
-                    ->line("Motivo: {$this->note}")
-                    ->action('Entrar', getenv('APP_FRONTEND'))
-                    ->line('¡Gracias por querer ser parte de nosotros!');
-
+                    ->subject("Proceso de Alta de Proveedor - Norson Alimentos")
+                    ->greeting("Buen día.")
+                    ->line(new HtmlString('Su solicitud del proveedor por nombre comercial <strong>' . $this->tradename . '</strong> ha sido aceptada. Ya se contactó al correo del proveedor para que pueda dar de alta su información en el sistema.'))
+                    ->salutation('Un saludo.');
     }
 
     /**

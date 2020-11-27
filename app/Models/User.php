@@ -65,6 +65,10 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\Provider\Provider');
     }
 
+    public function applicant_requested(){
+        return $this->hasOne(ApplicantProvider::class);
+    }
+
     public function getCreatedAtFormatAttribute(){
         return Carbon::parse($this->created_at)->format('d/m/Y H:i');
     }

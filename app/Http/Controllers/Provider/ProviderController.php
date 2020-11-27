@@ -15,10 +15,13 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Users\UserRepositoryEloquent;
 use App\Http\Requests\Provider\ProviderStoreRequest;
 use App\Models\Provider\ProviderDocument;
+use App\Models\TypeProvider;
 use App\Notifications\Providers\Contracted;
+use App\Notifications\Providers\ProviderRegistered;
 use App\Repositories\Provider\ProviderRepositoryEloquent;
 use App\Repositories\Provider\ProviderSapAuthoRepositoryEloquent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class ProviderController extends Controller
@@ -63,6 +66,23 @@ class ProviderController extends Controller
             $data = $request->all();
 
             $store = $this->providerRepository->save($data);   
+
+            
+            /* Notificar a compras */
+            
+            $typeProvider = $request->user()->applicant_requested->type_provider ?? 0;
+            $existType = TypeProvider::where('description', $typeProvider)->get()->count();
+            
+            /* Se buscan aquellos usuarios de compras que tienen el mismo tipo de proveedor para notificarles */
+            
+            if($existType == 0){
+                $users = $this->userRepository->getUsersPermissionPurchases();
+            }
+            else{
+                $users =  $this->userRepository->getUsersPurchasesByTypeProvider($typeProvider);
+            }
+            
+            Notification::send($users, new ProviderRegistered($store->applicant_name));
             
             DB::commit();
 

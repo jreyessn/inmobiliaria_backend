@@ -137,7 +137,7 @@ class DashboardController extends Controller
         $data['phase5'] = [
             'name' => 'Promedio de Horas Totales',
             'hours' => number_format($timeHours, 2),
-            'description' => CarbonInterval::hours($timeHours)->cascade()->forHumans(['parts' => 3, 'short' => true])
+            'description' => CarbonInterval::seconds($timeHours * 60 * 60)->cascade()->forHumans(['parts' => 3, 'short' => true])
         ];
 
         $data['months'] = $this->timesAllMonths();

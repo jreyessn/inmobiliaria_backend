@@ -141,7 +141,7 @@ class DashboardController extends Controller
         */
 
         $sumSeconds = ((int) $data['phase1']['seconds'] + (int) $data['phase2']['seconds'] + (int) $data['phase3']['seconds'] + (int) $data['phase4']['seconds']) / 4;
-        $timeTotal = CarbonInterval::create(0,0,0,0,0,0, $sumSeconds);
+        $timeTotal = CarbonInterval::create(0,0,0,0,0,0, (int) $sumSeconds);
 
         $data['phase5'] = [
             'name' => 'Promedio total de etapas',
@@ -210,6 +210,7 @@ class DashboardController extends Controller
                                         provider_sap_authorizations.created_at,
                                         max(provider_sap_authorizations.approved_at) as approved_at
                                     FROM provider_sap_authorizations
+                                    WHERE date(provider_sap_authorizations.created_at) BETWEEN '{$month['first_day']}' AND '{$month['end_day']}'
                                     GROUP BY provider_sap_id
                                     ) as tablita
                                     WHERE approved = 1
@@ -225,6 +226,7 @@ class DashboardController extends Controller
                                                created_at,
                                                max(approved_at) as approved_at
                                             FROM provider_documents
+                                            WHERE date(provider_documents.created_at) BETWEEN '{$month['first_day']}' AND '{$month['end_day']}'
                                             GROUP BY provider_id
                                             ) as tablita
                                             WHERE approved = 1

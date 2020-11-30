@@ -30,9 +30,9 @@ class ApplicantStoreRequest extends FormRequest
             "business_name" => 'nullable|max:200',
             "name_contact" => 'required|max:200',
             "phone_provider" => 'required|max:200',
-            "email_provider" => 'required|email|max:100',
+            "email_provider" => 'required|email|unique:applicant_providers,email_provider,NULL,id,deleted_at,NULL|unique:users,email,NULL,id,deleted_at,NULL|max:100',
             "fullname_applicant" => 'required|max:155',
-            "email_applicant" => 'required|email|unique:applicant_providers,email_applicant,NULL,id,deleted_at,NULL|max:155',
+            "email_applicant" => 'required|email|max:155',
             "microbusiness" => 'required|max:200',
             "authorization_file" => 'required|file|mimes:pdf,png,jpg',
         ];

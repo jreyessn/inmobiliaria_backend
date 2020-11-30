@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\UserTypeProvider;
 use App\Repositories\Users\UserRepositoryEloquent;
 
 class UserController extends Controller
@@ -71,6 +72,20 @@ class UserController extends Controller
 
             $user->roles()->sync($roles);
             
+            foreach($request->type_providers as $typeProvider)
+            {
+                UserTypeProvider::updateOrCreate(
+                    [
+                        'type_provider_id' => $typeProvider,
+                        'user_id' => $user->id
+                    ],
+                                        [
+                        'type_provider_id' => $typeProvider,
+                        'user_id' => $user->id
+                    ],
+                );
+            }
+            
             DB::commit();
 
             return response()->json([
@@ -94,7 +109,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions', 'type_provider'])->find($id);
+        return $this->repository->with(['roles.permissions', 'type_providers'])->find($id);
     }
 
     /**
@@ -117,6 +132,22 @@ class UserController extends Controller
             
             $user->save();
             $user->roles()->sync( $request->roles );
+
+            UserTypeProvider::where('user_id', $user->id)->delete();
+            
+            foreach($request->type_providers as $typeProvider)
+            {
+                UserTypeProvider::updateOrCreate(
+                    [
+                        'type_provider_id' => $typeProvider,
+                        'user_id' => $user->id
+                    ],
+                                        [
+                        'type_provider_id' => $typeProvider,
+                        'user_id' => $user->id
+                    ],
+                );
+            }
 
             DB::commit();
 

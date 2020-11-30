@@ -53,10 +53,10 @@ class UserRepositoryEloquent extends AppRepository implements UserRepository
         $users = $this->model->whereHas('roles', function($query){
             $query->where('role_id', 3);
         })
-        ->whereHas('type_provider', function($query) use ($type_provider){
+        ->whereHas('type_providers', function($query) use ($type_provider){
             $query->where('description', $type_provider);
         })
-        ->with('type_provider')->get();
+        ->with('type_providers')->get();
         
         return $users;
     }

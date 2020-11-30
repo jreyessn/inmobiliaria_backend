@@ -77,4 +77,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(TypeProvider::class);
     }
+    
+    public function type_providers()
+    {
+        return $this->belongsToMany(TypeProvider::class, 'user_type_providers');
+    }
+
 }

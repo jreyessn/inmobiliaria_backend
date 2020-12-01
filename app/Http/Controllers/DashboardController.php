@@ -140,7 +140,7 @@ class DashboardController extends Controller
         * Tiempo total
         */
 
-        $sumSeconds = ((int) $data['phase1']['seconds'] + (int) $data['phase2']['seconds'] + (int) $data['phase3']['seconds'] + (int) $data['phase4']['seconds']) / 4;
+        $sumSeconds = ((int) $data['phase1']['seconds'] + (int) $data['phase2']['seconds'] + (int) $data['phase3']['seconds'] + (int) $data['phase4']['seconds']);
         $timeTotal = CarbonInterval::create(0,0,0,0,0,0, (int) $sumSeconds);
 
         $data['phase5'] = [

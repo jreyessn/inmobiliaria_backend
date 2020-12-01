@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             TypeBankInterlocutorSeeder::class,
             GroupsSeeder::class,
             TreasuryGroupsSeeder::class,
+            TypeProvidersSeeder::class,
         ]);
 
         // Schema::enableForeignKeyConstraints();

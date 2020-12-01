@@ -144,7 +144,7 @@ class DashboardController extends Controller
         $timeTotal = CarbonInterval::create(0,0,0,0,0,0, (int) $sumSeconds);
 
         $data['phase5'] = [
-            'name' => 'Promedio total de etapas',
+            'name' => 'Total de etapas',
             'hours' => number_format($timeTotal->totalHours, 2),
             'minutes' => $timeTotal->totalMinutes,
             'seconds' => $timeTotal->totalSeconds,

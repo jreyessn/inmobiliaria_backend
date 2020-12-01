@@ -163,7 +163,7 @@ class DashboardController extends Controller
 
         $firstCreateRegister = DB::table('applicant_providers')->orderBy('created_at', 'asc')->limit(1)->first();
 
-        $period = \Carbon\CarbonPeriod::create($firstCreateRegister->created_at, '1 month', Carbon::now());
+        $period = \Carbon\CarbonPeriod::create($firstCreateRegister->created_at ?? 0, '1 month', Carbon::now());
         $months = [];
 
         foreach ($period as $dt) {

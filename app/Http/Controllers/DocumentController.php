@@ -25,7 +25,9 @@ class DocumentController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->repository->customPaginate();
+        $data = $this->repository->all();
+
+        return compact('data');
     }
 
     public function show(Request $request, $id, $download = null){

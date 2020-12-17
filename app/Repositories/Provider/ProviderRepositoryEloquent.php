@@ -61,13 +61,12 @@ class ProviderRepositoryEloquent extends AppRepository
         $store = $this->create($data);
         
         $data['provider_id'] = $store->id;
-
-        ProviderAccountBank::create($data);
         
         $store->retention_types()->sync($data['retention_type_id']);
         $store->retention_indicators()->sync($data['retention_indicator_id']);
 
         $this->saveReferences($data);
+        $this->saveAccountBanks($data);
         $this->saveDocuments($data);
 
         return $store;
@@ -80,10 +79,6 @@ class ProviderRepositoryEloquent extends AppRepository
         $update->can_edit = 0;
         $update->fill($data);
         $update->save();
-
-        $accountBank = ProviderAccountBank::find($data['account_bank_id']);
-        $accountBank->fill($data);
-        $accountBank->save();
 
         // cuando se actualiza, las autorizaciones pasan a estar en espera nuevamente (en caso de que hayan rechazadas)
         // se asume que el proveedor actualizó su info en funcion de los rechazos 
@@ -100,9 +95,32 @@ class ProviderRepositoryEloquent extends AppRepository
         $update->retention_indicators()->sync($data['retention_indicator_id']);
 
         ProviderReference::where('provider_id', $data['provider_id'])->delete();
+        ProviderAccountBank::where('provider_id', $data['provider_id'])->delete();
 
         $this->saveReferences($data);
+        $this->saveAccountBanks($data);
         $this->saveDocuments($data);
+    }
+
+    public function saveAccountBanks($data){
+        $accounts = array();
+
+        foreach($data['account_holder'] as $key => $value) {
+            array_push($accounts, [
+                'provider_id' => $data['provider_id'],
+                'account_holder' => $data['account_holder'][$key],
+                "account_number" => $data['account_number'][$key],
+                "account_clabe" => $data['account_clabe'][$key],
+                "swift_code" => $data['swift_code'][$key],
+                "routing_aba_number" => $data['routing_aba_number'][$key],
+                "bank_name" => $data['bank_name'][$key],
+                "bank_address" => $data['bank_address'][$key],
+                "bank_country_id" => $data['bank_country_id'][$key],
+                "bank_id" => $data['bank_id'][$key]
+            ]);
+        }
+
+        ProviderAccountBank::insert($accounts);
     }
 
     public function saveReferences($data){

@@ -107,7 +107,7 @@ class ProviderController extends Controller
     public function show($id)
     {
         return $this->providerRepository->with([
-            'account_bank',
+            'account_banks',
             'retention_types',
             'retention_indicators',
             'documents',

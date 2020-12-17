@@ -50,8 +50,6 @@ class ProviderStoreRequest extends FormRequest
     public function rules()
     {
 
-        // dd($this->all());
-
         return [
             'applicant_name' => '',
             'business_name' => 'required',
@@ -78,12 +76,12 @@ class ProviderStoreRequest extends FormRequest
             'retention_type_id' => 'array|nullable',
             'retention_indicator_id' => 'array|nullable',
 
-            "account_holder" => "required",
-            "account_number" => "required",
-            "bank_name" => "required",
-            "bank_address" => "required",
-            "bank_country_id" => "required",
-            "bank_id" => "required",
+            "account_holder" => "array",
+            "account_number" => "array",
+            "bank_name" => "array",
+            "bank_address" => "array",
+            "bank_country_id" => "array",
+            "bank_id" => "array",
 
             'reference_provider_name' => 'array',
             'reference_contact' => 'array',
@@ -92,6 +90,9 @@ class ProviderStoreRequest extends FormRequest
 
             'acta_constitutiva_file' => 'file|mimes:pdf|nullable',
             'acta_constitutiva_date' => 'date|nullable',
+
+            'power_legal_representative_file' => 'file|mimes:pdf|nullable',
+            'power_legal_representative_date' => 'date|nullable',
 
             'constancia_situacion_fiscal_file' => 'file|mimes:pdf|nullable',
             'constancia_situacion_fiscal_date' =>  ['date', 'nullable' ,new ValidDateDocument],
@@ -124,47 +125,47 @@ class ProviderStoreRequest extends FormRequest
     }
 
     /* 
-        Captura la fecha del documento (solo funciona con 32D)
+    * Código util para buscar patrones de palabras dentro de los PDF
     */
-    private function captureDate($value){
+    // private function captureDate($value){
 
-        try {
+    //     try {
 
-            $parser = new \Smalot\PdfParser\Parser();
+    //         $parser = new \Smalot\PdfParser\Parser();
             
-            $pdf = $parser->parseFile($value->getPathname());
-            $content = preg_replace('/\s+/', ' ', trim($pdf->getText()));
+    //         $pdf = $parser->parseFile($value->getPathname());
+    //         $content = preg_replace('/\s+/', ' ', trim($pdf->getText()));
             
-            preg_match('/día(.*?),/', $content, $dateMatches);
+    //         preg_match('/día(.*?),/', $content, $dateMatches);
 
-            if(count($dateMatches) == 2){
-                $palabras = preg_split('/\s/', trim($dateMatches[1]), null, PREG_SPLIT_OFFSET_CAPTURE);
+    //         if(count($dateMatches) == 2){
+    //             $palabras = preg_split('/\s/', trim($dateMatches[1]), null, PREG_SPLIT_OFFSET_CAPTURE);
                 
-                $dateTransform = array();
+    //             $dateTransform = array();
 
-                foreach($palabras as $palabraArray){
-                    if($palabraArray[0] != "de")
-                        array_push($dateTransform, $palabraArray[0]);
-                }
+    //             foreach($palabras as $palabraArray){
+    //                 if($palabraArray[0] != "de")
+    //                     array_push($dateTransform, $palabraArray[0]);
+    //             }
 
-                $month = month_en($dateTransform[1]);
+    //             $month = month_en($dateTransform[1]);
 
-                if(!$month)
-                    return null;
+    //             if(!$month)
+    //                 return null;
 
-                $dateTransform[1] = $month;
+    //             $dateTransform[1] = $month;
                 
-                $dateFormated = Carbon::parse(Carbon::parse($dateTransform[0].' '.$dateTransform[1].' '.$dateTransform[2]))->format('Y-m-d');
+    //             $dateFormated = Carbon::parse(Carbon::parse($dateTransform[0].' '.$dateTransform[1].' '.$dateTransform[2]))->format('Y-m-d');
                 
-                return $dateFormated;
-            }
+    //             return $dateFormated;
+    //         }
 
-            return null;
+    //         return null;
 
-        } catch (Exception $th) {
-            return null;
-        }
-    }
+    //     } catch (Exception $th) {
+    //         return null;
+    //     }
+    // }
 
     public function messages()
     {

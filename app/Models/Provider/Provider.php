@@ -60,8 +60,8 @@ class Provider extends Model
         $this->attributes['retention'] = is_null($value)? 0 :  $value;
     }
 
-    public function account_bank(){
-        return $this->hasOne('App\Models\Provider\ProviderAccountBank');
+    public function account_banks(){
+        return $this->hasMany('App\Models\Provider\ProviderAccountBank');
     }
 
     public function provider_sap(){

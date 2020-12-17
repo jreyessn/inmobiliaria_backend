@@ -69,4 +69,11 @@ class ProviderSapAuthorizationController extends Controller
         return Excel::download(new SapExport($data), 'users.xlsx');
     }
 
+    public function sendSap($id){
+
+        $data = $this->sapRepository->find($id);
+
+        dd($data);
+    }
+
 }

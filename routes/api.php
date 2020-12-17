@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('providers/inactive', 'Provider\ProviderController@inactive');
     Route::post('providersUpdate', 'Provider\ProviderController@update');
     Route::apiResource('providers', 'Provider\ProviderController');
+    Route::post('sendmails', 'SendMailController');
 
     Route::put('applicant_providers/change_status/{id}', 'ApplicantProviders\ApplicantProvidersController@changeStatus');
     Route::get('applicant_providers/download_authorization/{id}', 'ApplicantProviders\ApplicantProvidersController@downloadAuthorization');
@@ -77,6 +78,7 @@ Route::group(['middleware' => 'auth:api'], function(){
 
     Route::get('providers_sap/authorizations/{provider_sap_id}', 'Provider\ProviderSapAuthorizationController@show');
     Route::post('providers_sap/authorize', 'Provider\ProviderSapAuthorizationController@store');
+    Route::get('providers_sap/upload_to_sap/{provider_sap_id}', 'Provider\ProviderSapAuthorizationController@sendSap');
     Route::get('providers_sap/download_xlsx_sap/{provider_sap_id}', 'Provider\ProviderSapAuthorizationController@downloadExcelSap');
     Route::apiResource('providers_sap', 'Provider\ProviderSapController');
 
@@ -106,11 +108,8 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::get('tolerance_group', 'ToleranceGroupController');
     Route::get('currency', 'CurrencyController');
     Route::get('type_bank_interlocutor', 'TypeBankInterlocutorController');
-
     Route::get('countries', 'CountriesController@getCountries');
     Route::get('states', 'CountriesController@getStates');
     Route::get('cities', 'CountriesController@getCities');
-
-    Route::post('sendmails', 'SendMailController');
 
 });

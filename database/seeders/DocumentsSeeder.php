@@ -77,6 +77,12 @@ class DocumentsSeeder extends Seeder
                 'folder' => 'account_routings',
                 "example" => "example10.pdf",
             ],
+            [
+                "title" => "Poder de Representante Legal",
+                'file_input_name' => 'power_legal_representative_file',
+                'folder' => 'power_legal_representative',
+                "example" => "example10.pdf",
+            ],
 
         ];
 

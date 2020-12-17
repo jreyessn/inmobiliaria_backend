@@ -57,6 +57,11 @@ class RetentionIndicatorsSeeder extends Seeder
                 "indicator" => "1",
                 "description" => "IVA Por Venta de desechos (Ret. 100%)",
             ],            
+            [
+                "type" => "V5",
+                "indicator" => "1",
+                "description" => "IVA Servicios 6%",
+            ],            
         ];
         
         foreach ($data as $value) {

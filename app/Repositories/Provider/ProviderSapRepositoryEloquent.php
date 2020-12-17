@@ -135,7 +135,6 @@ class ProviderSapRepositoryEloquent extends AppRepository
     private function mapSapFormatExcel($item){
         $data = array();
         $societiesMap = Society::orderBy('orden', 'asc')->get()->pluck('description')->toArray();
-
         $data[] = Carbon::parse($item->created_at)->format('d/m/yy');   
         $data[] = '';//$item->provider_id;
         $data[] = $item->societies->pluck('code')->implode(',') ?? '';
@@ -159,10 +158,10 @@ class ProviderSapRepositoryEloquent extends AppRepository
         $data[] = $item->curp;
         $data[] = $item->provider->natural_person? 'X' : '';
         $data[] = $item->alba;
-        $data[] = $item->provider->account_bank->bank_country->description;
-        $data[] = $item->provider->account_bank->bank->code;
-        $data[] = $item->provider->account_bank->account_number;
-        $data[] = $item->provider->account_bank->account_holder;
+        $data[] = $item->provider->account_banks->pluck('bank_country')->pluck('description')->implode(',') ?? '';
+        $data[] = $item->provider->account_banks->pluck('bank')->pluck('code')->implode(',') ?? '';
+        $data[] = $item->provider->account_banks->pluck('account_number')->implode(',') ?? '';
+        $data[] = $item->provider->account_banks->pluck('account_holder')[0] ?? '';
         $data[] = $item->type_bank_interlocutor->description;
         $data[] = $item->reference_bank;
         $data[] = $item->number_account_alternative;

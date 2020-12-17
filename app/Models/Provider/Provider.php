@@ -25,6 +25,7 @@ class Provider extends Model
         "state_id",
         "citiy_id",
         "zip_code",
+        "quantity_employees",
         "phone",
         "main_shareholder", 
         "sales_representative", 

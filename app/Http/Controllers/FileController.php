@@ -48,7 +48,7 @@ class FileController extends Controller
         } 
         catch (\Exception $th) {
             DB::rollback();
-
+                
             return response()->json(['message' => $th->getMessage()], 500);
         }
 

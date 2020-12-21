@@ -161,9 +161,9 @@ class DashboardController extends Controller
 
         /* Se busca el rango de meses que se han registrado los solicitantes */
 
-        $firstCreateRegister = DB::table('applicant_providers')->orderBy('created_at', 'asc')->limit(1)->first();
+        // $firstCreateRegister = DB::table('applicant_providers')->orderBy('created_at', 'asc')->limit(1)->first();
 
-        $period = \Carbon\CarbonPeriod::create($firstCreateRegister->created_at ?? 0, '1 month', Carbon::now());
+        $period = \Carbon\CarbonPeriod::create('2020-11-01', '1 month', Carbon::now());
         $months = [];
 
         foreach ($period as $dt) {

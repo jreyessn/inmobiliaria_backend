@@ -19,7 +19,7 @@ class PermissionsTableSeeder extends Seeder
         Permission::query()->delete();
 
         Permission::create(['name' => 'dashboard']); 
-        Permission::create(['name' => 'register provider']); // 2
+        Permission::create(['name' => 'register provider']); 
         Permission::create(['name' => 'list providers status']); 
         Permission::create(['name' => 'list providers']); 
         Permission::create(['name' => 'edit providers']); 
@@ -49,39 +49,7 @@ class PermissionsTableSeeder extends Seeder
 
         Permission::create(['name' => 'list users']);
         Permission::create(['name' => 'edit users']);
-        Permission::create(['name' => 'show users']);
-        Permission::create(['name' => 'create users']);
-        Permission::create(['name' => 'delete users']);
-
-        $superadmin = Role::create(['name' => 'Administrador']);
-        $superadmin->givePermissionTo(Permission::all()->except([2, 17]));
-        
-        $proveedor = Role::create(['name' => 'Proveedor']);
-        $proveedor->givePermissionTo([
-            'register provider',
-            'list providers status',
-            'show providers',
-            'list requirements',
-            'show requirements',
-        ]);
-
-        $compras = Role::create(['name' => 'Compras']);
-        $compras->givePermissionTo(Permission::all()->except([2, 5, 17]));
-
-        $legal = Role::create(['name' => 'Legal']);
-        $legal->givePermissionTo(Permission::all()->only([1,3,4,6,7,10,11]));
-
-        $legal = Role::create(['name' => 'Fiscal']);
-        $legal->givePermissionTo(Permission::all()->only([1,3,4,6,7,10,11]));
-        
-        $legal = Role::create(['name' => 'Tesorería']);
-        $legal->givePermissionTo(Permission::all()->only([1,3,4,6,7,10,11]));
-        
-        $legal = Role::create(['name' => 'Auditoría']);
-        $legal->givePermissionTo(Permission::all()->only([1,3,4,6,7,10,11]));
-
-        $authorizationRol = Role::create(['name' => 'Autorizador SAP']);
-        $authorizationRol->givePermissionTo(['authorize providers sap']);
+     
         
     }
 }

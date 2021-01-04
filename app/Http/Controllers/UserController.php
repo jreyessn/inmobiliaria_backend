@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Models\UserTypeProvider;
 use App\Repositories\Users\UserRepositoryEloquent;
 
 class UserController extends Controller
@@ -63,28 +62,7 @@ class UserController extends Controller
             $user = $this->repository->create($request->all());
             $roles = $request->roles;
 
-            // si es un rol diferente a compras y proveedor, se le asigna el rol especial
-            // de autorizaciones a sap
-
-            if(!in_array(2, $request->roles) && !in_array(3, $request->roles)){
-                array_push($roles, 8);
-            }
-
             $user->roles()->sync($roles);
-            
-            foreach($request->type_providers as $typeProvider)
-            {
-                UserTypeProvider::updateOrCreate(
-                    [
-                        'type_provider_id' => $typeProvider,
-                        'user_id' => $user->id
-                    ],
-                                        [
-                        'type_provider_id' => $typeProvider,
-                        'user_id' => $user->id
-                    ],
-                );
-            }
             
             DB::commit();
 
@@ -132,22 +110,6 @@ class UserController extends Controller
             
             $user->save();
             $user->roles()->sync( $request->roles );
-
-            UserTypeProvider::where('user_id', $user->id)->delete();
-            
-            foreach($request->type_providers as $typeProvider)
-            {
-                UserTypeProvider::updateOrCreate(
-                    [
-                        'type_provider_id' => $typeProvider,
-                        'user_id' => $user->id
-                    ],
-                                        [
-                        'type_provider_id' => $typeProvider,
-                        'user_id' => $user->id
-                    ],
-                );
-            }
 
             DB::commit();
 

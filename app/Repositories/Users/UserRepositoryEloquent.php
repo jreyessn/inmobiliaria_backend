@@ -2,18 +2,17 @@
 
 namespace App\Repositories\Users;
 
-use App\Models\TypeProvider;
 use App\Models\User;
-use App\Repositories\AppRepository;
 use App\Repositories\Users\UserRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class UserRepositoryEloquent.
  *
  * @package namespace App\Repositories\Users;
  */
-class UserRepositoryEloquent extends AppRepository implements UserRepository
+class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
     protected $fieldSearchable = [
         'username' => 'like',

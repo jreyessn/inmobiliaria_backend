@@ -3,15 +3,15 @@
 namespace App\Repositories\Roles;
 
 use Spatie\Permission\Models\Role;
-use App\Repositories\AppRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class RoleRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class RolesRepositoryEloquent extends AppRepository
+class RolesRepositoryEloquent extends BaseRepository
 {
     /**
      * Specify Model class name

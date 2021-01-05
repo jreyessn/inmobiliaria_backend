@@ -1,26 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Farm;
 
+use App\Http\Controllers\Controller;
+use App\Repositories\Farm\FarmRepositoryEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Repositories\Users\UserRepositoryEloquent;
 
-class UserController extends Controller
+class FarmController extends Controller
 {
-    /**
-     * @var $repository
-     */
-    protected $repository;
 
-    /**
-     * @var $responseCode
-     */
-    protected $responseCode = 200;
+    private $repository;
 
-    public function __construct(UserRepositoryEloquent $repository)
+    public function __construct(
+        FarmRepositoryEloquent $repository
+    )
     {
         $this->repository = $repository;
     }
@@ -33,7 +27,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'perPage'      =>  'nullable|integer',
+            'perPage'       =>  'nullable|integer',
             'page'          =>  'nullable|integer',
             'search'        =>  'nullable|string',
             'orderBy'       =>  'nullable|string',
@@ -42,85 +36,80 @@ class UserController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->repository->with('roles')->whereHas('roles', function($query){
-            $query->where('role_id', '!=', 2);
-        })->paginate($perPage);
-
+        return $this->repository->paginate($perPage);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\UserCreateRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserCreateRequest $request)
+    public function store(Request $request)
     {
+        $request->validate([
+            'name'         => 'required|string|max:100',
+            'direction'    => 'nullable|string|max:200',
+            'farm_manager' => 'required|string|max:100',
+            'sharecropper' => 'required|string|max:100',
+        ]);
+
         DB::beginTransaction();
 
-        $user = [];
-
         try{
-            $user = $this->repository->create($request->all());
-            $roles = $request->roles;
-            $farms = $request->farms;
-
-            $user->roles()->sync($roles);
-            $user->farms()->sync($farms);
+            $this->repository->save($request->all());
             
             DB::commit();
 
             return response()->json([
                 "message" => "Registro éxitoso",
-                "data" => $user
             ], 201);
 
         }catch(\Exception $e){
             DB::rollback();
 
             return response()->json(['message' => $e->getMessage()], 500);
-
         }
-
     }
 
     /**
      * Display the specified resource.
      *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions', 'farms'])->find($id);
+        return [
+            'data' => $this->repository->find($id)
+        ];
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UserUpdateRequest  $request
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserCreateRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        
+        $request->validate([
+            'name'         => 'required|string|max:100',
+            'farm_manager' => 'required|string|max:100',
+            'sharecropper' => 'required|string|max:100',
+            'direction'    => 'nullable|string|max:200',
+        ]);
+
         DB::beginTransaction();
 
         try{
-            $user = $this->repository->find($id);
-            $user->fill( $request->all() );
-
-            if($request->has('password'))
-                $user->password_changed_at = date('Y-m-d H:i:s');
+            $this->repository->saveUpdate($request->all(), $id);
             
-            $user->save();
-            $user->roles()->sync( $request->roles );
-            $user->farms()->sync( $request->farms );
-
             DB::commit();
 
             return response()->json([
                 "message" => "Actualización exitosa",
-                "data" => $user
             ], 201);
 
         }catch(\Exception $e){
@@ -128,28 +117,25 @@ class UserController extends Controller
 
             return response()->json(['message' => $e->getMessage()], 500);
         }
-
- 
     }
 
     /**
      * Remove the specified resource from storage.
      *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         try{
 
-            $user = $this->repository->find($id);
-            $user->delete();
+            $this->repository->delete($id);
 
             return response()->json(null, 204);
 
         }catch(\Exception $e){
             return response()->json(null, 404);
         }
-
 
     }
 }

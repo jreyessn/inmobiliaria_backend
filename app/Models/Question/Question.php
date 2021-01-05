@@ -15,6 +15,26 @@ class Question extends Model
         'max_score',
         'score_fractional',
         'order',
-        'inactivated_at'
+        'inactivated_at',
+        'sections_question_id',
     ];
+
+    protected $hidden = [
+        'inactivated_at',
+        'sections_question_id',
+        'deleted_at',
+    ];
+
+    protected $appends = [
+        'score_options'
+    ];
+
+    /**
+     * Cada pregunta tiene un puntaje. Esta propiedad obtiene las respuestas posibles 
+     * en base a las fracciones de puntos
+     */
+    public function getScoreOptionsAttribute()
+    {
+        return range(0, $this->max_score, $this->score_fractional);
+    }
 }

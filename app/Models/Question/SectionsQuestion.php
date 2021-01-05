@@ -15,4 +15,21 @@ class SectionsQuestion extends Model
         'order',
         'inactivated_at'
     ];
+
+    protected $with = [
+        'questions'
+    ];
+
+    protected $hidden = [
+        'inactivated_at',
+        'deleted_at',
+    ];
+
+    /**
+     * Preguntas correspondientes a cada sección
+     */
+    public function questions()
+    {
+        return $this->hasMany(Question::class)->orderBy('order', 'asc');
+    }
 }

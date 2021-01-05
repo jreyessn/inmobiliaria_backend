@@ -8,10 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Person extends Model
 {
-    use HasFactory, SoftDeletes;
+
+    use SoftDeletes;
+    
+    protected $table = 'persons';
 
     protected $fillable = [
         'name',
         'farm_occupation'  
+    ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 }

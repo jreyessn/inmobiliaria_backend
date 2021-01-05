@@ -15,6 +15,7 @@ class CreateVisitsQuestionsTable extends Migration
     {
         Schema::create('visits_questions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('visit_id')->constrained();
             $table->foreignId('question_id')->constrained();
             $table->float('score', 8, 2)->default(0);
         });

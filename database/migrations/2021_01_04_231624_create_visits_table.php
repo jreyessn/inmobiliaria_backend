@@ -19,6 +19,7 @@ class CreateVisitsTable extends Migration
             $table->float('result', 8, 2)->default(0);
             $table->text('comment', 8, 2)->nullable();
             $table->foreignId('user_id')->constrained()->comment("Supervisor");
+            $table->foreignId('farm_id')->constrained()->comment("Granja");
             $table->timestamps();
             $table->softDeletes();
         });

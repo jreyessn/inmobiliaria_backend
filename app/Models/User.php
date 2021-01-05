@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Farm\Farm;
+use App\Models\Farm\FarmUser;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -48,39 +50,21 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = [
-        'created_at_format'
-    ];
+    protected $appends = [];
 
     /**
-     *
      * Setters attributers
+     * 
+     * @param string $password
      */
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
     }
 
-    public function provider(){
-        return $this->hasOne('App\Models\Provider\Provider');
-    }
-
-    public function applicant_requested(){
-        return $this->hasOne(ApplicantProvider::class);
-    }
-
-    public function getCreatedAtFormatAttribute(){
-        return Carbon::parse($this->created_at)->format('d/m/Y H:i');
-    }
-
-    public function type_provider()
+    public function farms()
     {
-        return $this->belongsTo(TypeProvider::class);
-    }
-    
-    public function type_providers()
-    {
-        return $this->belongsToMany(TypeProvider::class, 'user_type_providers');
+        return $this->belongsToMany(User::class, 'farms_users', 'user_id', 'farm_id');
     }
 
 }

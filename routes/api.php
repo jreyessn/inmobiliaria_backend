@@ -34,11 +34,16 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 });
 
 
-Route::group(['middleware' => 'auth:api'], function(){
+Route::group(['middleware' => 'api'], function(){
 
     Route::get('dashboard', 'DashboardController@index');
+    Route::get('questions', 'Question\QuestionController');
 
-    Route::apiResource('users','UserController');
-    Route::apiResource('roles','RoleController');
+    Route::apiResources([
+        'users' => 'UserController',
+        'roles' => 'RoleController',
+        'farms' => 'Farm\FarmController',
+        'visits' => 'Visit\VisitController'
+    ]);
 
 });

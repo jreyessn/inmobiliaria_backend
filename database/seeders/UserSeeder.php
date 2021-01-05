@@ -31,15 +31,15 @@ class UserSeeder extends Seeder
             "email" => "jbasurto@empresainteligente.com",
             "password" => "1234"
         ]);
-        $user->assignRole(['Administrador']);
+        $user->assignRole(['Gerente']);
 
         $user = User::create([
-            'name' => "Humberto",
-            'username' => "Humberto",
-            "email" => "compras@norson.com",
+            'name' => "Jesus Basurto",
+            'username' => "JeanlogisticsSupervisor",
+            "email" => "jbasurto@empresainteligente2.com",
             "password" => "1234"
         ]);
-        $user->assignRole(['Compras', 'Autorizador SAP']);
+        $user->assignRole(['Supervisor']);
 
 
     }

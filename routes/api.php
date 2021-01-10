@@ -34,7 +34,7 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 });
 
 
-Route::group(['middleware' => 'api'], function(){
+Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController@index');
     Route::get('questions', 'Question\QuestionController');

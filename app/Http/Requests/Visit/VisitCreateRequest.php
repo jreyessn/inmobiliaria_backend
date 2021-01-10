@@ -29,6 +29,8 @@ class VisitCreateRequest extends FormRequest
             'comment'      => 'nullable|string',
             'farm_id'      => 'required|exists:farms,id',
             'questions'    => ['required', 'array', new ValidQuestion],
+            'mortalities'  => 'array',
+            'commitments'  => 'array',
         ];
     }
 
@@ -37,7 +39,16 @@ class VisitCreateRequest extends FormRequest
         return [
             'cost_center' => 'Centro de Costo',
             'farm_id' => 'Granja',
-            'questions' => 'Preguntas'
+            'questions' => 'Preguntas',
+            'commitments' => 'Compromisos',
+            'mortalities' => 'Morbilidad',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'array' => 'Lista'
         ];
     }
 }

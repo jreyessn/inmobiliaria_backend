@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use \Spatie\Permission\Exceptions\UnauthorizedException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,6 +33,11 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        //
+        $this->renderable(function (UnauthorizedException $e) {
+            return response()->json([
+                'message' => 'No tiene acceso a este recurso.',
+            ], 403);
+        });
     }
+
 }

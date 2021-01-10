@@ -16,6 +16,6 @@ class QuestionController extends Controller
      */
     public function __invoke()
     {
-        return SectionsQuestion::orderBy('order', 'asc')->get();
+        return SectionsQuestion::orderBy('order', 'asc')->limit(1)->get();
     }
 }

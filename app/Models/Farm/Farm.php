@@ -23,43 +23,39 @@ class Farm extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
-        'farm_manager_id',
-        'sharecropper_id',
-        'direction',
+        "centro",
+        "supervisor",
+        "gerente",
+        "nombre_centro",
+        "nombre_supervisor",
+        "nombre_gerente",
     ];
 
     protected $hidden = [
-        'farm_manager_id',
-        'sharecropper_id',
         'deleted_at',
         'updated_at'
     ];
 
-    protected $with = [
-        'farm_manager',
-        'sharecropper'
-    ];
 
 
-    /**
-     * Jefe de Granja
-     * 
-     * @return void
-     */
-    public function farm_manager()
-    {
-        return $this->belongsTo(Person::class, 'farm_manager_id');
-    }
+    // /**
+    //  * Jefe de Granja
+    //  * 
+    //  * @return void
+    //  */
+    // public function farm_manager()
+    // {
+    //     return $this->belongsTo(Person::class, 'farm_manager_id');
+    // }
 
-    /**
-     * Aparecero
-     * 
-     * @return void
-     */
-    public function sharecropper()
-    {
-        return $this->belongsTo(Person::class, 'sharecropper_id');
-    }
+    // /**
+    //  * Aparecero
+    //  * 
+    //  * @return void
+    //  */
+    // public function sharecropper()
+    // {
+    //     return $this->belongsTo(Person::class, 'sharecropper_id');
+    // }
 
 }

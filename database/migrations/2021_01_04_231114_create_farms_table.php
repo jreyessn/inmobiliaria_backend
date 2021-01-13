@@ -15,12 +15,12 @@ class CreateFarmsTable extends Migration
     {
         Schema::create('farms', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 200);
-            $table->unsignedBigInteger('farm_manager_id')->comment("Jefe de Granja");
-            $table->foreign('farm_manager_id')->references('id')->on('persons');
-            $table->unsignedBigInteger('sharecropper_id')->comment("Aparcero");
-            $table->foreign('sharecropper_id')->references('id')->on('persons');
-            $table->text("direction")->nullable();
+            $table->string("centro", 200)->nullable();
+            $table->string("supervisor", 200)->nullable();
+            $table->string("gerente", 200)->nullable();
+            $table->string("nombre_centro", 200)->nullable();
+            $table->string("nombre_supervisor", 200)->nullable();
+            $table->string("nombre_gerente", 200)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

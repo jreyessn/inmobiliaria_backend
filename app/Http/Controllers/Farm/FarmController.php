@@ -27,6 +27,7 @@ class FarmController extends Controller
     public function index(Request $request)
     {
         $request->validate([
+            'all'           =>  'nullable|in:true,false',
             'perPage'       =>  'nullable|integer',
             'page'          =>  'nullable|integer',
             'search'        =>  'nullable|string',
@@ -35,6 +36,9 @@ class FarmController extends Controller
         ]);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+        $all = $request->get('all', null);
+
+        if($all) $perPage = 99999999;
 
         return $this->repository->paginate($perPage);
     }
@@ -48,10 +52,12 @@ class FarmController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'         => 'required|string|max:100',
-            'direction'    => 'nullable|string|max:200',
-            'farm_manager' => 'required|string|max:100',
-            'sharecropper' => 'required|string|max:100',
+            "centro" => 'required|string:200',
+            "supervisor" => 'nullable|string:200',
+            "gerente" => 'nullable|string:200',
+            "nombre_centro" => 'nullable|string:200',
+            "nombre_supervisor" => 'nullable|string:200',
+            "nombre_gerente" => 'nullable|string:200',
         ]);
 
         DB::beginTransaction();
@@ -95,10 +101,12 @@ class FarmController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'         => 'required|string|max:100',
-            'farm_manager' => 'required|string|max:100',
-            'sharecropper' => 'required|string|max:100',
-            'direction'    => 'nullable|string|max:200',
+            "centro" => 'required|string:200',
+            "supervisor" => 'nullable|string:200',
+            "gerente" => 'nullable|string:200',
+            "nombre_centro" => 'nullable|string:200',
+            "nombre_supervisor" => 'nullable|string:200',
+            "nombre_gerente" => 'nullable|string:200',
         ]);
 
         DB::beginTransaction();

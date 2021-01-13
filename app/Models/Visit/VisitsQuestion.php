@@ -18,7 +18,6 @@ class VisitsQuestion extends Model
 
     protected $hidden = [
         'visit_id',
-        'question_id'
     ];
 
     protected $with = [

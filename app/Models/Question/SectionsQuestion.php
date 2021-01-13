@@ -16,9 +16,7 @@ class SectionsQuestion extends Model
         'inactivated_at'
     ];
 
-    protected $with = [
-        'questions'
-    ];
+    protected $with = [];
 
     protected $hidden = [
         'inactivated_at',

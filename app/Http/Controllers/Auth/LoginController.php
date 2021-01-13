@@ -104,7 +104,7 @@ class LoginController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json($request->user()->load('roles.permissions', 'provider'));
+        return response()->json($request->user()->load('roles.permissions'));
     }
 
     public function logout(Request $request)

@@ -76,7 +76,7 @@ class VisitController extends Controller
     public function show($id)
     {
         return [
-            'data' => $this->repository->with(['questions_answers', 'farm'])->find($id)
+            'data' => $this->repository->find($id)->load(['questions.question.section', 'farm', 'commitments', 'mortalities'])
         ];
     }
 

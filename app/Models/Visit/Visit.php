@@ -20,18 +20,37 @@ class Visit extends Model
     ];
 
     protected $hidden = [
-        'farm_id',
         'user_id'
     ];
 
     /**
+     * Morbilidades
+     */
+    public function mortalities()
+    {
+        return $this->hasMany(VisitsMortality::class);
+    }
+    
+    /**
+     * Compromisos agregados
+     */
+    public function commitments()
+    {
+        return $this->hasMany(VisitsCommitment::class);
+    }
+
+
+    /**
      * Preguntas contestadas durante la visita
      */
-    public function questions_answers()
+    public function questions()
     {
         return $this->hasMany(VisitsQuestion::class);
     }
     
+    /**
+     * Granja visitada
+     */
     public function farm()
     {
         return $this->belongsTo(Farm::class);

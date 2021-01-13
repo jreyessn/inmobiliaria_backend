@@ -21,9 +21,8 @@ class VisitRepositoryEloquent extends BaseRepository implements VisitRepository
     protected $fieldSearchable = [
         'cost_center' => 'like',
         'result' => 'like',
-        'farm.name' => 'like',
-        'farm.farm_manager.name' => 'like',
-        'farm.sharecropper.name' => 'like',
+        'farm.centro' => 'like',
+        'farm.nombre_centro' => 'like',
     ];
 
     /**

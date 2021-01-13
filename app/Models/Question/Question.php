@@ -37,4 +37,9 @@ class Question extends Model
     {
         return range(0, $this->max_score, $this->score_fractional);
     }
+
+    public function section()
+    {
+        return $this->belongsTo(SectionsQuestion::class, 'sections_question_id');
+    }
 }

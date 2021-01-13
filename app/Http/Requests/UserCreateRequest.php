@@ -52,7 +52,17 @@ class UserCreateRequest extends FormRequest
 
     public function attributes(){
         return [
-            'password_confirm' => "Confirmar Contraseña",
+            'password_confirm' => "Confirmar <C></C>ontraseña",
+            'username' => "Usuario",
+            'email' => "Correo",
+            'name' => "Nombre y Apellido",
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'unique' => 'El :attribute ya se encuentra en uso',
         ];
     }
 }

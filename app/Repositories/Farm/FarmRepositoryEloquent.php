@@ -17,10 +17,12 @@ use App\Validators\Farm\FarmValidator;
 class FarmRepositoryEloquent extends BaseRepository implements FarmRepository
 {
     protected $fieldSearchable = [
-        'name' => 'like',
-        'direction' => 'like',
-        'farm_manager.name' => 'like',
-        'sharecropper.name' => 'like',
+        "centro" => 'like',
+        "supervisor" => 'like',
+        "gerente" => 'like',
+        "nombre_centro" => 'like',
+        "nombre_supervisor" => 'like',
+        "nombre_gerente" => 'like',
     ];
 
     /**
@@ -44,30 +46,20 @@ class FarmRepositoryEloquent extends BaseRepository implements FarmRepository
     }
 
     /**
-     * Guardar los datos de la granja, jefe y aparceros
+     * Guardar los datos de la granja
      * 
      * @param array $data
      * @return App\Models\Farm\Farm
      */
     public function save(array $data): Farm
     {
-        $data['farm_manager_id'] = Person::create([
-            'name' => $data['farm_manager'],
-            'farm_occupation' => 'Jefe de Granja'
-        ])->id;
-        
-        $data['sharecropper_id'] = Person::create([
-            'name' => $data['sharecropper'],
-            'farm_occupation' => 'Aparcero'
-        ])->id;
-
         $farm = $this->create($data);
 
         return $farm;
     }
 
     /**
-     * Actualizar los datos de la granja, jefe y aparceros
+     * Actualizar los datos de la granja
      * 
      * @param array $data
      * @return App\Models\Farm\Farm
@@ -75,8 +67,6 @@ class FarmRepositoryEloquent extends BaseRepository implements FarmRepository
     public function saveUpdate(array $data, int $id): Farm
     {
         $farm = $this->find($id);
-        $farm->farm_manager->update(['name' => $data['farm_manager']]);
-        $farm->sharecropper->update(['name' => $data['sharecropper']]);
         $farm->fill($data);
         $farm->save();
         

@@ -3,6 +3,7 @@
 namespace App\Models\Farm;
 
 use App\Models\Person\Person;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -36,6 +37,11 @@ class Farm extends Model
         'updated_at'
     ];
 
+
+    public function user()
+    {
+        return $this->belongsToMany(User::class, 'farms_users', 'farm_id', 'user_id');
+    }
 
 
     // /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Criteria\RoleCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\UserCreateRequest;
@@ -42,9 +43,9 @@ class UserController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->repository->with('roles')->whereHas('roles', function($query){
-            $query->where('role_id', '!=', 2);
-        })->paginate($perPage);
+        $this->repository->pushCriteria(RoleCriteria::class);
+
+        return $this->repository->with('roles')->paginate($perPage);
 
     }
 

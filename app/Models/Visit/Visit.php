@@ -2,10 +2,11 @@
 
 namespace App\Models\Visit;
 
+use App\Models\User;
 use App\Models\Farm\Farm;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Visit extends Model
 {
@@ -17,11 +18,17 @@ class Visit extends Model
         'comment',
         'farm_id',
         'user_id',
+        'date',
     ];
 
     protected $hidden = [
         'user_id'
     ];
+
+    public function getResultAttribute()
+    {
+        return scoreTotalQuestions();
+    }
 
     /**
      * Morbilidades
@@ -54,5 +61,13 @@ class Visit extends Model
     public function farm()
     {
         return $this->belongsTo(Farm::class);
+    }
+
+    /**
+     * Usuario
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

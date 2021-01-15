@@ -36,8 +36,23 @@ class VisitController extends Controller
         ]);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+        $user_id = $request->get('user_id', null);
+        $farm_id = $request->get('farm_id', null);
+        $from = $request->get('from', null);
+        $to = $request->get('to', null);
+                
+        return $this->repository->when($from && $to, function($query) use ($from, $to){
+            $query->whereBetween('date', [$from, $to]);
+        })
+        ->when($user_id || $farm_id, function($query) use ($user_id, $farm_id){
+            
+            if($user_id)
+                $query->whereIn('user_id', explode($user_id, 2));
+                
+            if($farm_id)
+                $query->whereIn('farm_id', explode($farm_id, 2));
 
-        return $this->repository->paginate($perPage);
+        })->paginate($perPage);
     }
 
     /**

@@ -27,7 +27,9 @@ class Visit extends Model
 
     public function getResultAttribute()
     {
-        return scoreTotalQuestions();
+        return $this->questions->reduce(function($carry, $item){
+            return $carry + $item->score;
+        });
     }
 
     /**

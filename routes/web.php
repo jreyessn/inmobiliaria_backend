@@ -1,6 +1,9 @@
 <?php
 
+use App\Exports\VisitReport;
+use App\Models\Visit\Visit;
 use Illuminate\Support\Facades\Route;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
    return view('welcome');
 });
+
+Route::get('report', function () {
+   // return view('exports.visits');
+   $visit = Visit::with('questions', 'mortalities')->find(1);
+
+   return Excel::download(new VisitReport($visit), 'invoices.xlsx');
+});
+
 

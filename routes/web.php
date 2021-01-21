@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\FrequencyVisitsReport;
 use App\Exports\VisitReport;
 use App\Models\Visit\Visit;
 use Illuminate\Support\Facades\Route;
@@ -28,5 +29,8 @@ Route::get('report', function () {
 
    return Excel::download(new VisitReport($visit), 'invoices.xlsx');
 });
+
+// Route::get('frequency', 'Reports\ReportsController@frequencySupervisor');
+Route::get('supervisor_month', 'Reports\ReportsController@supervisorMonth');
 
 

@@ -38,6 +38,10 @@ Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController@index');
     Route::get('questions', 'Question\QuestionController');
+    
+    Route::group(['prefix' => 'reports'], function(){
+        Route::post('frequency_supervisor', 'Reports\ReportsController@frequencySupervisor');
+    });
 
     Route::apiResources([
         'users' => 'UserController',

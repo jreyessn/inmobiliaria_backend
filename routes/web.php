@@ -31,6 +31,7 @@ Route::get('report', function () {
 });
 
 // Route::get('frequency', 'Reports\ReportsController@frequencySupervisor');
-Route::get('supervisor_month', 'Reports\ReportsController@supervisorMonth');
+// Route::get('supervisor_month', 'Reports\ReportsController@supervisorMonth');
+Route::get('farm_month', 'Reports\ReportsController@farmsMonth');
 
 

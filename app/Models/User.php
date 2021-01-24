@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public function farms()
     {
-        return $this->belongsToMany(User::class, 'farms_users', 'user_id', 'farm_id');
+        return $this->belongsToMany(Farm::class, 'farms_users', 'user_id', 'farm_id');
     }
 
 }

@@ -44,24 +44,4 @@ class Farm extends Model
     }
 
 
-    // /**
-    //  * Jefe de Granja
-    //  * 
-    //  * @return void
-    //  */
-    // public function farm_manager()
-    // {
-    //     return $this->belongsTo(Person::class, 'farm_manager_id');
-    // }
-
-    // /**
-    //  * Aparecero
-    //  * 
-    //  * @return void
-    //  */
-    // public function sharecropper()
-    // {
-    //     return $this->belongsTo(Person::class, 'sharecropper_id');
-    // }
-
 }

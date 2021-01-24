@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Visit;
 
+use App\Exports\VisitReport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Visit\VisitCreateRequest;
 use App\Repositories\Visit\VisitRepositoryEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VisitController extends Controller
 {
@@ -90,9 +92,23 @@ class VisitController extends Controller
      */
     public function show($id)
     {
+
         return [
             'data' => $this->repository->find($id)->load(['questions.question.section', 'farm', 'commitments', 'mortalities'])
         ];
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadVisitReport($id)
+    {
+        $visit = $this->repository->find($id)->load(['questions', 'mortalities']);
+
+        return Excel::download(new VisitReport($visit), 'invoices.xlsx');
     }
 
     /**

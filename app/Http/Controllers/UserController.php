@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Criteria\FarmUserCriteria;
 use App\Criteria\RoleCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

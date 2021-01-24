@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Farm;
 
 use App\Criteria\FarmUserCriteria;
+use App\Criteria\ManagerCriteriaCriteria;
+use App\Criteria\SupervisorCriteriaCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Farm\FarmRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -42,6 +44,8 @@ class FarmController extends Controller
         if($all) $perPage = 99999999;
 
         $this->repository->pushCriteria(FarmUserCriteria::class);
+        $this->repository->pushCriteria(SupervisorCriteriaCriteria::class);
+        $this->repository->pushCriteria(ManagerCriteriaCriteria::class);
 
         return $this->repository->paginate($perPage);
     }

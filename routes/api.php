@@ -41,7 +41,11 @@ Route::group(['middleware' => ['auth:api']], function(){
     
     Route::group(['prefix' => 'reports'], function(){
         Route::post('frequency_supervisor', 'Reports\ReportsController@frequencySupervisor');
+        Route::post('supervisor_month', 'Reports\ReportsController@supervisorMonth');
+        Route::post('farm_month', 'Reports\ReportsController@farmsMonth');
     });
+
+    Route::get('visits/download/{id}', 'Visit\VisitController@downloadVisitReport');
 
     Route::apiResources([
         'users' => 'UserController',

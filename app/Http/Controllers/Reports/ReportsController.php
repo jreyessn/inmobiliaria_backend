@@ -22,7 +22,7 @@ class ReportsController extends Controller
     public function frequencySupervisor(Request $request){
 
         $request->validate([
-            'manager_id' => 'nullable',
+            'manager_id' => 'required',
             'supervisor_id' => 'nullable', 
             'farm_id' => 'nullable',
             'from' => 'required|date',
@@ -32,12 +32,13 @@ class ReportsController extends Controller
             'from.required' => 'Fecha Desde es requerida',
             'to.required' => 'Fecha Hasta es requerida',
             'format.required' => 'El formato para obtener resultados es requerido',
+            'manager_id.required' => 'El Gerente es requerido',
         ]);
 
         $managers = $request->input('manager_id', null);
-        $supervisors = $request->input('supervisor_id', null);
-        $farms = $request->input('farm_id', null);
-        
+        $supervisors = $request->input('supervisor_id', []);
+        $farms = $request->input('farm_id', []);
+
         $subQuery = DB::table('visits')
                       ->selectRaw("
                         users.name,
@@ -49,26 +50,29 @@ class ReportsController extends Controller
                       ")
                       ->join('visits_questions', 'visits_questions.visit_id', '=', 'visits.id')
                       ->join('farms', 'farms.id', '=', 'visits.farm_id', 'left')
+                      ->join('farms_users', 'farms_users.farm_id', '=', 'visits.farm_id', 'left')
                       ->join('users', 'users.id', '=', 'visits.user_id', 'left')
                       ->where('visits.deleted_at', null)
                       ->whereBetween('visits.date', [$request->from, $request->to])
-                      ->when(!is_null($supervisors), function($query) use ($supervisors){
-
-                        $supervisors = explode(',', $supervisors);
+                      ->when(count($supervisors) > 0, function($query) use ($supervisors){
 
                         $query->whereIn('visits.user_id', $supervisors);
                         
                       })
-                      ->when(!is_null($farms), function($query) use ($farms){
+                      ->when(!is_null($managers), function($query) use ($managers){
 
-                        $farms = explode(',', $farms);
+                        $managers = explode(',', $managers);
+
+                        $query->whereIn("farms_users.user_id", $managers);
+                        
+                      })
+                      ->when(count($farms) > 0, function($query) use ($farms){
 
                         $query->whereIn('visits.farm_id', $farms);
 
                       })
                       ->groupBy('visits.id')
                       ->orderBy('result');
-
 
         $result = DB::table(DB::raw("({$subQuery->toSql()}) as tableresult"))
                       ->mergeBindings($subQuery)
@@ -81,6 +85,7 @@ class ReportsController extends Controller
                       ")
                       ->groupBy("name")
                       ->get();
+                      
 
         if(!is_null($managers)){
             $managers = explode(',', $managers);
@@ -115,7 +120,6 @@ class ReportsController extends Controller
     public function supervisorMonth(Request $request){
         $request->validate([
           'supervisor_id' => 'nullable', 
-          'farm_id' => 'nullable',
           'month' => 'required',
           'year' => 'required|numeric|min:2000',
           'format' => 'required'
@@ -127,7 +131,7 @@ class ReportsController extends Controller
 
       $month = $request->get('month', Carbon::now()->format('m'));
       $year  = $request->get('year', Carbon::now()->format('Y'));
-      $supervisors = $request->input('supervisor_id', null);
+      $supervisors = $request->input('supervisor_id', []);
 
       /**
        * Se tiene pensado mostrar las hojas por cada mes. El problema es que los gráficos no se ajustan al contexto
@@ -136,14 +140,13 @@ class ReportsController extends Controller
       $result = array_map(function($month) use ($year, $supervisors){
 
           $carbonDate = Carbon::createFromDate($year, $month, 01);
-
           $carbonDate->setLocale('es');
 
           $date_init = $carbonDate->format('Y-m-d');
 
           $date_end  = Carbon::createFromDate($year, $month, $carbonDate->daysInMonth)->format('Y-m-d');
           
-          $month = $carbonDate->format('F');
+          $month = ucwords($carbonDate->monthName);
             
           $subQuery = DB::table('visits')
                       ->selectRaw("
@@ -153,9 +156,7 @@ class ReportsController extends Controller
                       ->join('visits_questions', 'visits_questions.visit_id', '=', 'visits.id')
                       ->join('users', 'users.id', '=', 'visits.user_id', 'left')
                       ->where('visits.deleted_at', null)
-                      ->when(!is_null($supervisors), function($query) use ($supervisors){
-
-                        $supervisors = explode(',', $supervisors);
+                      ->when(count($supervisors) > 0, function($query) use ($supervisors){
 
                         $query->whereIn('visits.user_id', $supervisors);
                         
@@ -207,7 +208,7 @@ class ReportsController extends Controller
 
       $month = $request->get('month', Carbon::now()->format('m'));
       $year  = $request->get('year', Carbon::now()->format('Y'));
-      $farms = $request->input('farm_id', null);
+      $farms = $request->input('farm_id', []);
 
       /**
        * Se tiene pensado mostrar las hojas por cada mes. El problema es que los gráficos no se ajustan al contexto
@@ -234,9 +235,7 @@ class ReportsController extends Controller
                       ->join('users', 'users.id', '=', 'visits.user_id', 'left')
                       ->join('farms', 'farms.id', '=', 'visits.farm_id', 'left')
                       ->where('visits.deleted_at', null)
-                      ->when(!is_null($farms), function($query) use ($farms){
-
-                        $farms = explode(',', $farms);
+                      ->when(count($farms) > 0, function($query) use ($farms){
 
                         $query->whereIn('visits.farm_id', $farms);
                         

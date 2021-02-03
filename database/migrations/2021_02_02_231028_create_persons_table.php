@@ -15,8 +15,16 @@ class CreatePersonsTable extends Migration
     {
         Schema::create('persons', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 200);
-            $table->string('farm_occupation', 50)->comment("Existe Jefe de Granja, Aparcero, etc");
+            $table->string('first_name', 200);
+            $table->string('last_name', 200);
+            $table->string('email', 50);
+            $table->string('phone', 20);
+            $table->string('occupation', 100)->nullable();
+            $table->string('street', 200);
+            $table->string('city', 80);
+            $table->string('country', 80);
+            $table->string('postcode', 50);
+            $table->string('image', 50);
             $table->timestamps();
             $table->softDeletes();
         });

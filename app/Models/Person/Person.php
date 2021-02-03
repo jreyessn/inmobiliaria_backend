@@ -9,18 +9,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Person extends Model
 {
 
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
     
     protected $table = 'persons';
 
     protected $fillable = [
-        'name',
-        'farm_occupation'  
+        'first_name',
+        'last_name',
+        'email',
+        'phone',
+        'occupation',
+        'street',
+        'city',
+        'country',
+        'postcode',
+        "image"
     ];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-        'deleted_at'
-    ];
+
 }

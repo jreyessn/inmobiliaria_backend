@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Person\PersonController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,4 +54,8 @@ Route::group(['middleware' => ['auth:api']], function(){
         'visits' => 'Visit\VisitController'
     ]);
 
+    // guest
+    
 });
+
+Route::apiResource('persons', 'Person\PersonController');

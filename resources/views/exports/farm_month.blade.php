@@ -1,6 +1,6 @@
 <html>
     <tr>
-        <td>Granja</td>
+        <td>Cost Center</td>
         <td>Promedio</td>
     </tr>
     @foreach ($data as $item)

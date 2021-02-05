@@ -42,7 +42,6 @@ class ReportsController extends Controller
         $subQuery = DB::table('visits')
                       ->selectRaw("
                         users.name,
-                        cost_center,
                         farms.nombre_supervisor,
                         farms.nombre_gerente,
                         ((SELECT sum(max_score) FROM questions) / sum(visits_questions.score)) as result,

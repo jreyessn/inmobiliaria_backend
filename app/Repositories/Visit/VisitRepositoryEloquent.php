@@ -19,7 +19,6 @@ use App\Validators\Visit\VisitValidator;
 class VisitRepositoryEloquent extends BaseRepository implements VisitRepository
 {
     protected $fieldSearchable = [
-        'cost_center' => 'like',
         'result' => 'like',
         'farm.centro' => 'like',
         'farm.nombre_centro' => 'like',

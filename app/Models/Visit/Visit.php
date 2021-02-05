@@ -13,7 +13,6 @@ class Visit extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'cost_center',
         'result',
         'comment',
         'farm_id',

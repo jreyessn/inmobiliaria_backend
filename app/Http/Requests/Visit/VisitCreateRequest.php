@@ -25,7 +25,6 @@ class VisitCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'cost_center'  => 'required|string|max:100',
             'comment'      => 'nullable|string',
             'farm_id'      => 'required|exists:farms,id',
             'questions'    => ['required', 'array', new ValidQuestion],

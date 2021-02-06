@@ -54,7 +54,7 @@ class VisitController extends Controller
             if($farm_id)
                 $query->whereIn('farm_id', explode($farm_id, 2));
 
-        })->paginate($perPage);
+        })->with(['user', 'farm'])->paginate($perPage);
     }
 
     /**

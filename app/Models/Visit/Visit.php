@@ -20,10 +20,6 @@ class Visit extends Model
         'date',
     ];
 
-    protected $hidden = [
-        'user_id'
-    ];
-
     public function getResultAttribute()
     {
         return $this->questions->reduce(function($carry, $item){

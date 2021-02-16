@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Contact\Contact;
 use App\Models\Farm\Farm;
 use App\Models\Farm\FarmUser;
+use App\Models\Group\Group;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -62,9 +64,19 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($password);
     }
 
-    public function farms()
+    public function contact()
     {
-        return $this->belongsToMany(Farm::class, 'farms_users', 'user_id', 'farm_id');
+        return $this->hasOne(Contact::class);
+    }
+
+    public function getAvatarAttribute($value)
+    {
+        return $this->contact? $this->contact->avatar : $value;
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'groups_users');
     }
 
 }

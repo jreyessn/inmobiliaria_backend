@@ -18,26 +18,14 @@ class PermissionsTableSeeder extends Seeder
         //Permission list
         Permission::query()->delete();
 
-        Permission::create(['name' => 'dashboard']); 
-
-        Permission::create(['name' => 'show vists']); 
-        Permission::create(['name' => 'store vists']); 
-        Permission::create(['name' => 'edit vists']); 
-        Permission::create(['name' => 'destroy vists']);
-
-        Permission::create(['name' => 'show farms']); 
-        Permission::create(['name' => 'store farms']); 
-        Permission::create(['name' => 'edit farms']); 
-        Permission::create(['name' => 'destroy farms']); 
+        Permission::create(['name' => 'portal admin']);
+        Permission::create(['name' => 'portal customer']);
 
         $superadmin = Role::create(['name' => 'Administrador']);
         $superadmin->givePermissionTo(Permission::all());
 
-        $gerente = Role::create(['name' => 'Gerente']);
-        $gerente->givePermissionTo(Permission::all());
+        $dev = Role::create(['name' => 'Desarrollador']);
+        $dev->givePermissionTo(Permission::all());
 
-        $supervisor = Role::create(['name' => 'Supervisor']);
-        $supervisor->givePermissionTo(Permission::all());
-        
     }
 }

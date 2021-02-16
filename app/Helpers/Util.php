@@ -39,11 +39,6 @@ if (! function_exists('month_en')) {
     }
 }
 
-function scoreTotalQuestions()
-{
-    return DB::table('questions')->selectRaw("sum(max_score) as max_score")->first()->max_score ?? 0;
-}
-
 function getCode(int $number, $format = 5)
 {
     return str_pad($number, $format, 0, STR_PAD_LEFT);

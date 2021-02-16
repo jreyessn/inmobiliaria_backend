@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Person\PersonController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,25 +36,15 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController@index');
-    Route::get('questions', 'Question\QuestionController');
-    
-    Route::group(['prefix' => 'reports'], function(){
-        Route::post('frequency_supervisor', 'Reports\ReportsController@frequencySupervisor');
-        Route::post('supervisor_month', 'Reports\ReportsController@supervisorMonth');
-        Route::post('farm_month', 'Reports\ReportsController@farmsMonth');
-    });
-
-    Route::get('visits/download/{id}', 'Visit\VisitController@downloadVisitReport');
+    Route::get('roles', 'RoleController@index');
 
     Route::apiResources([
+        'customers' => 'Customer\CustomerController',
+        'contacts' => 'Contacts\ContactsController',
+        'groups' => 'Groups\GroupsController',
         'users' => 'UserController',
-        'roles' => 'RoleController',
-        'farms' => 'Farm\FarmController',
-        'visits' => 'Visit\VisitController'
+        'systems' => 'Systems\SystemsController',
     ]);
-
-    // guest
     
 });
 
-Route::apiResource('persons', 'Person\PersonController');

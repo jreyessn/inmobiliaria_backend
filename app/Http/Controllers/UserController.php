@@ -46,7 +46,7 @@ class UserController extends Controller
 
         $this->repository->pushCriteria(RoleCriteria::class);
 
-        return $this->repository->with('roles')->paginate($perPage);
+        return $this->repository->with(['roles', 'groups'])->paginate($perPage);
 
     }
 
@@ -64,11 +64,8 @@ class UserController extends Controller
 
         try{
             $user = $this->repository->create($request->all());
-            $roles = $request->roles;
-            $farms = $request->farms;
-
-            $user->roles()->sync($roles);
-            $user->farms()->sync($farms);
+            $user->roles()->sync($request->roles);
+            $user->groups()->sync($request->groups);
             
             DB::commit();
 
@@ -93,7 +90,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions', 'farms'])->find($id);
+        return $this->repository->with(['roles.permissions', 'groups'])->find($id);
     }
 
     /**
@@ -116,7 +113,7 @@ class UserController extends Controller
             
             $user->save();
             $user->roles()->sync( $request->roles );
-            $user->farms()->sync( $request->farms );
+            $user->groups()->sync($request->groups);
 
             DB::commit();
 
@@ -141,9 +138,8 @@ class UserController extends Controller
     {
         try{
 
-            $user = $this->repository->find($id);
-            $user->delete();
-
+            $this->repository->delete($id);
+            
             return response()->json(null, 204);
 
         }catch(\Exception $e){

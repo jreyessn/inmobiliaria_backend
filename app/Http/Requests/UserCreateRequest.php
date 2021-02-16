@@ -52,7 +52,7 @@ class UserCreateRequest extends FormRequest
 
     public function attributes(){
         return [
-            'password_confirm' => "Confirmar <C></C>ontraseña",
+            'password_confirm' => "Confirmar Contraseña",
             'username' => "Usuario",
             'email' => "Correo",
             'name' => "Nombre y Apellido",

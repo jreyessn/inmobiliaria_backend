@@ -84,7 +84,7 @@ class LoginController extends Controller
 
         $token = $tokenResult->token;
         if ($request->remember_me) {
-            $token->expires_at = Carbon::now()->addDays(1);
+            $token->expires_at = Carbon::now()->addDays(7);
         }
 
         $token->save();

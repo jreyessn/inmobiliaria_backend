@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
  
 if (! function_exists('current_role')) {
@@ -42,4 +43,16 @@ if (! function_exists('month_en')) {
 function getCode(int $number, $format = 5)
 {
     return str_pad($number, $format, 0, STR_PAD_LEFT);
+}
+
+function descryptId($str){
+    if(strlen($str) > 100){
+        try {
+            return Crypt::decrypt($str);
+        } catch (\Throwable $th) {
+            return $str;
+        }
+    }
+
+    return $str;
 }

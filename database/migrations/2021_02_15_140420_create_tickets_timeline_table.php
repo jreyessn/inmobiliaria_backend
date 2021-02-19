@@ -15,6 +15,7 @@ class CreateTicketsTimelineTable extends Migration
     {
         Schema::create('tickets_timeline', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("ticket_id")->constrained();
             $table->unsignedBigInteger("made_by_user")->nullable();
             $table->foreign("made_by_user")->references('id')->on('users')->constrained();
             $table->text("note")->nullable();

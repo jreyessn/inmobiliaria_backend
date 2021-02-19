@@ -79,6 +79,7 @@ class ContactsController extends Controller
                     'username' => preg_replace('/@.*?$/', '', $request->email),
                     'password' => $request->password,
                 ]);
+                $user->roles()->sync([ 3 ]);
 
                 $data['user_id'] = $user->id;
             }

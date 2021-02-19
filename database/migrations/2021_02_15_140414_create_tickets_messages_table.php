@@ -15,9 +15,10 @@ class CreateTicketsMessagesTable extends Migration
     {
         Schema::create('tickets_messages', function (Blueprint $table) {
             $table->id();
-            $table->string("via")->nullable();
+            $table->enum("via", ["PORTAL", "MAIL"])->nullable();
             $table->string("cc")->nullable();
-            $table->foreignId("user_id")->nullable();
+            $table->foreignId("ticket_id")->constrained();
+            $table->foreignId("user_id")->constrained();
             $table->longText("message")->nullable();
             $table->timestamps();
             $table->softDeletes();

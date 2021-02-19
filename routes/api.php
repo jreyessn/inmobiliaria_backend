@@ -32,11 +32,25 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
     Route::post('reset', 'ResetPasswordController@reset');
 });
 
+/**
+ * guest with id encrypt
+ */
+Route::post("tickets/message/guest/{id}", "Tickets\TicketsMessagesController@messageCustomer")->middleware("isValidEncrypt");
+Route::get("tickets/showGuest/{id}", "Tickets\TicketsController@show")->middleware("isValidEncrypt");
 
 Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController@index');
     Route::get('roles', 'RoleController@index');
+
+    Route::group(["prefix" => "tickets"], function(){
+        Route::post("admin", "Tickets\TicketsController@storeAdmin")->middleware("permission:portal admin");
+        Route::post("customer", "Tickets\TicketsController@storeCustomer")->middleware("permission:portal customer");
+        
+        Route::post("message/admin", "Tickets\TicketsMessagesController@messageAdmin")->middleware("permission:portal admin");
+        Route::post("message/customer", "Tickets\TicketsMessagesController@messageCustomer")->middleware("permission:portal customer");
+
+    });
 
     Route::apiResources([
         'customers' => 'Customer\CustomerController',
@@ -44,6 +58,7 @@ Route::group(['middleware' => ['auth:api']], function(){
         'groups' => 'Groups\GroupsController',
         'users' => 'UserController',
         'systems' => 'Systems\SystemsController',
+        "tickets" => "Tickets\TicketsController"
     ]);
     
 });

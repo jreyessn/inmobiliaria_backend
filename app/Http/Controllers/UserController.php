@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Criteria\FarmUserCriteria;
+use App\Criteria\GroupCriteria;
 use App\Criteria\RoleCriteria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +45,7 @@ class UserController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
+        $this->repository->pushCriteria(GroupCriteria::class);
         $this->repository->pushCriteria(RoleCriteria::class);
 
         return $this->repository->with(['roles', 'groups'])->whereHas("roles", function($q){

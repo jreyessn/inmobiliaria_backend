@@ -15,6 +15,14 @@ use App\Validators\Ticket\TicketValidator;
  */
 class TicketRepositoryEloquent extends BaseRepository implements TicketRepository
 {
+
+    private $patchOnly = [
+        "priority_id", 
+        "group_id", 
+        "user_id", 
+        "status_ticket_id"
+    ];
+
     /**
      * Specify Model class name
      *
@@ -53,5 +61,23 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         return $this->create($data);
     }
 
+    public function saveUpdate(array $data, $id)
+    {
+        if($data['deadline_date'] ?? false){
+            $data['deadline'] = "{$data['deadline_date']} {$data['deadline_time']}";
+        }
+
+        $found = $this->find($id);
+
+        if(request()->method() == "PATCH"){
+            $found->fill(request()->only($this->patchOnly));
+        }
+        else{
+            $found->fill($data);
+        }
+        
+        $found->save();
+        
+    }
     
 }

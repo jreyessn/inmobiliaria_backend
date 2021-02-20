@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Tickets;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\File;
 use App\Models\User;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TicketsMessagesController extends Controller
 {
@@ -95,6 +97,14 @@ class TicketsMessagesController extends Controller
 
             return response()->json(['message' => $e->getMessage()], 500);
         }
+    }
+
+    public function downloadAttach($id)
+    {
+        $file = File::find($id);
+
+        return Storage::disk('local')->download('files/'.$file->name, $file->name);
+
     }
 
 }

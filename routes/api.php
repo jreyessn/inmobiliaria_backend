@@ -50,6 +50,8 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::post("message/admin", "Tickets\TicketsMessagesController@messageAdmin")->middleware("permission:portal admin");
         Route::post("message/customer", "Tickets\TicketsMessagesController@messageCustomer")->middleware("permission:portal customer");
 
+        Route::get("attach/{id}", "Tickets\TicketsMessagesController@downloadAttach");
+
     });
 
     Route::apiResources([

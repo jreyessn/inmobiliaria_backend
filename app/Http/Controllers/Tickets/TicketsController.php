@@ -6,6 +6,7 @@ use App\Criteria\ContactCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
 use App\Http\Requests\Tickets\TicketsStoreRequest;
+use App\Http\Requests\Tickets\TicketsUpdateRequest;
 use App\Models\Contact\Contact;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
@@ -156,9 +157,22 @@ class TicketsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TicketsUpdateRequest $request, $id)
     {
-        //
+
+        try {
+            $data = $request->all();
+
+            $this->ticketsRepository->saveUpdate($data, $id);
+
+            return response()->json([
+                "message" => "Actualizado con éxito"
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json(null, 404);
+        }
+
     }
 
     /**

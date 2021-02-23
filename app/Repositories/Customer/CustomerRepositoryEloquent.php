@@ -17,6 +17,14 @@ use Illuminate\Support\Facades\Storage;
  */
 class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepository
 {
+
+    protected $fieldSearchable = [
+        'name' => 'like',
+        'domains' => 'like',
+        'description' => 'like',
+    ];
+
+
     /**
      * Specify Model class name
      *

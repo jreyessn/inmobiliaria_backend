@@ -108,7 +108,7 @@ class ContactsController extends Controller
      */
     public function show($id)
     {
-        $data = $this->contactRepository->find($id)->load('user');
+        $data = $this->contactRepository->find($id)->load('user', 'customer');
         
         return compact('data');
     }

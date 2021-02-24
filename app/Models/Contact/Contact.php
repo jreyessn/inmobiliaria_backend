@@ -2,6 +2,7 @@
 
 namespace App\Models\Contact;
 
+use App\Models\Customer\Customer;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,6 +38,11 @@ class Contact extends Model implements Transformable
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function getAvatarAttribute($value)

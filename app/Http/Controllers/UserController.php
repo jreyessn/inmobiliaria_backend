@@ -117,7 +117,7 @@ class UserController extends Controller
             
             $user->save();
             $user->roles()->sync( $request->roles );
-            $user->groups()->sync($request->groups);
+            $user->groups()->sync( $request->groups );
 
             DB::commit();
 

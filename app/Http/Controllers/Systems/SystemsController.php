@@ -63,7 +63,6 @@ class SystemsController extends Controller
             'credentials_servers' => 'array',
             'credentials_users.*.username' => 'required',
             'credentials_users.*.password' => 'required',
-            'credentials_servers.*.server' => 'required',
             'credentials_servers.*.username' => 'required',
             'credentials_servers.*.password' => 'required',
         ]);
@@ -95,7 +94,7 @@ class SystemsController extends Controller
      */
     public function show($id)
     {
-        $data = $this->systemRepository->find($id)->load('credentials_users', 'credentials_servers');
+        $data = $this->systemRepository->find($id)->load('credentials_users', 'credentials_servers', 'customer');
 
         return compact('data');
     }

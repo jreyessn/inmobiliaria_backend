@@ -2,6 +2,7 @@
 
 namespace App\Models\System;
 
+use App\Models\Customer\Customer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -41,6 +42,11 @@ class System extends Model implements Transformable
     public function credentials()
     {
         return $this->hasMany(SystemCredential::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function credentials_users(){

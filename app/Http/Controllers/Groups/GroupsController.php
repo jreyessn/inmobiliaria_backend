@@ -35,7 +35,10 @@ class GroupsController extends Controller
         ]);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+        $all = $request->get('all', null);
 
+        if($all)
+          return [ 'data' => $this->groupRepository->get()];
         return $this->groupRepository->paginate($perPage);
     }
 

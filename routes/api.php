@@ -42,6 +42,10 @@ Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController@index');
     Route::get('roles', 'RoleController@index');
+    Route::get('priorities', 'PriorityController');
+    Route::get('status_tickets', 'StatusTicketController');
+    Route::get('type_tickets', 'TypeTicketController');
+    Route::get('created', 'Controller@createdOptions');
 
     Route::group(["prefix" => "tickets"], function(){
         Route::post("admin", "Tickets\TicketsController@storeAdmin")->middleware("permission:portal admin");

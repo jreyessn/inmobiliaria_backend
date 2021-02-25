@@ -20,7 +20,8 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         "priority_id", 
         "group_id", 
         "user_id", 
-        "status_ticket_id"
+        "status_ticket_id",
+        "type_ticket_id"
     ];
 
     /**

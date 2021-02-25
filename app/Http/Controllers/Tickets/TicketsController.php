@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Tickets;
 
 use App\Criteria\ContactCriteria;
+use App\Criteria\CreatedAtCriteriaCriteria;
+use App\Criteria\CreatedTicketCriteria;
+use App\Criteria\GroupCriteria;
+use App\Criteria\TicketFilterCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
 use App\Http\Requests\Tickets\TicketsStoreRequest;
@@ -46,6 +50,9 @@ class TicketsController extends Controller
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
         $this->ticketsRepository->pushCriteria(ContactCriteria::class);
+        $this->ticketsRepository->pushCriteria(CreatedAtCriteriaCriteria::class);
+        $this->ticketsRepository->pushCriteria(TicketFilterCriteria::class);
+        $this->ticketsRepository->pushCriteria(CreatedTicketCriteria::class);
 
         return $this->ticketsRepository->paginate($perPage);
     }

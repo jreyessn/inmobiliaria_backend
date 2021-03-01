@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tickets;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\File;
+use App\Models\Ticket\TicketMessage;
 use App\Models\User;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
@@ -105,6 +106,12 @@ class TicketsMessagesController extends Controller
 
         return Storage::disk('local')->download('files/'.$file->name, $file->name);
 
+    }
+
+    public function showMessages($ticket_id){
+        return [
+            'data' => $this->ticketsMessagesRepository->getMessages($ticket_id)
+        ];
     }
 
 }

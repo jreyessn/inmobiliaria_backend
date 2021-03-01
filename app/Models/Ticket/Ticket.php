@@ -8,6 +8,7 @@ use App\Models\Priority;
 use App\Models\StatusTicket;
 use App\Models\TypeTicket;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -43,11 +44,26 @@ class Ticket extends Model implements Transformable
         "tracked_end_time",
         "first_reply_time",
         "closed_at",
+        "reply_status_to_contact",
+        "reply_status_to_users",
     ];
 
     protected $appends = [
-        "encript_id"
+        "encript_id",
+        "first_reply_time_ago",
     ];
+
+    public function getFirstReplyTimeAgoAttribute(){
+        
+        if($this->first_reply_time){
+            $carbonCreated = Carbon::parse($this->created_at);
+            $diff = Carbon::createFromTimeStamp(strtotime($this->first_reply_time))->diffForHumans($carbonCreated);
+            
+            return trim(preg_replace("/después/", "", $diff));
+        }
+
+        return "Sin definir";
+    }
 
     public function getEncriptIdAttribute()
     {
@@ -86,7 +102,8 @@ class Ticket extends Model implements Transformable
 
     public function messages()
     {
-        return $this->hasMany(TicketMessage::class);
+        return $this->hasMany(TicketMessage::class)->orderBy("created_at", "desc");
     }
+
 
 }

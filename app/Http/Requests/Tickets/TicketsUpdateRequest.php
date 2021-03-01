@@ -52,6 +52,7 @@ class TicketsUpdateRequest extends FormRequest
 
         }
         else{
+            
             return [
                 "title" => "required|string",
                 "contact_id" => "required|exists:contacts,id",
@@ -59,9 +60,8 @@ class TicketsUpdateRequest extends FormRequest
                 "status_ticket_id" => "required|exists:status_tickets,id",
                 "priority_id" => "required|exists:priorities,id",
                 "group_id" => "nullable|exists:groups,id",
-                "user_id" => "nullable|exists:user,id",
-                "deadline_date" => "nullable|date",
-                "deadline_time" => "nullable|string"
+                "user_id" => "nullable|exists:users,id",
+                "deadline" => "nullable",
             ];
 
         }

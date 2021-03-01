@@ -64,10 +64,6 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
 
     public function saveUpdate(array $data, $id)
     {
-        if($data['deadline_date'] ?? false){
-            $data['deadline'] = "{$data['deadline_date']} {$data['deadline_time']}";
-        }
-
         $found = $this->find($id);
 
         if(request()->method() == "PATCH"){
@@ -75,6 +71,16 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         }
         else{
             $found->fill($data);
+        }
+
+        if(($found->status_ticket_id != $found->getOriginal("status_ticket_id")) && $found->status_ticket->can_close == 1){
+            $found->closed_at = now();
+            $found->save();
+        }
+
+        if($found->status_ticket->can_close == 0){
+            $found->closed_at = null;
+            $found->save();
         }
         
         $found->save();

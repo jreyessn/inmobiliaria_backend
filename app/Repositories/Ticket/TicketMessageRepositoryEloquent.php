@@ -67,5 +67,9 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
             $fileStore->save();
         }
     }
+
+    public function getMessages($ticket_id){
+        return $this->with(['files', 'user'])->orderBy('created_at', 'desc')->where(['ticket_id' => $ticket_id])->get();
+    }
     
 }

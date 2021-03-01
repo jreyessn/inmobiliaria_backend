@@ -23,13 +23,5 @@ Route::get('/', function () {
    return view('welcome');
 });
 
-Route::get('report', function () {
-   // return view('exports.visits');
-   $visit = Visit::with('questions', 'mortalities')->find(1);
-
-   return Excel::download(new VisitReport($visit), 'invoices.xlsx');
-});
-
-// Route::get('frequency', 'Reports\ReportsController@frequencySupervisor');
 
 

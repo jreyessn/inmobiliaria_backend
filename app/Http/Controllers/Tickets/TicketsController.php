@@ -67,8 +67,6 @@ class TicketsController extends Controller
     {
         DB::beginTransaction();
         
-        // dd($request->user()->load("roles.permissions")->toArray());
-
         try{
             $data = $request->all();
             $store = $this->ticketsRepository->save($data);
@@ -139,9 +137,7 @@ class TicketsController extends Controller
         try {
 
             $data = $this->ticketsRepository->find($id)->load(
-                "messages.files",
-                "messages.user",
-                "contact",
+                "contact.customer",
                 "user",
                 "group",
                 "priority",
@@ -166,17 +162,21 @@ class TicketsController extends Controller
      */
     public function update(TicketsUpdateRequest $request, $id)
     {
-
+        DB::beginTransaction();
         try {
             $data = $request->all();
 
             $this->ticketsRepository->saveUpdate($data, $id);
+
+            DB::commit();
 
             return response()->json([
                 "message" => "Actualizado con éxito"
             ], 200);
 
         } catch (\Throwable $th) {
+            DB::rollBack();
+
             return response()->json(null, 404);
         }
 

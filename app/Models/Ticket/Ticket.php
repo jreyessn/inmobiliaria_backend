@@ -43,6 +43,7 @@ class Ticket extends Model implements Transformable
         "tracked_initial_time",
         "tracked_end_time",
         "first_reply_time",
+        "last_replied_at",
         "closed_at",
         "reply_status_to_contact",
         "reply_status_to_users",
@@ -63,6 +64,10 @@ class Ticket extends Model implements Transformable
         }
 
         return "Sin definir";
+    }
+
+    public function getLastRepliedAtAttribute($value){
+        return ucwords(Carbon::parse($value)->diffForHumans());
     }
 
     public function getEncriptIdAttribute()
@@ -102,7 +107,7 @@ class Ticket extends Model implements Transformable
 
     public function messages()
     {
-        return $this->hasMany(TicketMessage::class)->orderBy("created_at", "desc");
+        return $this->hasMany(TicketMessage::class);
     }
 
 

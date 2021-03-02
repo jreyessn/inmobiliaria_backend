@@ -50,6 +50,8 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
         ]);
 
         $this->saveFiles($data["files"] ?? [], $store->id);
+
+        $store->ticket->update(['last_replied_at' => now()]);
     }
 
     private function saveFiles($files, $ticket_message_id)
@@ -63,6 +65,7 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
 
             $fileContract =  new File($file);
 
+            $fileStore->original_name = $file->getClientOriginalName();
             $fileStore->name =  basename(Storage::disk('local')->putFileAs("files", $fileContract, "{$fileStore->id}-{$file->hashName()}"));
             $fileStore->save();
         }

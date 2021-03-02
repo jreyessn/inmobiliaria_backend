@@ -16,6 +16,18 @@ use App\Validators\Ticket\TicketValidator;
 class TicketRepositoryEloquent extends BaseRepository implements TicketRepository
 {
 
+    protected $fieldSearchable = [
+        'title' => 'like',
+        'cc' => 'like',
+        'type_ticket_id' => 'like',
+        'user.name' => 'like',
+        'contact.name' => 'like',
+        'contact.email' => 'like',
+        'group.name' => 'like',
+        'priority.description' => 'like',
+        'status_ticket.description' => 'like',
+    ];
+
     private $patchOnly = [
         "priority_id", 
         "group_id", 

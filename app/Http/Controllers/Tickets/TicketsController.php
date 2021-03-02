@@ -71,15 +71,17 @@ class TicketsController extends Controller
             $data = $request->all();
             $store = $this->ticketsRepository->save($data);
             
-            $userContactId = Contact::find($data['contact_id'])->user_id;
+            $userId = request()->user()->id;
 
-            $this->ticketsMessagesRepository->save($data, $store->id, $userContactId);
+            $data['ticket_id'] = $store->id;
+            
+            $this->ticketsMessagesRepository->save($data, $userId);
 
             DB::commit();
 
             return response()->json([
                 "message" => "Registro éxitoso",
-                "data" => $data
+                "data" => $store
             ], 201);
 
         }catch(\Exception $e){
@@ -114,7 +116,7 @@ class TicketsController extends Controller
 
             return response()->json([
                 "message" => "Mensaje enviado con éxito",
-                "data" => $data
+                "data" => $store
             ], 201);
 
         }catch(\Exception $e){
@@ -190,6 +192,16 @@ class TicketsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try{
+
+            $this->ticketsRepository->delete($id);
+
+            return response()->json(null, 204);
+
+        }catch(\Exception $e){
+
+            return response()->json(null, 404);
+
+        }
     }
 }

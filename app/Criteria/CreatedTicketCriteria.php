@@ -25,7 +25,7 @@ class CreatedTicketCriteria implements CriteriaInterface
     {
         $created = request()->get('created', null);
 
-        if($created){
+        if($created && $created != 'null'){
             switch ($created) {
                 case 2:
                     $from = date('Y-m-d 00:00:00', strtotime('-1 days'));

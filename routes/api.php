@@ -35,8 +35,16 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 /**
  * guest with id encrypt
  */
-Route::post("tickets/message/guest/{id}", "Tickets\TicketsMessagesController@messageCustomer")->middleware("isValidEncrypt");
-Route::get("tickets/showGuest/{id}", "Tickets\TicketsController@show")->middleware("isValidEncrypt");
+Route::group(['middleware' => ['isValidEncrypt'], 'prefix' => 'tickets/guest'], function(){
+    Route::post("message/{id}", "Tickets\TicketsMessagesController@messageCustomer");
+    Route::get("file/{file_id}/{id}", "Tickets\TicketsMessagesController@downloadAttach")->middleware('fileBelongsTicket');
+    Route::get("show/{id}", "Tickets\TicketsController@show");
+    Route::get("message/{id}", "Tickets\TicketsMessagesController@showMessages");
+});
+
+/**
+ * public save images
+ */
 Route::post("images", "ImageController@save");
 
 Route::group(['middleware' => ['auth:api']], function(){
@@ -56,9 +64,13 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::post("message/customer", "Tickets\TicketsMessagesController@messageCustomer")->middleware("permission:portal customer");
         
         Route::get("message/{ticket_id}", "Tickets\TicketsMessagesController@showMessages");
-        Route::get("attach/{id}", "Tickets\TicketsMessagesController@downloadAttach");
-
+        Route::get("tickets/attach/{id}", "Tickets\TicketsMessagesController@downloadAttach");
     });
+
+    /**
+     * put profile customers
+     */
+    Route::put("contacts/profile", 'Contacts\ContactsController@update')->middleware("permission:portal customer");
 
     Route::apiResources([
         'customers' => 'Customer\CustomerController',

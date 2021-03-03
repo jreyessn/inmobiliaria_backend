@@ -109,6 +109,8 @@ class TicketsMessagesController extends Controller
     }
 
     public function showMessages($ticket_id){
+        $ticket_id = descryptId($ticket_id);
+
         return [
             'data' => $this->ticketsMessagesRepository->getMessages($ticket_id)
         ];

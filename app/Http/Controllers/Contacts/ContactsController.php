@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Contacts;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Contacts\ContactUpdateRequest;
 use App\Repositories\Contact\ContactRepositoryEloquent;
 use App\Repositories\Users\UserRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -120,22 +121,10 @@ class ContactsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ContactUpdateRequest $request)
     {
+        $id = $request->route('id') ?? $request->user()->contact->id ?? null;
         $userId = $this->contactRepository->find($id)->user_id ?? null;
-
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => "required|email|nullable|email|unique:users,email,{$userId},id,deleted_at,NULL|unique:contacts,email,{$id},id,deleted_at,NULL",
-            'phone' => 'nullable',
-            'customer_id' => 'nullable|exists:customers,id',
-            'address' => 'nullable',
-            'language' => 'nullable',
-            'note' => 'nullable',
-            'avatar' => 'nullable',
-            'password' => 'nullable|string|min:6|required_with:password_confirm|same:password_confirm',
-            'password_confirm' => 'nullable|string|min:6',
-        ]);
 
         DB::beginTransaction();
 

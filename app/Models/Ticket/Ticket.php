@@ -3,6 +3,7 @@
 namespace App\Models\Ticket;
 
 use App\Models\Contact\Contact;
+use App\Models\File;
 use App\Models\Group\Group;
 use App\Models\Priority;
 use App\Models\StatusTicket;
@@ -110,5 +111,8 @@ class Ticket extends Model implements Transformable
         return $this->hasMany(TicketMessage::class);
     }
 
+    public function files(){
+        return $this->hasManyThrough(File::class, TicketMessage::class, 'ticket_id', 'model_id', 'id', 'id');
+    }
 
 }

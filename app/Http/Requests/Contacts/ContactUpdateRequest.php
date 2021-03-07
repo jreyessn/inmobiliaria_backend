@@ -24,7 +24,7 @@ class ContactUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route('id') ?? $this->user()->contact->id ?? null;
+        $id = $this->route('contact') ?? $this->user()->contact->id ?? null;
         
         $userId = Contact::find($id)->user_id ?? null;
 

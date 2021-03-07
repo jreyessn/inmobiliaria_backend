@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Tickets;
 
-use App\Criteria\ContactCriteria;
-use App\Criteria\CreatedAtCriteriaCriteria;
-use App\Criteria\CreatedTicketCriteria;
+use Carbon\CarbonInterval;
+use Illuminate\Http\Request;
 use App\Criteria\GroupCriteria;
-use App\Criteria\TicketFilterCriteria;
+use App\Models\Contact\Contact;
+use App\Criteria\ContactCriteria;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
+use Illuminate\Support\Facades\Crypt;
+use App\Criteria\TicketFilterCriteria;
+use App\Criteria\CreatedTicketCriteria;
+use App\Criteria\CreatedAtCriteriaCriteria;
 use App\Http\Requests\Tickets\TicketsStoreRequest;
 use App\Http\Requests\Tickets\TicketsUpdateRequest;
-use App\Models\Contact\Contact;
-use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
+use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
+use Carbon\Carbon;
 
 class TicketsController extends Controller
 {
@@ -144,7 +146,8 @@ class TicketsController extends Controller
                 "group",
                 "priority",
                 "status_ticket",
-                "type_ticket"
+                "type_ticket",
+                "system"
             );
             
             return compact('data');
@@ -203,5 +206,29 @@ class TicketsController extends Controller
             return response()->json(null, 404);
 
         }
+    }
+
+    function tracked($ticket_id, Request $request){
+
+        $request->validate([
+            'tracked_initial' => 'nullable|date',
+            'tracked_end' => 'nullable|date',
+        ]);
+
+        $ticket = $this->ticketsRepository->find($ticket_id);
+
+        if($request->tracked_initial){
+            $ticket->tracked_initial_time = $request->tracked_initial;
+        }
+        
+        if($request->tracked_end){
+            $ticket->tracked_end_time = $request->tracked_end;
+        }
+
+        $ticket->save();
+
+        return [ 
+            'diffHumans' => $ticket->diff_tracked    
+        ];
     }
 }

@@ -32,8 +32,8 @@ class TicketsUpdateRequest extends FormRequest
                 $fields = array_merge($fields, ['priority_id' => "nullable|exists:priorities,id"]);
             }
             
-            if($this->has("group_id")){
-                $fields = array_merge($fields, ['group_id' => "nullable|exists:groups,id"]);
+            if($this->has("system_id")){
+                $fields = array_merge($fields, ['system_id' => "nullable|exists:systems,id"]);
             }
             
             if($this->has("user_id")){
@@ -60,6 +60,7 @@ class TicketsUpdateRequest extends FormRequest
                 "status_ticket_id" => "required|exists:status_tickets,id",
                 "priority_id" => "required|exists:priorities,id",
                 "group_id" => "nullable|exists:groups,id",
+                "system_id" => "nullable|exists:systems,id",
                 "user_id" => "nullable|exists:users,id",
                 "deadline" => "nullable",
             ];

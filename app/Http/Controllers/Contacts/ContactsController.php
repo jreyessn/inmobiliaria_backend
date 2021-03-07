@@ -121,16 +121,16 @@ class ContactsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(ContactUpdateRequest $request)
+    public function update($id, ContactUpdateRequest $request)
     {
-        $id = $request->route('id') ?? $request->user()->contact->id ?? null;
+        $id = $request->route('contact') ?? $request->user()->contact->id ?? null;
+
         $userId = $this->contactRepository->find($id)->user_id ?? null;
 
         DB::beginTransaction();
 
         try{
             $data = $request->all();
-
             /**
              * No se ha creado el usuario y han actualizado la contraseña. Se crea usuario
              */

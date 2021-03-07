@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Ticket\TicketMessage;
+use App\Models\Ticket\TicketTimeline;
 
 class UpdateReplyStatusTicket
 {
@@ -22,6 +23,12 @@ class UpdateReplyStatusTicket
                     "reply_status_to_contact" => "Soporte ha respondido",
                     "reply_status_to_users" => "Respondido"
                 ]); 
+
+                TicketTimeline::create([
+                    'made_by_user' => $user->id,
+                    'ticket_id' => $ticketMessage->ticket->id,
+                    'note' => "Ha respondido."
+                ]);
             }
 
         }
@@ -37,6 +44,12 @@ class UpdateReplyStatusTicket
                     "reply_status_to_contact" => "Has respondido",
                     "reply_status_to_users" => "Cliente ha respondido"
                 ]); 
+
+                TicketTimeline::create([
+                    'made_by_user' => $user->id,
+                    'ticket_id' => $ticketMessage->ticket->id,
+                    'note' => "Ha respondido."
+                ]);
             }
         }
     }

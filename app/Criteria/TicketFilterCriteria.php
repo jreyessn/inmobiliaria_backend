@@ -26,7 +26,8 @@ class TicketFilterCriteria implements CriteriaInterface
         $type_ticket_id = request()->get('type_ticket_id', null);
         $status_ticket_id = request()->get('status_ticket_id', null);
         $priority_id = request()->get('priority_id', null);
-        $group_id = request()->get('group_id', null);
+        $system_id = request()->get('system_id', null);
+        // $group_id = request()->get('group_id', null);
         $user_id = request()->get('user_id', null);
         $contact_id = request()->get('contact_id', null);
         $customer_id = request()->get('customer_id', null);
@@ -46,10 +47,10 @@ class TicketFilterCriteria implements CriteriaInterface
 
             $model = $model->whereIn('priority_id', $explodes);
         }
-        if($group_id){
-            $explodes = explode(",", $group_id);
+        if($system_id){
+            $explodes = explode(",", $system_id);
 
-            $model = $model->whereIn('group_id', $explodes);
+            $model = $model->whereIn('system_id', $explodes);
         }
         if($type_ticket_id){
             $explodes = explode(",", $type_ticket_id);

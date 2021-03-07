@@ -2,19 +2,22 @@
 
 namespace App\Models\Ticket;
 
-use App\Models\Contact\Contact;
-use App\Models\File;
-use App\Models\Group\Group;
-use App\Models\Priority;
-use App\Models\StatusTicket;
-use App\Models\TypeTicket;
-use App\Models\User;
 use Carbon\Carbon;
+use App\Models\File;
+use App\Models\User;
+use App\Models\Priority;
+use App\Models\TypeTicket;
+use Carbon\CarbonInterval;
+use App\Models\Group\Group;
+use App\Models\StatusTicket;
+use App\Models\Contact\Contact;
+use App\Models\System\System;
+use App\Observers\TicketTimeline;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-use Illuminate\Support\Facades\Crypt;
 
 /**
  * Class Ticket.
@@ -39,6 +42,7 @@ class Ticket extends Model implements Transformable
         "priority_id",
         "group_id",
         "user_id",
+        "system_id",
         "spam",
         "deadline",
         "tracked_initial_time",
@@ -53,6 +57,7 @@ class Ticket extends Model implements Transformable
     protected $appends = [
         "encript_id",
         "first_reply_time_ago",
+        "diff_tracked",
     ];
 
     public function getFirstReplyTimeAgoAttribute(){
@@ -96,6 +101,11 @@ class Ticket extends Model implements Transformable
         return $this->belongsTo(Group::class);
     }
 
+    public function system()
+    {
+        return $this->belongsTo(System::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -115,4 +125,22 @@ class Ticket extends Model implements Transformable
         return $this->hasManyThrough(File::class, TicketMessage::class, 'ticket_id', 'model_id', 'id', 'id');
     }
 
+    public function getDiffTrackedAttribute(){
+        
+        if(is_null($this->tracked_initial_time) || is_null($this->tracked_end_time))
+            return "Sin definir";
+
+        $carbonInitial = Carbon::parse($this->tracked_initial_time);
+        $carbonEnd = Carbon::parse($this->tracked_end_time);
+
+        $diffSeconds = $carbonInitial->DiffInSeconds($carbonEnd);
+        
+        return CarbonInterval::seconds($diffSeconds)->cascade()->forHumans(['parts' => 2]);
+    }
+
+    public static function boot(){
+        parent::boot();
+
+        Ticket::observe(TicketTimeline::class);
+    }
 }

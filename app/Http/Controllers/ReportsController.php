@@ -31,30 +31,36 @@ class ReportsController extends Controller
         $request->validate([
             "since" => "nullable|date",
             "until" => "nullable|date",
-            "system_id" => "required|string",
+            "system_id" => "nullable|string",
             "format" => "nullable|in:pdf,excel,json",
 
         ]);
 
-        $explodeSystems = $request->get("system_id", null);
-        $explodeSystems = explode(",", $explodeSystems);
+        $system_id = $request->get("system_id", null);
+        $explodeSystems = explode(",", $system_id);
 
         $systems = $this->systemRepository->when($request->since && $request->until, function($query) use ($request){
             $query->whereHas("tickets", function($query) use ($request){
                 $query->whereBetween("created_at", [$request->since, $request->until]);
             });
-        })->whereIn("id", $explodeSystems)->get()->map(function($item){
+        })
+        ->when($system_id, function($query) use ($explodeSystems){
+            $query->whereIn("id", $explodeSystems);
+        })
+        ->orderBy("created_at", "desc")
+        ->get()
+        ->map(function($item){
             $item->time_in_hours = $item->tickets->reduce(function($carry, $ticket){
                 return $carry + $ticket->diff_tracked_hours;
             }, 0);
             $item->tickets_count = $item->tickets()->count();
-
+            
             $item->setHidden([ "tickets" ]);
-
+            
             return $item;
         });
-
-        $data = [
+            
+            $data = [
             "data" => $systems,
             "since" => Carbon::parse($request->since),
             "until" => Carbon::parse($request->until),
@@ -128,6 +134,7 @@ class ReportsController extends Controller
             });
     
         })
+        ->orderBy("created_at", "desc")
         ->get();
 
         $data = [

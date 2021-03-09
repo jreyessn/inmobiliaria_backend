@@ -70,7 +70,9 @@ class TicketFilterCriteria implements CriteriaInterface
         if($customer_id){
             $explodes = explode(",", $customer_id);
 
-            $model = $model->whereIn('customer_id', $explodes);
+            $model = $model->whereHas("contact", function($query) use ($explodes){
+                $query->whereIn('customer_id', $explodes);
+            });
         }
 
 

@@ -70,10 +70,10 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::put("tracked/{id}", "Tickets\TicketsController@tracked");
     });
 
-    // Route::group(["prefix" => "reports"], function(){
-    //     Route::get("timeForSystems", "ReportsController@timeForSystems");
-
-    // });
+    Route::group(["prefix" => "reports"], function(){
+        Route::get("timeForSystems", "ReportsController@timeForSystems");
+        Route::get("ticketsReport", "ReportsController@ticketsReport");
+    });
 
     /**
      * put profile customers
@@ -91,8 +91,3 @@ Route::group(['middleware' => ['auth:api']], function(){
     
 });
 
-Route::group(["prefix" => "reports"], function(){
-    Route::get("timeForSystems", "ReportsController@timeForSystems");
-    Route::get("ticketsReport", "ReportsController@ticketsReport");
-
-});

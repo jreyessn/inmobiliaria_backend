@@ -37,7 +37,7 @@ class DashboardController extends Controller
     }
 
     function ticketsUrgent(){
-        $data = Ticket::where([ 'priority_id' => 4])->whereIn('status_ticket_id', [3,4])->orderBy('created_at', 'desc');
+        $data = Ticket::where([ 'priority_id' => 4])->with(["user", "system"])->whereIn('status_ticket_id', [1,2,5])->orderBy('created_at', 'desc');
 
         $count = clone $data;
         $count = $count->get()->count();
@@ -86,8 +86,15 @@ class DashboardController extends Controller
                 return $carry + $ticket->diff_tracked_hours;
             }, 0);
             
-            $item->tickets_percentage = ($item->tickets_count * 100 ) / Ticket::get()->count();
-            $item->time_percentage = ($item->time_in_hours * 100 ) / $timeSumComplete > 0 ? $timeSumComplete : 1;
+            $countTickets = Ticket::get()->count();
+
+            $countTickets = ($countTickets == 0)? 1 : $countTickets;
+            $timeSumComplete = ($timeSumComplete == 0)? 1 : $timeSumComplete;
+
+            // dump(	$countTickets, $timeSumComplete);
+
+            $item->tickets_percentage = ($item->tickets_count * 100 ) / $countTickets; 
+            $item->time_percentage = ($item->time_in_hours * 100 ) / $timeSumComplete;
  
             $item->tickets_percentage = decimal($item->tickets_percentage);
             $item->time_percentage = decimal($item->time_percentage);

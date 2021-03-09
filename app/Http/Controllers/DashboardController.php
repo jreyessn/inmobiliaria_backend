@@ -87,7 +87,7 @@ class DashboardController extends Controller
             }, 0);
             
             $item->tickets_percentage = ($item->tickets_count * 100 ) / Ticket::get()->count();
-            $item->time_percentage = ($item->time_in_hours * 100 ) / $timeSumComplete;
+            $item->time_percentage = ($item->time_in_hours * 100 ) / $timeSumComplete > 0 ? $timeSumComplete : 1;
  
             $item->tickets_percentage = decimal($item->tickets_percentage);
             $item->time_percentage = decimal($item->time_percentage);

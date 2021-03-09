@@ -38,7 +38,7 @@
 {{ $salutation == '-'? '' : $salutation }}
 @else
 @lang('Se despide'),<br>
- Norson Alimentos
+{{ getenv("APP_NAME") }}
 @endif
 
 {{-- Subcopy --}}

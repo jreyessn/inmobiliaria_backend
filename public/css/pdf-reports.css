@@ -1,0 +1,180 @@
+@font-face {
+    font-family: 'Poppins';
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    src: url(../fonts/poppins/Poppins-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Poppins-Bold';
+    font-weight: bold;
+    src: url(../fonts/poppins/Poppins-Bold.ttf);
+}
+
+.align-center{
+    text-align: center;
+}
+
+.align-end{
+    text-align: end;
+}
+
+.align-left{
+    text-align: left;
+}
+
+.align-right{
+    text-align: right;
+}
+
+b{
+    font-family: Poppins-Bold;
+}
+
+.bg-blue{
+    background-color: #1d3958;
+}
+
+.bg-light-blue{
+    background-color: #318be6;
+}
+
+body{
+    width: 185mm;
+    font-family: Poppins;
+    font-size: 11px;
+}
+
+.border-2{
+    border: 2px solid #1d3958;
+}
+
+.border-b-2{
+    border-bottom: 2px solid #1d3958;
+}
+
+.border-sig{
+    border-top: 2px solid #000000;
+}
+
+.chart-img{
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 85px;
+}
+
+.col-2{
+    width: 10%;
+}
+
+.width-15{
+    width: 15%;
+}
+
+.width-20{
+    width: 20%;
+}
+
+
+.width-50{
+    width: 50%;
+}
+
+.col-10{
+    width: 100%;
+}
+
+.delivery_photo{
+    width: 115px;
+    width: 230px;
+}
+
+.fcb{
+    color: #1d3958;
+}
+
+.fcw{
+    color: #ffffff;
+}
+
+.fz10{
+    font-size: 10px;
+}
+
+h2{
+    font-family: Poppins-Bold;
+}
+
+h4{
+    font-family: Poppins-Bold;
+}
+
+.logo{
+    width: 80px;
+}
+
+.mb20{
+    margin-bottom: 20px;
+}
+
+.mt10{
+    margin-top: 10px;
+}
+
+.mt30{
+    margin-top: 30px;
+}
+
+p{
+    margin: 0px;
+    padding: 0px;
+}
+
+.pb10{
+    padding-bottom: 10px;
+}
+
+.pl10{
+    padding-left: 10px;
+}
+
+.cell-content-image{
+    width: 135px;
+    height: 250px;
+}
+.photo-report{
+    width: 100%;
+    /* height: 100%; */
+    margin-bottom: 20px;
+}
+
+
+.photo{
+    width: 125px;
+    height: 250px;
+    margin-bottom: 20px;
+}
+
+.photo_signature{
+    width: 150px;
+}
+
+.p-2{
+    padding: 12px;
+}
+
+.rating_star{
+    width: 20px;
+    margin-left: 5px;
+    margin-top: 5px;
+    float: left;
+}
+
+thead{
+    width: 100%;
+}
+
+tr{
+    width: 100%;
+}

@@ -11,6 +11,7 @@ use Carbon\CarbonInterval;
 use App\Models\Group\Group;
 use App\Models\StatusTicket;
 use App\Models\Contact\Contact;
+use App\Models\Customer\Customer;
 use App\Models\System\System;
 use App\Observers\TicketTimeline;
 use Illuminate\Support\Facades\Crypt;
@@ -58,6 +59,7 @@ class Ticket extends Model implements Transformable
         "encript_id",
         "first_reply_time_ago",
         "diff_tracked",
+        "diff_tracked_hours",
     ];
 
     public function getFirstReplyTimeAgoAttribute(){
@@ -136,6 +138,17 @@ class Ticket extends Model implements Transformable
         $diffSeconds = $carbonInitial->DiffInSeconds($carbonEnd);
         
         return CarbonInterval::seconds($diffSeconds)->cascade()->forHumans(['parts' => 2]);
+    }
+
+    public function getDiffTrackedHoursAttribute(){
+        
+        if(is_null($this->tracked_initial_time) || is_null($this->tracked_end_time))
+            return 0;
+
+        $carbonInitial = Carbon::parse($this->tracked_initial_time);
+        $carbonEnd = Carbon::parse($this->tracked_end_time);
+
+        return $carbonInitial->diffInHours($carbonEnd);        
     }
 
     public static function boot(){

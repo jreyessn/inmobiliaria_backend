@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Systems;
 
+use App\Criteria\CustomerCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\System\SystemRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -33,6 +34,8 @@ class SystemsController extends Controller
             'orderBy'       =>  'nullable|string',
             'sortBy'        =>  'nullable|in:desc,asc',
         ]);
+
+        $this->systemRepository->pushCriteria(CustomerCriteria::class);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 

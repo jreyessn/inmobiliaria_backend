@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers\Tickets;
 
-use Carbon\CarbonInterval;
 use Illuminate\Http\Request;
-use App\Criteria\GroupCriteria;
-use App\Models\Contact\Contact;
 use App\Criteria\ContactCriteria;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Crypt;
 use App\Criteria\TicketFilterCriteria;
 use App\Criteria\CreatedTicketCriteria;
 use App\Criteria\CreatedAtCriteriaCriteria;
@@ -17,22 +13,30 @@ use App\Http\Requests\Tickets\TicketsStoreRequest;
 use App\Http\Requests\Tickets\TicketsUpdateRequest;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
 use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
+use App\Notifications\Tickets\OpenTicketToAdmin;
+use App\Notifications\Tickets\OpenTicketToAssigned;
+use App\Notifications\Tickets\OpenTicketToContact;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
-use Carbon\Carbon;
+use App\Repositories\Users\UserRepositoryEloquent;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 
 class TicketsController extends Controller
 {
 
     private $ticketsRepository;
     private $ticketsMessagesRepository;
+    private $userRepository;
 
     function __construct(
         TicketRepositoryEloquent $ticketsRepository,
-        TicketMessageRepositoryEloquent $ticketsMessagesRepository
+        TicketMessageRepositoryEloquent $ticketsMessagesRepository,
+        UserRepositoryEloquent $userRepository
+        
     )
     {
         $this->ticketsRepository = $ticketsRepository;
         $this->ticketsMessagesRepository = $ticketsMessagesRepository;
+        $this->userRepository = $userRepository;
     }
     /**
      * Display a listing of the resource.
@@ -73,11 +77,33 @@ class TicketsController extends Controller
             $data = $request->all();
             $store = $this->ticketsRepository->save($data);
             
-            $userId = request()->user()->id;
+            $user = request()->user();
 
             $data['ticket_id'] = $store->id;
             
-            $this->ticketsMessagesRepository->save($data, $userId);
+            $this->ticketsMessagesRepository->save($data, $user->id);
+
+            $paramsNotify = [
+                "name" => $user->name, 
+                "title" => $store->title, 
+                "id_encrypted" => $store->encript_id, 
+                "id" => $store->id, 
+            ];
+
+            if($store->contact)
+                $store->contact->user->notify(new OpenTicketToContact($paramsNotify));
+            
+            // created by admin and assigned user
+            if($store->user && $store->user->id != $user->id)
+                 $store->user->notify(new OpenTicketToAssigned($paramsNotify));
+                 
+            // created by user and auto assigned. Notify to admin
+     
+            if($store->user && $store->user->id == $user->id){
+                $users = $this->userRepository->getAdminUsers();
+
+                FacadesNotification::send($users, new OpenTicketToAdmin($paramsNotify));
+            }
 
             DB::commit();
 

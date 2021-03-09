@@ -14,7 +14,7 @@ class AddNotificationAllTicketsToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean("notification_all_tickets")->default(false)->after("avatar")
+            $table->boolean("notification_all_tickets")->default(false)->after("avatar");
         });
     }
 

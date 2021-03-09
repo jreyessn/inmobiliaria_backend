@@ -40,6 +40,12 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function getAdminUsers()
+    {
+        return $this->whereHas("roles", function($query){
+            $query->where("name", "Administrador");
+        })->get();
+    }
 
     
 }

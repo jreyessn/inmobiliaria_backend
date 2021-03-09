@@ -3,6 +3,7 @@
 namespace App\Models\System;
 
 use App\Models\Customer\Customer;
+use App\Models\Ticket\Ticket;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -36,7 +37,10 @@ class System extends Model implements Transformable
     ];
 
     protected $hidden = [
-        'credentials'
+        'credentials',
+        "created_at",
+        "updated_at",
+        "deleted_at",
     ];
 
     public function credentials()
@@ -55,5 +59,9 @@ class System extends Model implements Transformable
 
     public function credentials_servers(){
         return $this->credentials()->where('server', '!=', null);
+    }
+
+    public function tickets(){
+        return $this->hasMany(Ticket::class);
     }
 }

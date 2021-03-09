@@ -56,3 +56,7 @@ function descryptId($str){
 
     return $str;
 }
+
+function decimal($num, $points = 2){
+    return (float) number_format($num, $points, '.', '');
+}

@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('status_tickets', 'StatusTicketController');
     Route::get('type_tickets', 'TypeTicketController');
     Route::get('created', 'Controller@createdOptions');
+    Route::get('dashboard', 'DashboardController');
 
     Route::group(["prefix" => "tickets"], function(){
         Route::post("admin", "Tickets\TicketsController@storeAdmin")->middleware("permission:portal admin");
@@ -68,6 +69,11 @@ Route::group(['middleware' => ['auth:api']], function(){
 
         Route::put("tracked/{id}", "Tickets\TicketsController@tracked");
     });
+
+    // Route::group(["prefix" => "reports"], function(){
+    //     Route::get("timeForSystems", "ReportsController@timeForSystems");
+
+    // });
 
     /**
      * put profile customers
@@ -85,3 +91,8 @@ Route::group(['middleware' => ['auth:api']], function(){
     
 });
 
+Route::group(["prefix" => "reports"], function(){
+    Route::get("timeForSystems", "ReportsController@timeForSystems");
+    Route::get("ticketsReport", "ReportsController@ticketsReport");
+
+});

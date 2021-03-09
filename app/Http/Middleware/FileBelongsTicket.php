@@ -21,20 +21,20 @@ class FileBelongsTicket
     {
         
         try {
-                
             $ticket_id = descryptId($request->id);
             $file_id = $request->file_id;
             
-            $ticket = Ticket::find($ticket_id)->first();
+            $ticket = Ticket::find($ticket_id);
+
 
             $foundFile = $ticket->files->filter(function($item) use ($file_id){
                 return ($item->id == $file_id);
             });
-
-            if($foundFile->count() > 0){
-                return $next($request);
-            }
-            throw new Exception();
+            
+        if($foundFile->count() > 0){
+            return $next($request);
+        }
+        throw new Exception();
 
         } catch (\Throwable $th) {
             return response()->json([

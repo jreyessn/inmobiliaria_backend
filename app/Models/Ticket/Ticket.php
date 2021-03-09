@@ -124,7 +124,7 @@ class Ticket extends Model implements Transformable
     }
 
     public function files(){
-        return $this->hasManyThrough(File::class, TicketMessage::class, 'ticket_id', 'model_id', 'id', 'id');
+        return $this->hasManyThrough(File::class, TicketMessage::class, 'ticket_id', 'model_id')->where("model_type", TicketMessage::class);
     }
 
     public function getDiffTrackedAttribute(){

@@ -46,8 +46,8 @@ class OpenTicketToContact extends Notification
     {
         return (new MailMessage)
             ->subject("Ticket Abierto [#{$this->data['id']}]")
-            ->line(new HtmlString("<strong>{$this->data["name"]}</strong> le ha asignado el ticket con asunto <strong>{$this->data['title']} [#{$this->data['id']}]</strong>."))
-            ->line(new HtmlString("Ingrese al siguiente enlace para dar un seguimiento directo:"))
+            ->line(new HtmlString("<strong>{$this->data["name"]}</strong> ha abierto un nuevo ticket y se lo ha asignado. Asunto <strong>{$this->data['title']} [#{$this->data['id']}]</strong>."))
+            ->line(new HtmlString("Ingrese al siguiente enlace para dar un seguimiento directo."))
             ->action('Entrar', getenv("APP_FRONTEND")."support/{$this->data['id_encrypted']}");
 
     }

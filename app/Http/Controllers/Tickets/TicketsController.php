@@ -13,9 +13,11 @@ use App\Http\Requests\Tickets\TicketsStoreRequest;
 use App\Http\Requests\Tickets\TicketsUpdateRequest;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
 use App\Http\Requests\Tickets\TicketsStoreCustomerRequest;
+use App\Models\System\System;
 use App\Notifications\Tickets\OpenTicketToAdmin;
 use App\Notifications\Tickets\OpenTicketToAssigned;
 use App\Notifications\Tickets\OpenTicketToContact;
+use App\Repositories\System\SystemRepositoryEloquent;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Users\UserRepositoryEloquent;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
@@ -26,17 +28,19 @@ class TicketsController extends Controller
     private $ticketsRepository;
     private $ticketsMessagesRepository;
     private $userRepository;
+    private $systemRepository;
 
     function __construct(
         TicketRepositoryEloquent $ticketsRepository,
         TicketMessageRepositoryEloquent $ticketsMessagesRepository,
-        UserRepositoryEloquent $userRepository
-        
+        UserRepositoryEloquent $userRepository,
+        SystemRepositoryEloquent $systemRepository
     )
     {
         $this->ticketsRepository = $ticketsRepository;
         $this->ticketsMessagesRepository = $ticketsMessagesRepository;
         $this->userRepository = $userRepository;
+        $this->systemRepository = $systemRepository;
     }
     /**
      * Display a listing of the resource.
@@ -139,6 +143,47 @@ class TicketsController extends Controller
             $data['ticket_id'] = $store->id;
 
             $this->ticketsMessagesRepository->save($data, $user->id);
+
+            DB::commit();
+
+            return response()->json([
+                "message" => "Mensaje enviado con éxito",
+                "data" => $store
+            ], 201);
+
+        }catch(\Exception $e){
+            DB::rollback();
+
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeGuest(Request $request)
+    {
+        $request->validate([
+            "path_system" => "required",
+            "type_ticket_id" => "required|exists:type_tickets,id",
+            "title" => "required",
+            "message" => "required"
+        ]);
+
+        DB::beginTransaction();
+        
+        try{
+            $data = $request->all();
+            $data["system_id"] = $this->systemRepository->whereNameUrl($data["path_system"])->id ?? null;
+         
+            $store = $this->ticketsRepository->save($data);
+            
+            $data['ticket_id'] = $store->id;
+
+            $this->ticketsMessagesRepository->save($data);
 
             DB::commit();
 

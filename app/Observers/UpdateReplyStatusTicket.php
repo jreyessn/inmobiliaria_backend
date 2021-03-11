@@ -11,7 +11,7 @@ class UpdateReplyStatusTicket
         $user = $ticketMessage->user;
 
         // user support
-        if($user->hasPermissionTo("portal admin")){
+        if($user && $user->hasPermissionTo("portal admin")){
 
             if($ticketMessage->ticket->messages->count() == 1){
                 $ticketMessage->ticket->update([

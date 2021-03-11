@@ -3,10 +3,10 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Messages\SlackMessage;
 
 class OpenTicketToAssigned extends Notification
 {
@@ -33,7 +33,7 @@ class OpenTicketToAssigned extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -66,5 +66,23 @@ class OpenTicketToAssigned extends Notification
             "id" => $this->data["id"],
             "url" => getenv("APP_FRONTEND")."tickets/{$this->data['id']}"
         ];
+    }
+
+    /**
+     * Get the slack representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toSlack($notifiable)
+    {
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+
+        return (new SlackMessage)
+            ->info()
+            ->content("<{$url}|Ticket Abierto [#{$this->data['id']}] - {$this->data['title']}>. Se le ha asignado para dar seguimiento.")
+            ->from("Soporte JeanLogistics", ":ghost:")
+            ->to('#general');
+            
     }
 }

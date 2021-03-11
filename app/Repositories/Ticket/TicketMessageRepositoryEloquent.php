@@ -39,7 +39,7 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function save(array $data, int $userId, $via = "PORTAL")
+    public function save(array $data, $userId = null, $via = "PORTAL")
     {
         $store = $this->create([
             "via" => $via,

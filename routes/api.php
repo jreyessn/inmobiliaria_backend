@@ -35,11 +35,18 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 /**
  * guest with id encrypt
  */
-Route::group(['middleware' => ['isValidEncrypt'], 'prefix' => 'tickets/guest'], function(){
-    Route::post("message/{id}", "Tickets\TicketsMessagesController@messageCustomer");
-    Route::get("file/{file_id}/{id}", "Tickets\TicketsMessagesController@downloadAttach")->middleware('fileBelongsTicket');
-    Route::get("show/{id}", "Tickets\TicketsController@show");
-    Route::get("message/{id}", "Tickets\TicketsMessagesController@showMessages");
+
+Route::group(['prefix' => 'tickets/guest'], function(){
+    
+    Route::post("store", "Tickets\TicketsController@storeGuest");
+
+    Route::group([ 'middleware' => ['isValidEncrypt'] ], function(){
+
+        Route::post("message/{id}", "Tickets\TicketsMessagesController@messageCustomer");
+        Route::get("file/{file_id}/{id}", "Tickets\TicketsMessagesController@downloadAttach")->middleware('fileBelongsTicket');
+        Route::get("show/{id}", "Tickets\TicketsController@show");
+        Route::get("message/{id}", "Tickets\TicketsMessagesController@showMessages");
+    });
 });
 
 /**

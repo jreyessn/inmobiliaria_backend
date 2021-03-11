@@ -2,8 +2,9 @@
 
 namespace App\Models\System;
 
-use App\Models\Customer\Customer;
 use App\Models\Ticket\Ticket;
+use App\Models\Customer\Customer;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -43,6 +44,11 @@ class System extends Model implements Transformable
         "deleted_at",
     ];
 
+    protected $appends = [
+        "encrypted_id",
+        "name_url"
+    ];
+
     public function credentials()
     {
         return $this->hasMany(SystemCredential::class);
@@ -63,5 +69,13 @@ class System extends Model implements Transformable
 
     public function tickets(){
         return $this->hasMany(Ticket::class);
+    }
+
+    public function getEncryptedIdAttribute(){
+        return Crypt::encrypt($this->id);
+    }
+
+    public function getNameUrlAttribute(){
+        return strtolower(str_replace(" ", "-", $this->name));
     }
 }

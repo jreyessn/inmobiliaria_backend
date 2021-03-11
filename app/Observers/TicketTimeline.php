@@ -17,7 +17,7 @@ class TicketTimeline
 
         Timeline::create([
             "ticket_id" => $ticket->id,
-            "made_by_user" => request()->user()->id,
+            "made_by_user" => request()->user()->id ?? null,
             "note" => "Ha abierto el Ticket"
         ]);
 

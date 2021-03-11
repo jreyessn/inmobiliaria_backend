@@ -65,5 +65,13 @@ class SystemRepositoryEloquent extends BaseRepository implements SystemRepositor
         $store->credentials()->delete();
         $store->credentials()->saveMany($merged);
     }
+
+    public function whereNameUrl($pathname){
+        $nameOriginal = str_replace("-", " ", $pathname);
+
+        $found = $this->where("name", $nameOriginal)->first();
+
+        return $found;
+    }
     
 }

@@ -46,11 +46,6 @@ class TicketsMessagesController extends Controller
             $ticket->save();
         }
 
-        if(is_null($ticket->user_id)){
-            $ticket->user_id = $user->id;
-            $ticket->save();
-        }
-
         return $this->message($user, $data);
     }
 

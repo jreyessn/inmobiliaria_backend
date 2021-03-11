@@ -18,7 +18,7 @@ class CreateTicketsMessagesTable extends Migration
             $table->enum("via", ["PORTAL", "MAIL"])->nullable();
             $table->string("cc")->nullable();
             $table->foreignId("ticket_id")->constrained();
-            $table->foreignId("user_id")->constrained();
+            $table->foreignId("user_id")->nullable()->constrained();
             $table->longText("message")->nullable();
             $table->timestamps();
             $table->softDeletes();

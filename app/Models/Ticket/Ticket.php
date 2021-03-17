@@ -89,7 +89,7 @@ class Ticket extends Model implements Transformable
     public function getReplyStatusToInternalAttribute()
     {
 
-        if(is_null($this->last_replied_internal_user) && is_null(request()->user))
+        if(is_null($this->last_replied_internal_user) || is_null(request()->user))
             return "Sin definir";
 
         if(request()->user()->id == $this->last_replied_internal_user_id){

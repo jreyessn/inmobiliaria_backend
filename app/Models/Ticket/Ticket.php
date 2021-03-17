@@ -53,6 +53,8 @@ class Ticket extends Model implements Transformable
         "closed_at",
         "reply_status_to_contact",
         "reply_status_to_users",
+        "attended_by_user_id",
+        "last_replied_internal_user_id",
     ];
 
     protected $appends = [
@@ -60,6 +62,7 @@ class Ticket extends Model implements Transformable
         "first_reply_time_ago",
         "diff_tracked",
         "diff_tracked_hours",
+        "reply_status_to_internal"
     ];
 
     public function getFirstReplyTimeAgoAttribute(){
@@ -81,6 +84,19 @@ class Ticket extends Model implements Transformable
     public function getEncriptIdAttribute()
     {
         return Crypt::encrypt($this->id);
+    }
+
+    public function getReplyStatusToInternalAttribute()
+    {
+
+        if(is_null($this->last_replied_internal_user) && is_null(request()->user))
+            return "Sin definir";
+
+        if(request()->user()->id == $this->last_replied_internal_user_id){
+            return "Respondido";
+        }
+
+        return "{$this->last_replied_internal_user->name} ha respondido";
     }
 
     public function type_ticket()
@@ -113,6 +129,16 @@ class Ticket extends Model implements Transformable
         return $this->belongsTo(User::class);
     }
 
+    public function attended_by_user()
+    {
+        return $this->belongsTo(User::class, "attended_by_user_id");
+    }
+
+    public function last_replied_internal_user()
+    {
+        return $this->belongsTo(User::class, "last_replied_internal_user_id");
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);
@@ -120,7 +146,12 @@ class Ticket extends Model implements Transformable
 
     public function messages()
     {
-        return $this->hasMany(TicketMessage::class);
+        return $this->hasMany(TicketMessage::class)->where("channel", "CUSTOMER");
+    }
+
+    public function messages_internal()
+    {
+        return $this->hasMany(TicketMessage::class)->where("channel", "INTERNAL");
     }
 
     public function files(){

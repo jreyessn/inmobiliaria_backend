@@ -102,13 +102,13 @@ class TicketTimeline
             $note = '';
 
             if($original && $ticket->user)
-                $note = "Ha cambiado el usuario de <strong>{$original->name}</strong> a <strong>{$ticket->user->name}</strong>.";
+                $note = "Ha cambiado el usuario asignado de <strong>{$original->name}</strong> a <strong>{$ticket->user->name}</strong>.";
                 
             if($original && $ticket->user == null)
-                $note = "Ha removido al usuario <strong>{$original->name}</strong>.";
+                $note = "Ha removido al usuario asignado <strong>{$original->name}</strong>.";
                 
             if($original == null && $ticket->user)
-                $note = "Ha asignado el ticket al usuario <strong>{$ticket->user->name}</strong>.";
+                $note = "Ha asignado el ticket al usuario asignado <strong>{$ticket->user->name}</strong>.";
 
             if($note)
                 Timeline::create([
@@ -119,6 +119,29 @@ class TicketTimeline
         }
 
         // change user
+        if($ticket->getOriginal("attended_by_user_id") !== $ticket->attended_by_user_id){
+            $original = User::find($ticket->getOriginal("last_replieattended_by_user_idd_internal_user_id"));
+
+            $note = '';
+
+            if($original && $ticket->attended_by_user)
+                $note = "Ha cambiado el usuario que atiende el ticket <strong>{$original->name}</strong> a <strong>{$ticket->user->name}</strong>.";
+                
+            if($original && $ticket->attended_by_user == null)
+                $note = "Ha removido al usuario que atiende el ticket <strong>{$original->name}</strong>.";
+                
+            if($original == null && $ticket->attended_by_user)
+                $note = "Ha asignado el ticket para ser atendido por <strong>{$ticket->attended_by_user->name}</strong>.";
+
+            if($note)
+                Timeline::create([
+                    "ticket_id" => $ticket->id,
+                    "made_by_user" => request()->user()->id,
+                    "note" => $note
+                ]);
+        }
+
+        // change priorty
         if($ticket->getOriginal("priority_id") !== $ticket->priority_id){
             $original = Priority::find($ticket->getOriginal("priority_id"));
 

@@ -41,6 +41,8 @@ class TicketsController extends Controller
         $this->ticketsMessagesRepository = $ticketsMessagesRepository;
         $this->userRepository = $userRepository;
         $this->systemRepository = $systemRepository;
+
+        $this->middleware(['CanCloseTicket'], ['only' => 'update']);
     }
     /**
      * Display a listing of the resource.
@@ -78,10 +80,11 @@ class TicketsController extends Controller
         DB::beginTransaction();
         
         try{
+            $user = request()->user();
             $data = $request->all();
+            $data["attended_by_user_id"] = $user->id;
             $store = $this->ticketsRepository->save($data);
             
-            $user = request()->user();
 
             $data['ticket_id'] = $store->id;
             
@@ -218,7 +221,8 @@ class TicketsController extends Controller
                 "priority",
                 "status_ticket",
                 "type_ticket",
-                "system"
+                "system",
+                "attended_by_user"
             );
             
             return compact('data');
@@ -242,7 +246,19 @@ class TicketsController extends Controller
         try {
             $data = $request->all();
 
-            $this->ticketsRepository->saveUpdate($data, $id);
+            $found = $this->ticketsRepository->saveUpdate($data, $id);
+
+            if($found->getOriginal('user_id') == $found->user_id && $found->user){
+                $user = request()->user();
+
+                $paramsNotify = [
+                    "name" => $user->name, 
+                    "title" => $found->title, 
+                    "id" => $found->id, 
+                ];
+
+                $found->user->notify(new OpenTicketToAssigned($paramsNotify));
+            }
 
             DB::commit();
 

@@ -97,6 +97,7 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         
         $found->save();
         
+        return $found;
     }
     
 }

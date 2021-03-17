@@ -33,7 +33,8 @@ class TicketsMessagesController extends Controller
             "ticket_id" => "required:exists:tickets",
             "message" => "required",
             "cc" => "nullable",
-            "files" => "nullable|array"
+            "files" => "nullable|array",
+            "channel" => "required|in:INTERNAL,CUSTOMER"
         ]);
 
         $user = $request->user();
@@ -43,6 +44,11 @@ class TicketsMessagesController extends Controller
 
         if(is_null($ticket->first_reply_time)){
             $ticket->first_reply_time = now();
+            $ticket->save();
+        }
+
+        if(is_null($ticket->attended_by_user)){
+            $ticket->attended_by_user_id = $user->id;
             $ticket->save();
         }
 
@@ -103,11 +109,12 @@ class TicketsMessagesController extends Controller
 
     }
 
-    public function showMessages($ticket_id){
+    public function showMessages($ticket_id, Request $request){
         $ticket_id = descryptId($ticket_id);
+        $channel = $request->get("channel", "CUSTOMER");
 
         return [
-            'data' => $this->ticketsMessagesRepository->getMessages($ticket_id)
+            'data' => $this->ticketsMessagesRepository->getMessages($ticket_id, $channel)
         ];
     }
 

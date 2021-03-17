@@ -32,7 +32,8 @@ class TicketMessage extends Model implements Transformable
         "cc",
         "user_id",
         "message",
-        "ticket_id"
+        "ticket_id",
+        "channel"
     ];
 
     protected $appends = [

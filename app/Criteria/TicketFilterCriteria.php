@@ -27,10 +27,11 @@ class TicketFilterCriteria implements CriteriaInterface
         $status_ticket_id = request()->get('status_ticket_id', null);
         $priority_id = request()->get('priority_id', null);
         $system_id = request()->get('system_id', null);
-        // $group_id = request()->get('group_id', null);
+        $attended_by_user_id = request()->get('attended_by_user_id', null);
         $user_id = request()->get('user_id', null);
         $contact_id = request()->get('contact_id', null);
         $customer_id = request()->get('customer_id', null);
+        $my_tickets = request()->get('my_tickets', null);
 
         if($type_ticket_id){
             $explodes = explode(",", $type_ticket_id);
@@ -62,10 +63,25 @@ class TicketFilterCriteria implements CriteriaInterface
 
             $model = $model->whereIn('user_id', $explodes);
         }
+        if($attended_by_user_id){
+            $explodes = explode(",", $attended_by_user_id);
+
+            $model = $model->whereIn('attended_by_user_id', $explodes);
+        }
         if($contact_id){
             $explodes = explode(",", $contact_id);
 
             $model = $model->whereIn('contact_id', $explodes);
+        }
+        if($my_tickets == "true"){
+            
+            $model = $model->where(function($query){
+                $userId = request()->user()->id;
+
+                $query->orWhere('user_id', $userId);
+                $query->orWhere('attended_by_user_id', $userId);
+            });
+
         }
         if($customer_id){
             $explodes = explode(",", $customer_id);

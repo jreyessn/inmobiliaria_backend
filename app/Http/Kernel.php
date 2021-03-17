@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CanCloseTicket;
 use App\Http\Middleware\EncryptIsValid;
 use App\Http\Middleware\FileBelongsTicket;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -69,6 +70,7 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
         'isValidEncrypt' => EncryptIsValid::class,
-        'fileBelongsTicket' => FileBelongsTicket::class
+        'fileBelongsTicket' => FileBelongsTicket::class,
+        'CanCloseTicket' => CanCloseTicket::class
     ];
 }

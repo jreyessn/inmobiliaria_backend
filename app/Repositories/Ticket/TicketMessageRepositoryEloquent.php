@@ -46,12 +46,15 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
             "cc" => $data["cc"] ?? null,
             "user_id" => $userId,
             "message" => $data["message"],
-            "ticket_id" => $data["ticket_id"]
+            "ticket_id" => $data["ticket_id"],
+            "channel" => $data["channel"] ?? "CUSTOMER"
         ]);
 
         $this->saveFiles($data["files"] ?? [], $store->id);
-
-        $store->ticket->update(['last_replied_at' => now()]);
+            
+        if($store->channel == "CUSTOMER"){
+            $store->ticket->update(['last_replied_at' => now()]);
+        }
     }
 
     private function saveFiles($files, $ticket_message_id)
@@ -71,8 +74,13 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
         }
     }
 
-    public function getMessages($ticket_id){
-        return $this->with(['files', 'user'])->orderBy('created_at', 'desc')->where(['ticket_id' => $ticket_id])->get();
+    public function getMessages($ticket_id, $channel){
+        return $this->with(['files', 'user'])
+                     ->orderBy('created_at', 'desc')
+                     ->where([
+                         'ticket_id' => $ticket_id,
+                         'channel' => $channel
+                     ])->get();
     }
     
 }

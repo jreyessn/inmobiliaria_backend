@@ -74,18 +74,26 @@ class TicketsMessagesController extends Controller
             return response()->json(null, 404);
         }
 
-        $user = $request->user() ?? $ticket->contact->user;
+        $user = null;
+
+        if($request->user){
+            $user = $request->user();
+        }
+
+        if($ticket->contact->user ?? false){
+            $user = $ticket->contact->user;
+        }
 
         return $this->message($user, $data);
     }
 
-    private function message(User $user, array $data)
+    private function message($user, array $data)
     {
         DB::beginTransaction();
         
         try{
 
-            $this->ticketsMessagesRepository->save($data, $user->id);
+            $this->ticketsMessagesRepository->save($data, $user->id ?? null);
 
             DB::commit();
 

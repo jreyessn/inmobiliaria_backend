@@ -53,6 +53,7 @@ Route::group(['prefix' => 'tickets/guest'], function(){
  * public save images
  */
 Route::post("images", "ImageController@save");
+Route::get('type_tickets', 'TypeTicketController');
 
 Route::group(['middleware' => ['auth:api']], function(){
 
@@ -60,7 +61,6 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('roles', 'RoleController@index');
     Route::get('priorities', 'PriorityController');
     Route::get('status_tickets', 'StatusTicketController');
-    Route::get('type_tickets', 'TypeTicketController');
     Route::get('created', 'Controller@createdOptions');
     Route::get('dashboard', 'DashboardController');
 

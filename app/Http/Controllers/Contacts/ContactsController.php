@@ -70,20 +70,16 @@ class ContactsController extends Controller
             
             $data = $request->all();
 
-            /**
-             * Al colocar una contraseña, se asigna un usuario para acceder al portal de clientes
-             */
-            if($request->password){
-                $user = $this->userRepository->create([
-                    'email' => $request->email,
-                    'name' => $request->name,
-                    'username' => preg_replace('/@.*?$/', '', $request->email),
-                    'password' => $request->password,
-                ]);
-                $user->roles()->sync([ 3 ]);
+            $user = $this->userRepository->create([
+                'email' => $request->email,
+                'name' => $request->name,
+                'username' => preg_replace('/@.*?$/', '', $request->email),
+                'password' => $request->password ?? 1234,
+            ]);
+            $user->roles()->sync([ 3 ]);
 
-                $data['user_id'] = $user->id;
-            }
+            $data['user_id'] = $user->id;
+        
 
             $data = $this->contactRepository->save($data);
             
@@ -131,19 +127,19 @@ class ContactsController extends Controller
 
         try{
             $data = $request->all();
-            /**
-             * No se ha creado el usuario y han actualizado la contraseña. Se crea usuario
-             */
-            if($request->password && is_null($userId)){
-                $user = $this->userRepository->create([
-                    'email' => $request->email,
-                    'name' => $request->name,
-                    'username' => preg_replace('/@.*?$/', '', $request->email),
-                    'password' => $request->password,
-                ]);
+            // /**
+            //  * No se ha creado el usuario y han actualizado la contraseña. Se crea usuario
+            //  */
+            // if($request->password && is_null($userId)){
+            //     $user = $this->userRepository->create([
+            //         'email' => $request->email,
+            //         'name' => $request->name,
+            //         'username' => preg_replace('/@.*?$/', '', $request->email),
+            //         'password' => $request->password,
+            //     ]);
 
-                $data['user_id'] = $user->id;
-            }
+            //     $data['user_id'] = $user->id;
+            // }
             
             /**
              * Contacto tiene usuario asignado. Se actualiza valores

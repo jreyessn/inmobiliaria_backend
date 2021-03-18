@@ -141,7 +141,7 @@ class Ticket extends Model implements Transformable
 
     public function contact()
     {
-        return $this->belongsTo(Contact::class);
+        return $this->belongsTo(Contact::class)->withTrashed();
     }
 
     public function messages()

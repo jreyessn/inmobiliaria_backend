@@ -76,7 +76,7 @@ class TicketsMessagesController extends Controller
 
         $user = null;
 
-        if($request->user){
+        if($request->user()){
             $user = $request->user();
         }
 

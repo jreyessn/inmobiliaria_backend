@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Criteria\TicketFilterCriteria;
 use App\Criteria\CreatedTicketCriteria;
 use App\Criteria\CreatedAtCriteriaCriteria;
+use App\Criteria\ExpirationAtCriteria;
 use App\Http\Requests\Tickets\TicketsStoreRequest;
 use App\Http\Requests\Tickets\TicketsUpdateRequest;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
@@ -65,6 +66,7 @@ class TicketsController extends Controller
         $this->ticketsRepository->pushCriteria(CreatedAtCriteriaCriteria::class);
         $this->ticketsRepository->pushCriteria(TicketFilterCriteria::class);
         $this->ticketsRepository->pushCriteria(CreatedTicketCriteria::class);
+        $this->ticketsRepository->pushCriteria(ExpirationAtCriteria::class);
 
         return $this->ticketsRepository->paginate($perPage);
     }
@@ -260,6 +262,18 @@ class TicketsController extends Controller
                 $found->user->notify(new OpenTicketToAssigned($paramsNotify));
             }
 
+            if($found->getOriginal('contact_id') == $found->contact_id && $found->contact){
+
+                $paramsNotify = [
+                    "name" => $user->name, 
+                    "title" => $found->title, 
+                    "id_encrypted" => $found->encript_id, 
+                    "id" => $found->id, 
+                ];
+
+                $found->user->notify(new OpenTicketToContact($paramsNotify));
+            }
+
             DB::commit();
 
             return response()->json([
@@ -316,6 +330,31 @@ class TicketsController extends Controller
 
         return [ 
             'diffHumans' => $ticket->diff_tracked    
+        ];
+    }
+
+    /**
+     * Clona el mensaje para el canal interno
+     * 
+     * @param int $ticket_message_id ID de Ticket Message
+     */
+    function forwardInternal(Request $request)
+    {
+
+        $request->validate([
+            "ticket_message_id" => "required"
+        ]);
+
+        $ticketMessage = $this->ticketsMessagesRepository->find($request->ticket_message_id);
+        $newTicketMessage = $ticketMessage->replicate();
+
+        $newTicketMessage->user_id = $request->user()->id;
+        $newTicketMessage->forward = true;
+        $newTicketMessage->channel = 'INTERNAL';
+        $newTicketMessage->save();
+
+        return [ 
+            'message' => "Mensaje reenviado con éxito"     
         ];
     }
 }

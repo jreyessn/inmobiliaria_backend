@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('priorities', 'PriorityController');
     Route::get('status_tickets', 'StatusTicketController');
     Route::get('created', 'Controller@createdOptions');
+    Route::get('deadline', 'Controller@expirationsOptions');
     Route::get('dashboard', 'DashboardController');
 
     Route::group(["prefix" => "tickets"], function(){
@@ -70,6 +71,7 @@ Route::group(['middleware' => ['auth:api']], function(){
 
         Route::post("customer", "Tickets\TicketsController@storeCustomer")->middleware("permission:portal customer");
         Route::post("message/customer", "Tickets\TicketsMessagesController@messageCustomer")->middleware("permission:portal customer");
+        Route::post("forwardInternal", "Tickets\TicketsController@forwardInternal");
         
         Route::get("message/{ticket_id}", "Tickets\TicketsMessagesController@showMessages");
         Route::get("attach/{id}", "Tickets\TicketsMessagesController@downloadAttach");

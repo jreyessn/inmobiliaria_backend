@@ -49,5 +49,40 @@ class Controller extends BaseController
             ];
     }
 
+    function expirationsOptions(){
+        return [
+            'data' => [
+                [
+                    'id' => 1,
+                    'description' => 'Hoy'
+                ],
+                [
+                    'id' => 2,
+                    'description' => 'Mañana'
+                ],
+                [
+                    'id' => 3,
+                    'description' => 'Próximos 3 días'
+                ],
+                [
+                    'id' => 4,
+                    'description' => 'Esta semana'
+                ],
+                [
+                    'id' => 5,
+                    'description' => 'Próximos 7 días'
+                ],
+                [
+                    'id' => 6,
+                    'description' => 'Próximo mes'
+                ],
+                [
+                    'id' => 7,
+                    'description' => 'Próximos 30 días'
+                ],
+            ]
+            ];
+    }
+
 
 }

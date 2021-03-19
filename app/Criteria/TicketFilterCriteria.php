@@ -73,7 +73,10 @@ class TicketFilterCriteria implements CriteriaInterface
 
             $model = $model->whereIn('contact_id', $explodes);
         }
-        if($my_tickets == "true"){
+
+        $user = request()->user();
+
+        if($my_tickets == "true" || $user->hasPermissionTo('only assigned tickets')){
             
             $model = $model->where(function($query){
                 $userId = request()->user()->id;

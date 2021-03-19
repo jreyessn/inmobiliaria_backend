@@ -26,13 +26,13 @@ class UpdateReplyStatusTicket
 
                     if($ticketMessage->ticket->messages->count() == 1){
                         $ticketMessage->ticket->update([
-                            "reply_status_to_contact" => "Soporte ha abierto el Ticket"
+                            "reply_status_to_contact_id" => 7
                         ]);
                     }
                     else{
                         $ticketMessage->ticket->update([
-                            "reply_status_to_contact" => "Soporte ha respondido",
-                            "reply_status_to_users" => "Respondido"
+                            "reply_status_to_contact_id" => 4,
+                            "reply_status_to_users_id" => 1
                         ]); 
 
                         // TicketTimeline::create([
@@ -47,13 +47,13 @@ class UpdateReplyStatusTicket
 
                     if($ticketMessage->ticket->messages->count() == 1){
                         $ticketMessage->ticket->update([
-                            "reply_status_to_users" => "Cliente ha abierto el Ticket"
+                            "reply_status_to_users_id" => 6
                         ]);
                     }
                     else{
                         $ticketMessage->ticket->update([
-                            "reply_status_to_contact" => "Has respondido",
-                            "reply_status_to_users" => "Cliente ha respondido"
+                            "reply_status_to_contact_id" => 2,
+                            "reply_status_to_users_id" => 3
                         ]); 
 
                         // TicketTimeline::create([

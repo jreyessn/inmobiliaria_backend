@@ -25,7 +25,7 @@ class TicketsStoreRequest extends FormRequest
     {
         return [
             "title" => "required",
-            "contact_id" => "required|exists:contacts,id",
+            "contact_id" => "nullable|exists:contacts,id",
             "cc" => "nullable|string",
             "type_ticket_id" => "required|exists:type_tickets,id",
             "status_ticket_id" => "nullable|exists:status_tickets,id",

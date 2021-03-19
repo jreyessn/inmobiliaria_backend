@@ -33,11 +33,13 @@ class TicketMessage extends Model implements Transformable
         "user_id",
         "message",
         "ticket_id",
-        "channel"
+        "channel",
+        "forward"
     ];
 
     protected $appends = [
-        "ago"
+        "ago",
+        "type_reply"
     ];
 
     public function files(){
@@ -61,10 +63,22 @@ class TicketMessage extends Model implements Transformable
         return ucwords($this->created_at->diffForHumans())." (".$this->created_at->isoFormat('DD MMM YYYY, h:mm:ss a').")";
     }
 
+    public function getTypeReplyAttribute()
+    {
+
+        if(!$this->forward){
+            return "ha respondido (<strong>{$this->via}</strong>)";
+        }
+        
+        return "ha reenviado un mensaje (<strong>{$this->via}</strong>)";
+        
+    }
+
     public static function boot(){
         parent::boot();
 
         TicketMessage::observe(UpdateReplyStatusTicket::class);
     }
+    
 
 }

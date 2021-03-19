@@ -12,6 +12,7 @@ use App\Models\Group\Group;
 use App\Models\StatusTicket;
 use App\Models\Contact\Contact;
 use App\Models\Customer\Customer;
+use App\Models\StatusReply;
 use App\Models\System\System;
 use App\Observers\TicketTimeline;
 use Illuminate\Support\Facades\Crypt;
@@ -51,10 +52,10 @@ class Ticket extends Model implements Transformable
         "first_reply_time",
         "last_replied_at",
         "closed_at",
-        "reply_status_to_contact",
-        "reply_status_to_users",
         "attended_by_user_id",
         "last_replied_internal_user_id",
+        "reply_status_to_contact_id",
+        "reply_status_to_users_id",
     ];
 
     protected $appends = [
@@ -62,7 +63,8 @@ class Ticket extends Model implements Transformable
         "first_reply_time_ago",
         "diff_tracked",
         "diff_tracked_hours",
-        "reply_status_to_internal"
+        "reply_status_to_internal",
+        "reply_status",
     ];
 
     public function getFirstReplyTimeAgoAttribute(){
@@ -89,14 +91,52 @@ class Ticket extends Model implements Transformable
     public function getReplyStatusToInternalAttribute()
     {
 
-        if(is_null($this->last_replied_internal_user) || is_null(request()->user))
-            return "Sin definir";
+        if(is_null($this->last_replied_internal_user) || is_null(request()->user()))
+            return StatusReply::find(5);
 
         if(request()->user()->id == $this->last_replied_internal_user_id){
-            return "Respondido";
+            return StatusReply::find(8);
         }
 
-        return "{$this->last_replied_internal_user->name} ha respondido";
+        $repy = StatusReply::find(5);
+        $repy->description = "{$this->last_replied_internal_user->name} ha respondido";
+        $repy->show_in_list = 1;
+        return $repy;
+    }
+
+    public function getReplyStatusAttribute()
+    {
+
+        $user = request()->user();
+
+        if($this->status_ticket->can_close ?? false){
+            $status = $this->status_ticket;
+            $status->color = '#fff';
+            $status->background_color = '#FF586B';
+            $status->border_color = '#FF586B';
+
+            return $status;
+        }
+
+        if($user){
+
+            if($user->hasPermissionTo('portal admin')){
+                return $this->reply_status_to_users;
+            }
+
+        }
+
+        return $this->reply_status_to_contact;
+    }
+
+    public function reply_status_to_contact()
+    {
+        return $this->belongsTo(StatusReply::class, 'reply_status_to_contact_id');
+    }
+    
+    public function reply_status_to_users()
+    {
+        return $this->belongsTo(StatusReply::class, 'reply_status_to_users_id');
     }
 
     public function type_ticket()

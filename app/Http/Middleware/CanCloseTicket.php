@@ -26,8 +26,7 @@ class CanCloseTicket
 
             $ticketstatus = StatusTicket::find($request->status_ticket_id);
             
-            
-            if($ticketstatus->can_close && !$request->user()->hasPermissionTo("close tickets")){
+            if(($ticketstatus->can_close || $ticketstatus->id == 5) && !$request->user()->hasPermissionTo("close tickets")){
                 throw new Exception();
             }
 
@@ -35,7 +34,7 @@ class CanCloseTicket
 
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'No tiene permiso parar cerrar el ticket'
+                'message' => 'No tiene permiso parar cambiar a este estado de ticket'
             ], 403);
         }
     }

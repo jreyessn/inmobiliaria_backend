@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
+use NotificationChannels\OneSignal\OneSignalMessage;
 
 class OpenTicketToAdmin extends Notification
 {
@@ -31,7 +32,15 @@ class OpenTicketToAdmin extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        
+        $channels = ['database', 'mail'];
+
+        if($notifiable->players->count() > 0){
+            array_push($channels, OneSignalChannel::class);
+        }
+        
+        return $channels;
+
     }
 
     /**
@@ -66,5 +75,21 @@ class OpenTicketToAdmin extends Notification
             "id" => $this->data["id"],
             "url" => "tickets/{$this->data['id']}"
         ];
+    }
+
+
+    /**
+     * Send One Signal notification
+     */
+    public function toOneSignal($notifiable)
+    {
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+
+        return OneSignalMessage::create()
+            ->setSubject("Ticket Abierto [#{$this->data['id']}]")
+            ->setBody("{$this->data["name"]} ha abierto un ticket")
+            ->setUrl($url)
+            ->setIcon(public_path('logo.png'));
+
     }
 }

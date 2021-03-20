@@ -3,10 +3,11 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\HtmlString;
+use NotificationChannels\OneSignal\OneSignalMessage;
 
 class OpenTicketToContact extends Notification
 {
@@ -33,7 +34,13 @@ class OpenTicketToContact extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        $channels = ['database', 'mail'];
+
+        if($notifiable->players->count() > 0){
+            array_push($channels, OneSignalChannel::class);
+        }
+
+        return $channels;
     }
 
     /**
@@ -68,5 +75,21 @@ class OpenTicketToContact extends Notification
             "id" => $this->data["id"],
             "url" => "tickets/{$this->data['id']}"
         ];
+    }
+
+    /**
+     * Send One Signal notification
+     */
+    public function toOneSignal($notifiable)
+    {
+
+        $url = getenv("APP_FRONTEND")."guest/ticket/{$this->data['id_encrypted']}";
+
+        return OneSignalMessage::create()
+            ->setSubject("Ticket Abierto [#{$this->data['id']}]")
+            ->setBody("{$this->data["name"]} ha abierto un nuevo ticket y se lo ha asignado")
+            ->setUrl($url)
+            ->setIcon(public_path('logo.png'));
+
     }
 }

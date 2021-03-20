@@ -7,6 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Messages\SlackMessage;
+use NotificationChannels\OneSignal\OneSignalMessage;
 
 class OpenTicketToAssigned extends Notification
 {
@@ -33,7 +34,13 @@ class OpenTicketToAssigned extends Notification
      */
     public function via($notifiable)
     {
-        return ['database', 'mail'];
+        $channels = ['database', 'mail'];
+
+        if($notifiable->players->count() > 0){
+            array_push($channels, OneSignalChannel::class);
+        }
+
+        return $channels;
     }
 
     /**
@@ -86,5 +93,20 @@ class OpenTicketToAssigned extends Notification
             ->from("Soporte JeanLogistics", ":ghost:")
             ->to('#general');
             
+    }
+
+    /**
+     * Send One Signal notification
+     */
+    public function toOneSignal($notifiable)
+    {
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+
+        return OneSignalMessage::create()
+            ->setSubject("Ticket Abierto [#{$this->data['id']}]")
+            ->setBody("{$this->data["name"]} le ha asignado para dar seguimiento al ticket")
+            ->setUrl($url)
+            ->setIcon(public_path('logo.png'));
+
     }
 }

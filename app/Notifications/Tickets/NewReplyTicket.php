@@ -81,10 +81,18 @@ class NewReplyTicket extends Notification
      */
     public function toOneSignal($notifiable)
     {
+
+        if($notifiable->hasPermissionTo("portal customer") ?? false){
+            $url = getenv("APP_FRONTEND")."guest/ticket/{$this->data['id_encrypted']}";
+        }
+        else{
+            $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+        }
+
         return OneSignalMessage::create()
             ->setSubject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
             ->setBody("{$this->data["name"]} ha respondido el ticket")
-            ->setUrl(getenv("APP_FRONTEND")."tickets/{$this->data['id']}")
+            ->setUrl($url)
             ->setIcon(public_path('logo.png'));
 
     }

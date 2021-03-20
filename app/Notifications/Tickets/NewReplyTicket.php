@@ -3,11 +3,11 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\HtmlString;
 
-class OpenTicketToAdmin extends Notification
+class NewReplyTicket extends Notification
 {
     use Queueable;
 
@@ -31,7 +31,7 @@ class OpenTicketToAdmin extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     /**
@@ -43,11 +43,9 @@ class OpenTicketToAdmin extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Ticket Abierto [#{$this->data['id']}]")
-                    ->line(new HtmlString("<strong>{$this->data["name"]}</strong> ha abierto un ticket con el asunto <strong>{$this->data['title']}</strong>"))
-                    ->line("Por favor, ingresa al sistema para dar seguimiento.")
-                    ->action('Entrar', getenv("APP_FRONTEND")."tickets/{$this->data['id']}")
-                    ->salutation("-");
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -61,8 +59,8 @@ class OpenTicketToAdmin extends Notification
         return [
             "name" => $this->data["name"],
             "title" => $this->data["title"],
-            "subject" => "Ticket Abierto [#{$this->data['id']}]",
-            "message" => "<strong>{$this->data["name"]}</strong> ha abierto un ticket con el asunto <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
+            "subject" => "Nuevo Mensaje <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
+            "message" => "<strong>{$this->data["name"]}</strong> ha respondido el ticket.",
             "id" => $this->data["id"],
             "url" => "tickets/{$this->data['id']}"
         ];

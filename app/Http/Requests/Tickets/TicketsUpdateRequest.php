@@ -55,7 +55,7 @@ class TicketsUpdateRequest extends FormRequest
             
             return [
                 "title" => "required|string",
-                "contact_id" => "required|exists:contacts,id",
+                "contact_id" => "nullable|exists:contacts,id",
                 "type_ticket_id" => "required|exists:type_tickets,id",
                 "status_ticket_id" => "required|exists:status_tickets,id",
                 "priority_id" => "required|exists:priorities,id",

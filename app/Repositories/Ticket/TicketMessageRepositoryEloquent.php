@@ -55,6 +55,8 @@ class TicketMessageRepositoryEloquent extends BaseRepository implements TicketMe
         if($store->channel == "CUSTOMER"){
             $store->ticket->update(['last_replied_at' => now()]);
         }
+
+        return $store;
     }
 
     private function saveFiles($files, $ticket_message_id)

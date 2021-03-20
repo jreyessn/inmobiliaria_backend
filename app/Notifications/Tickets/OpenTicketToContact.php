@@ -63,8 +63,10 @@ class OpenTicketToContact extends Notification
         return [
             "name" => $this->data["name"],
             "title" => $this->data["title"],
+            "subject" => "Ticket Abierto [#{$this->data['id']}]",
+            "message" => "<strong>{$this->data["name"]}</strong> ha abierto un nuevo ticket y se lo ha asignado. Asunto <strong>{$this->data['title']} [#{$this->data['id']}]</strong>.",
             "id" => $this->data["id"],
-            "url" => getenv("APP_FRONTEND")."tickets/{$this->data['id']}"
+            "url" => "tickets/{$this->data['id']}"
         ];
     }
 }

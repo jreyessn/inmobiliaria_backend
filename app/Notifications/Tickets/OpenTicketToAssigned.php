@@ -63,8 +63,10 @@ class OpenTicketToAssigned extends Notification
         return [
             "name" => $this->data["name"],
             "title" => $this->data["title"],
+            "subject" => "Ticket Abierto [#{$this->data['id']}]",
+            "message" => "<strong>{$this->data["name"]}</strong> le ha asignado para dar seguimiento al ticket con asunto <strong>{$this->data['title']} [#{$this->data['id']}]</strong>.",
             "id" => $this->data["id"],
-            "url" => getenv("APP_FRONTEND")."tickets/{$this->data['id']}"
+            "url" => "tickets/{$this->data['id']}"
         ];
     }
 

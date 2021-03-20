@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\File;
 use App\Models\Ticket\TicketMessage;
 use App\Models\User;
+use App\Notifications\Tickets\NewReplyTicket;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
@@ -93,9 +94,61 @@ class TicketsMessagesController extends Controller
         
         try{
 
-            $this->ticketsMessagesRepository->save($data, $user->id ?? null);
+            $ticketMessage = $this->ticketsMessagesRepository->save($data, $user->id ?? null);
 
             DB::commit();
+
+            $paramsNotify = [
+                "title" => $ticketMessage->ticket->title, 
+                "id_encrypted" => $ticketMessage->ticket->encript_id, 
+                "id" => $ticketMessage->ticket_id, 
+            ];
+
+            if($ticketMessage->channel == "INTERNAL"){
+                $userAssigned = $ticketMessage->ticket->user;
+                $userAttended = $ticketMessage->ticket->attended_by_user;
+                $paramsNotify["name"] = $user->name;
+
+                /**
+                 * Se notifica al usuario que atiende si el usuario asignado es el que ha enviado el mensaje
+                 */
+                if(($userAssigned->id ?? null) == $user->id && $userAttended){
+                    $userAttended->notify(new NewReplyTicket($paramsNotify));
+                }
+                /**
+                 * Se notifica al usuario asignado si el usuario que atiende ha enviado el mensaje
+                 */
+                else if(($userAttended->id ?? null) == $user->id && $userAssigned){
+                    $userAssigned->notify(new NewReplyTicket($paramsNotify));
+                }
+                /**
+                 * Un tercero contestó en el canal interno y se notifica a ambos usuarios
+                 */
+                else{
+                    if($userAttended && $user->id != $userAttended->id)
+                        $userAttended->notify(new NewReplyTicket($paramsNotify));
+                    
+                    if($userAssigned && $user->id != $userAssigned->id)
+                        $userAssigned->notify(new NewReplyTicket($paramsNotify));
+                }
+            }
+            else{
+                $paramsNotify["name"] = $user->name ?? "Cliente";
+                $userAttended = $ticketMessage->ticket->attended_by_user;
+                $contactUser = $ticketMessage->ticket->contact->user ?? null;
+
+                /**
+                 * Si notifica al contacto si el usuario que atiende ha contestado (siempre que este tenga un usuario activo y el contacto tambien)
+                 */
+                if($user && $contactUser && ( $user->hasPermissionTo('portal admin') ?? null )){
+                        $contactUser->notify(new NewReplyTicket($paramsNotify));
+                }
+                else{
+                    if($userAttended)
+                        $userAttended->notify(new NewReplyTicket($paramsNotify));
+                }
+            }
+    
 
             return response()->json([
                 "message" => "Mensaje enviado con éxito",

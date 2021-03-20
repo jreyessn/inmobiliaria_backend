@@ -6,6 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\OneSignal\OneSignalChannel;
+use NotificationChannels\OneSignal\OneSignalMessage;
+use NotificationChannels\OneSignal\OneSignalWebButton;
 
 class NewReplyTicket extends Notification
 {
@@ -31,7 +34,14 @@ class NewReplyTicket extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+
+        $channels = ['database'];
+
+        if($notifiable->players->count() > 0){
+            array_push($channels, OneSignalChannel::class);
+        }
+
+        return $channels;
     }
 
     /**
@@ -64,5 +74,18 @@ class NewReplyTicket extends Notification
             "id" => $this->data["id"],
             "url" => "tickets/{$this->data['id']}"
         ];
+    }
+
+    /**
+     * Send One Signal notification
+     */
+    public function toOneSignal($notifiable)
+    {
+        return OneSignalMessage::create()
+            ->setSubject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
+            ->setBody("{$this->data["name"]} ha respondido el ticket")
+            ->setUrl(getenv("APP_FRONTEND")."tickets/{$this->data['id']}")
+            ->setIcon(public_path('logo.png'));
+
     }
 }

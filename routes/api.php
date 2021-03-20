@@ -66,6 +66,7 @@ Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('notifications', 'NotificationController@index');
     Route::post('notifications/read', 'NotificationController@read');
+    Route::put('notifications/push', 'NotificationController@savePlayerSignal');
 
     Route::group(["prefix" => "tickets"], function(){
         Route::post("admin", "Tickets\TicketsController@storeAdmin")->middleware("permission:portal admin");

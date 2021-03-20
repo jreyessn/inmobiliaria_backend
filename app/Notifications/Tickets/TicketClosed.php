@@ -3,29 +3,29 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
-use NotificationChannels\OneSignal\OneSignalWebButton;
 
-class NewReplyTicket extends Notification
+class TicketClosed extends Notification
 {
     use Queueable;
 
-    private $data;
+    private $data = [];
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct($data)
     {
         $this->data = $data;
     }
+
 
     /**
      * Get the notification's delivery channels.
@@ -35,7 +35,6 @@ class NewReplyTicket extends Notification
      */
     public function via($notifiable)
     {
-
         $channels = ['database', 'mail'];
 
         if($notifiable->players->count() > 0){
@@ -61,10 +60,8 @@ class NewReplyTicket extends Notification
         }
 
         return (new MailMessage)
-                    ->subject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
-                    ->line(new HtmlString("<strong>{$this->data["name"]}</strong> ha respondido el ticket"))
-                    ->line(new HtmlString($this->data["message"]))
-                    ->action('Entrar', $url)
+                    ->subject("Ticket {$this->data['status_text']} - {$this->data['title']} [#{$this->data['id']}]")
+                    ->line(new HtmlString("<strong>{$this->data['name']}</strong> ha dado por {$this->data['status_text']} el Ticket."))
                     ->salutation('-');
     }
 
@@ -77,11 +74,8 @@ class NewReplyTicket extends Notification
     public function toArray($notifiable)
     {
         return [
-            "name" => $this->data["name"],
-            "title" => $this->data["title"],
-            "subject" => "Nuevo Mensaje <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
-            "message" => "<strong>{$this->data["name"]}</strong> ha respondido el ticket.",
-            "id" => $this->data["id"],
+            "subject" => "Ticket {$this->data['status_text']} - <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
+            "message" => "<strong>{$this->data['name']}</strong> ha dado por {$this->data['status_text']} el Ticket.",
             "url" => "tickets/{$this->data['id']}"
         ];
     }
@@ -100,8 +94,8 @@ class NewReplyTicket extends Notification
         }
 
         return OneSignalMessage::create()
-            ->setSubject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
-            ->setBody("{$this->data["name"]} ha respondido el ticket")
+            ->setSubject("Ticket {$this->data['status_text']} - {$this->data['title']} [#{$this->data['id']}]")
+            ->setBody("{$this->data['name']} ha dado por {$this->data['status_text']} el Ticket.")
             ->setUrl($url)
             ->setIcon(public_path('logo.png'));
 

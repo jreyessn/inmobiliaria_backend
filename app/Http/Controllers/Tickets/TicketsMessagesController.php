@@ -102,6 +102,7 @@ class TicketsMessagesController extends Controller
                 "title" => $ticketMessage->ticket->title, 
                 "id_encrypted" => $ticketMessage->ticket->encript_id, 
                 "id" => $ticketMessage->ticket_id, 
+                "message" => $ticketMessage->message
             ];
 
             if($ticketMessage->channel == "INTERNAL"){

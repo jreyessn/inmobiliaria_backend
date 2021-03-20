@@ -3,26 +3,25 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\HtmlString;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\HtmlString;
 use NotificationChannels\OneSignal\OneSignalChannel;
 use NotificationChannels\OneSignal\OneSignalMessage;
-use NotificationChannels\OneSignal\OneSignalWebButton;
 
-class NewReplyTicket extends Notification
+class TicketInProgress extends Notification
 {
     use Queueable;
 
-    private $data;
+    private $data = [];
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct($data)
     {
         $this->data = $data;
     }
@@ -35,7 +34,6 @@ class NewReplyTicket extends Notification
      */
     public function via($notifiable)
     {
-
         $channels = ['database', 'mail'];
 
         if($notifiable->players->count() > 0){
@@ -61,9 +59,8 @@ class NewReplyTicket extends Notification
         }
 
         return (new MailMessage)
-                    ->subject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
-                    ->line(new HtmlString("<strong>{$this->data["name"]}</strong> ha respondido el ticket"))
-                    ->line(new HtmlString($this->data["message"]))
+                    ->subject("Ticket en Progreso - {$this->data['title']} [#{$this->data['id']}]")
+                    ->line(new HtmlString("Su ticket se encuentra ahora en estado de proceso."))
                     ->action('Entrar', $url)
                     ->salutation('-');
     }
@@ -77,11 +74,8 @@ class NewReplyTicket extends Notification
     public function toArray($notifiable)
     {
         return [
-            "name" => $this->data["name"],
-            "title" => $this->data["title"],
-            "subject" => "Nuevo Mensaje <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
-            "message" => "<strong>{$this->data["name"]}</strong> ha respondido el ticket.",
-            "id" => $this->data["id"],
+            "subject" => "Ticket en Progreso - <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
+            "message" => "Su ticket se encuentra ahora en estado de proceso.",
             "url" => "tickets/{$this->data['id']}"
         ];
     }
@@ -101,7 +95,7 @@ class NewReplyTicket extends Notification
 
         return OneSignalMessage::create()
             ->setSubject("Nuevo Mensaje - {$this->data['title']} [#{$this->data['id']}]")
-            ->setBody("{$this->data["name"]} ha respondido el ticket")
+            ->setBody("Su ticket se encuentra ahora en estado de proceso.")
             ->setUrl($url)
             ->setIcon(public_path('logo.png'));
 

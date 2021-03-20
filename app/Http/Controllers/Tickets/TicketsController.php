@@ -18,6 +18,8 @@ use App\Models\System\System;
 use App\Notifications\Tickets\OpenTicketToAdmin;
 use App\Notifications\Tickets\OpenTicketToAssigned;
 use App\Notifications\Tickets\OpenTicketToContact;
+use App\Notifications\Tickets\TicketClosed;
+use App\Notifications\Tickets\TicketInProgress;
 use App\Repositories\System\SystemRepositoryEloquent;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Users\UserRepositoryEloquent;
@@ -85,11 +87,10 @@ class TicketsController extends Controller
             $user = request()->user();
             $data = $request->all();
             $data["attended_by_user_id"] = $user->id;
+
             $store = $this->ticketsRepository->save($data);
             
-
             $data['ticket_id'] = $store->id;
-            
             $this->ticketsMessagesRepository->save($data, $user->id);
 
             $paramsNotify = [
@@ -245,14 +246,18 @@ class TicketsController extends Controller
     public function update(TicketsUpdateRequest $request, $id)
     {
         DB::beginTransaction();
+        
         try {
             $data = $request->all();
 
+            $original = $this->ticketsRepository->find($id);
             $found = $this->ticketsRepository->saveUpdate($data, $id);
 
-            if($found->getOriginal('user_id') == $found->user_id && $found->user){
+            /**
+             * notifications
+             */
+            if($original->user_id != $found->user_id && $found->user){
                 $user = request()->user();
-
                 $paramsNotify = [
                     "name" => $user->name, 
                     "title" => $found->title, 
@@ -262,7 +267,8 @@ class TicketsController extends Controller
                 $found->user->notify(new OpenTicketToAssigned($paramsNotify));
             }
 
-            if($found->getOriginal('contact_id') == $found->contact_id && $found->contact){
+            if($original->contact_id != $found->contact_id && $found->contact){
+                $user = request()->user();
 
                 $paramsNotify = [
                     "name" => $user->name, 
@@ -271,7 +277,44 @@ class TicketsController extends Controller
                     "id" => $found->id, 
                 ];
 
-                $found->user->notify(new OpenTicketToContact($paramsNotify));
+                $found->contact->user->notify(new OpenTicketToContact($paramsNotify));
+            }
+
+            if(
+                ($found->status_ticket->can_close ?? null) == 1 && 
+                $original->status_ticket_id != $found->status_ticket_id && 
+                $found->status_ticket &&
+                $found->contact
+            ){
+                $user = request()->user();
+
+                $paramsNotify = [
+                    "title" => $found->title, 
+                    "id_encrypted" => $found->encript_id, 
+                    "id" => $found->id, 
+                    "name" => $user->name, 
+                    "status_text" => $found->status_ticket->description
+                ];
+
+                $found->contact->user->notify(new TicketClosed($paramsNotify));
+            }
+    
+            if(
+                $found->status_ticket_id == 2 && 
+                $original->status_ticket_id != $found->status_ticket_id && 
+                $found->status_ticket &&
+                $found->contact    
+            ){
+                $user = request()->user();
+
+                $paramsNotify = [
+                    "name" => $user->name, 
+                    "title" => $found->title, 
+                    "id_encrypted" => $found->encript_id, 
+                    "id" => $found->id, 
+                ];
+
+                $found->contact->user->notify(new TicketInProgress($paramsNotify));
             }
 
             DB::commit();

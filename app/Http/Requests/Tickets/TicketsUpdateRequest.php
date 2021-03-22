@@ -61,7 +61,7 @@ class TicketsUpdateRequest extends FormRequest
                 "priority_id" => "required|exists:priorities,id",
                 "group_id" => "nullable|exists:groups,id",
                 "system_id" => "nullable|exists:systems,id",
-                "user_id" => "nullable|exists:users,id",
+                "user_id" => "nullable|array",
                 "deadline" => "nullable",
             ];
 

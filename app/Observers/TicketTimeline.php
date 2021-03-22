@@ -96,27 +96,27 @@ class TicketTimeline
         }
 
         // change user
-        if($ticket->getOriginal("user_id") !== $ticket->user_id){
-            $original = User::find($ticket->getOriginal("user_id"));
+        // if($ticket->getOriginal("user_id") !== $ticket->user_id){
+        //     $original = User::find($ticket->getOriginal("user_id"));
 
-            $note = '';
+        //     $note = '';
 
-            if($original && $ticket->user)
-                $note = "Ha cambiado el usuario asignado de <strong>{$original->name}</strong> a <strong>{$ticket->user->name}</strong>.";
+        //     if($original && $ticket->user)
+        //         $note = "Ha cambiado el usuario asignado de <strong>{$original->name}</strong> a <strong>{$ticket->user->name}</strong>.";
                 
-            if($original && $ticket->user == null)
-                $note = "Ha removido al usuario asignado <strong>{$original->name}</strong>.";
+        //     if($original && $ticket->user == null)
+        //         $note = "Ha removido al usuario asignado <strong>{$original->name}</strong>.";
                 
-            if($original == null && $ticket->user)
-                $note = "Ha asignado el ticket al usuario asignado <strong>{$ticket->user->name}</strong>.";
+        //     if($original == null && $ticket->user)
+        //         $note = "Ha asignado el ticket al usuario asignado <strong>{$ticket->user->name}</strong>.";
 
-            if($note)
-                Timeline::create([
-                    "ticket_id" => $ticket->id,
-                    "made_by_user" => request()->user()->id,
-                    "note" => $note
-                ]);
-        }
+        //     if($note)
+        //         Timeline::create([
+        //             "ticket_id" => $ticket->id,
+        //             "made_by_user" => request()->user()->id,
+        //             "note" => $note
+        //         ]);
+        // }
 
         // change user
         if($ticket->getOriginal("attended_by_user_id") !== $ticket->attended_by_user_id){

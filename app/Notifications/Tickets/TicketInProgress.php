@@ -60,6 +60,7 @@ class TicketInProgress extends Notification
 
         return (new MailMessage)
                     ->subject("Ticket en Progreso - {$this->data['title']} [#{$this->data['id']}]")
+                    ->greeting("Buen día.")
                     ->line(new HtmlString("Su ticket se encuentra ahora en estado de proceso."))
                     ->action('Entrar', $url)
                     ->salutation('-');

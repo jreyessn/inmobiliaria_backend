@@ -61,6 +61,7 @@ class TicketClosed extends Notification
 
         return (new MailMessage)
                     ->subject("Ticket {$this->data['status_text']} - {$this->data['title']} [#{$this->data['id']}]")
+                    ->greeting("Buen día.")
                     ->line(new HtmlString("<strong>{$this->data['name']}</strong> ha dado por {$this->data['status_text']} el Ticket."))
                     ->salutation('-');
     }

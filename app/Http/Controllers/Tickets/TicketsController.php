@@ -89,7 +89,8 @@ class TicketsController extends Controller
             $data["attended_by_user_id"] = $user->id;
 
             $store = $this->ticketsRepository->save($data);
-            
+            $assigned = $store->assigned;
+
             $data['ticket_id'] = $store->id;
             $this->ticketsMessagesRepository->save($data, $user->id);
 
@@ -103,13 +104,15 @@ class TicketsController extends Controller
             if($store->contact)
                 $store->contact->user->notify(new OpenTicketToContact($paramsNotify));
             
+            $assignedCreatedTicket = $assigned->firstWhere("id", $user->id);
+
             // created by admin and assigned user
-            if($store->user && $store->user->id != $user->id)
-                 $store->user->notify(new OpenTicketToAssigned($paramsNotify));
+            if(is_null($assignedCreatedTicket)){
+                FacadesNotification::send($assigned, new OpenTicketToAssigned($paramsNotify));
+            }
                  
             // created by user and auto assigned. Notify to admin
-     
-            if($store->user && $store->user->id == $user->id){
+            if($assignedCreatedTicket){
                 $users = $this->userRepository->getAdminUsers();
 
                 FacadesNotification::send($users, new OpenTicketToAdmin($paramsNotify));
@@ -225,7 +228,8 @@ class TicketsController extends Controller
                 "status_ticket",
                 "type_ticket",
                 "system",
-                "attended_by_user"
+                "attended_by_user",
+                "assigned"
             );
             
             return compact('data');
@@ -248,75 +252,15 @@ class TicketsController extends Controller
         DB::beginTransaction();
         
         try {
+
             $data = $request->all();
-
-            $original = $this->ticketsRepository->find($id);
+            
+            $original = $this->ticketsRepository->find($id)->load("assigned");
             $found = $this->ticketsRepository->saveUpdate($data, $id);
+            $user = request()->user();
 
-            /**
-             * notifications
-             */
-            if($original->user_id != $found->user_id && $found->user){
-                $user = request()->user();
-                $paramsNotify = [
-                    "name" => $user->name, 
-                    "title" => $found->title, 
-                    "id" => $found->id, 
-                ];
-
-                $found->user->notify(new OpenTicketToAssigned($paramsNotify));
-            }
-
-            if($original->contact_id != $found->contact_id && $found->contact){
-                $user = request()->user();
-
-                $paramsNotify = [
-                    "name" => $user->name, 
-                    "title" => $found->title, 
-                    "id_encrypted" => $found->encript_id, 
-                    "id" => $found->id, 
-                ];
-
-                $found->contact->user->notify(new OpenTicketToContact($paramsNotify));
-            }
-
-            if(
-                ($found->status_ticket->can_close ?? null) == 1 && 
-                $original->status_ticket_id != $found->status_ticket_id && 
-                $found->status_ticket &&
-                $found->contact
-            ){
-                $user = request()->user();
-
-                $paramsNotify = [
-                    "title" => $found->title, 
-                    "id_encrypted" => $found->encript_id, 
-                    "id" => $found->id, 
-                    "name" => $user->name, 
-                    "status_text" => $found->status_ticket->description
-                ];
-
-                $found->contact->user->notify(new TicketClosed($paramsNotify));
-            }
-    
-            if(
-                $found->status_ticket_id == 2 && 
-                $original->status_ticket_id != $found->status_ticket_id && 
-                $found->status_ticket &&
-                $found->contact    
-            ){
-                $user = request()->user();
-
-                $paramsNotify = [
-                    "name" => $user->name, 
-                    "title" => $found->title, 
-                    "id_encrypted" => $found->encript_id, 
-                    "id" => $found->id, 
-                ];
-
-                $found->contact->user->notify(new TicketInProgress($paramsNotify));
-            }
-
+            $this->notifyTo($original, $found, $user);
+         
             DB::commit();
 
             return response()->json([
@@ -329,6 +273,84 @@ class TicketsController extends Controller
             return response()->json(null, 404);
         }
 
+    }
+
+    /**
+     * Notificaciones al actualizar (comparar original y actualizado).
+     * 
+     * @param App\Model\Ticket\Ticket $original 
+     * @param App\Model\Ticket\Ticket $found 
+     * @param App\Model\User $user 
+     */
+    private function notifyTo($original, $found, $user)
+    {
+        
+        $usersNewAssigned = $found->assigned->reject(function($assigned) use ($original){
+            return $original->assigned->filter(function($assignedOriginal) use ($assigned){
+                return ($assigned->id == $assignedOriginal->id);
+            })->count() > 0;
+        });
+
+        if($usersNewAssigned->count() > 0){
+
+            $paramsNotify = [
+                "name" => $user->name, 
+                "title" => $found->title, 
+                "id" => $found->id, 
+            ];
+
+            FacadesNotification::send($usersNewAssigned, new OpenTicketToAssigned($paramsNotify));
+        }
+
+        if($original->contact_id != $found->contact_id && $found->contact){
+            $user = request()->user();
+
+            $paramsNotify = [
+                "name" => $user->name, 
+                "title" => $found->title, 
+                "id_encrypted" => $found->encript_id, 
+                "id" => $found->id, 
+            ];
+
+            $found->contact->user->notify(new OpenTicketToContact($paramsNotify));
+        }
+
+        if(
+            ($found->status_ticket->can_close ?? null) == 1 && 
+            $original->status_ticket_id != $found->status_ticket_id && 
+            $found->status_ticket &&
+            $found->contact
+        ){
+            $user = request()->user();
+
+            $paramsNotify = [
+                "title" => $found->title, 
+                "id_encrypted" => $found->encript_id, 
+                "id" => $found->id, 
+                "name" => $user->name, 
+                "status_text" => $found->status_ticket->description
+            ];
+
+            $found->contact->user->notify(new TicketClosed($paramsNotify));
+        }
+
+        if(
+            $found->status_ticket_id == 2 && 
+            $original->status_ticket_id != $found->status_ticket_id && 
+            $found->status_ticket &&
+            $found->contact    
+        ){
+            $user = request()->user();
+
+            $paramsNotify = [
+                "name" => $user->name, 
+                "title" => $found->title, 
+                "id_encrypted" => $found->encript_id, 
+                "id" => $found->id, 
+            ];
+
+            $found->contact->user->notify(new TicketInProgress($paramsNotify));
+        }
     }
 
     /**

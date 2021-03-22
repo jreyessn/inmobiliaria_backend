@@ -46,8 +46,6 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         return Ticket::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -71,7 +69,13 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
             $data['deadline'] = "{$data['deadline_date']} {$data['deadline_time']}";
         }
 
-        return $this->create($data);
+        $store = $this->create($data);
+
+        if(array_key_exists('user_id', $data)){
+            $store->assigned()->sync($data["user_id"]);
+        }
+
+        return $store;
     }
 
     public function saveUpdate(array $data, $id)
@@ -96,6 +100,22 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
         }
         
         $found->save();
+
+        if(array_key_exists('user_id', $data)){
+            
+            if(is_array($data["user_id"])){
+                $found->assigned()->sync($data["user_id"]);
+            }
+            else if($data["user_id"]){
+                $assignedCurrent = $found->assigned()->whereNotIn('user_id', [ $data["user_id"] ])->get()->pluck("id")->toArray();
+                $assignedCurrent[] = $data["user_id"];
+            
+                $found->assigned()->sync($assignedCurrent);
+            }
+            else{
+                $found->assigned()->sync([]);
+            }
+        }
         
         return $found;
     }

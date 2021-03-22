@@ -11,6 +11,7 @@ use App\Notifications\Tickets\NewReplyTicket;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Ticket\TicketRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class TicketsMessagesController extends Controller
@@ -106,21 +107,23 @@ class TicketsMessagesController extends Controller
             ];
 
             if($ticketMessage->channel == "INTERNAL"){
-                $userAssigned = $ticketMessage->ticket->user;
+                $userAssigned = $ticketMessage->ticket->assigned;
                 $userAttended = $ticketMessage->ticket->attended_by_user;
                 $paramsNotify["name"] = $user->name;
+
+                $userAssignedSend = $userAssigned->firstWhere('id', $user->id);
 
                 /**
                  * Se notifica al usuario que atiende si el usuario asignado es el que ha enviado el mensaje
                  */
-                if(($userAssigned->id ?? null) == $user->id && $userAttended){
+                if($userAssignedSend){
                     $userAttended->notify(new NewReplyTicket($paramsNotify));
                 }
                 /**
                  * Se notifica al usuario asignado si el usuario que atiende ha enviado el mensaje
                  */
-                else if(($userAttended->id ?? null) == $user->id && $userAssigned){
-                    $userAssigned->notify(new NewReplyTicket($paramsNotify));
+                else if(($userAttended->id ?? null) == $user->id){
+                    Notification::send($userAssigned, new NewReplyTicket($paramsNotify));
                 }
                 /**
                  * Un tercero contestó en el canal interno y se notifica a ambos usuarios
@@ -129,8 +132,9 @@ class TicketsMessagesController extends Controller
                     if($userAttended && $user->id != $userAttended->id)
                         $userAttended->notify(new NewReplyTicket($paramsNotify));
                     
-                    if($userAssigned && $user->id != $userAssigned->id)
-                        $userAssigned->notify(new NewReplyTicket($paramsNotify));
+                    if(is_null($userAssigned))
+                        Notification::send($userAssigned, new NewReplyTicket($paramsNotify));
+
                 }
             }
             else{

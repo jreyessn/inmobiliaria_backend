@@ -43,7 +43,6 @@ class Ticket extends Model implements Transformable
         "status_ticket_id",
         "priority_id",
         "group_id",
-        "user_id",
         "system_id",
         "spam",
         "deadline",
@@ -196,6 +195,10 @@ class Ticket extends Model implements Transformable
 
     public function files(){
         return $this->hasManyThrough(File::class, TicketMessage::class, 'ticket_id', 'model_id')->where("model_type", TicketMessage::class);
+    }
+
+    public function assigned(){
+        return $this->belongsToMany(User::class, 'ticket_assigned');
     }
 
     public function getDiffTrackedAttribute(){

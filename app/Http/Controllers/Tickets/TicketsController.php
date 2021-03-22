@@ -20,6 +20,7 @@ use App\Notifications\Tickets\OpenTicketToAssigned;
 use App\Notifications\Tickets\OpenTicketToContact;
 use App\Notifications\Tickets\TicketClosed;
 use App\Notifications\Tickets\TicketInProgress;
+use App\Notifications\Tickets\TicketResolved;
 use App\Repositories\System\SystemRepositoryEloquent;
 use App\Repositories\Ticket\TicketMessageRepositoryEloquent;
 use App\Repositories\Users\UserRepositoryEloquent;
@@ -303,8 +304,6 @@ class TicketsController extends Controller
         }
 
         if($original->contact_id != $found->contact_id && $found->contact){
-            $user = request()->user();
-
             $paramsNotify = [
                 "name" => $user->name, 
                 "title" => $found->title, 
@@ -321,8 +320,6 @@ class TicketsController extends Controller
             $found->status_ticket &&
             $found->contact
         ){
-            $user = request()->user();
-
             $paramsNotify = [
                 "title" => $found->title, 
                 "id_encrypted" => $found->encript_id, 
@@ -340,8 +337,6 @@ class TicketsController extends Controller
             $found->status_ticket &&
             $found->contact    
         ){
-            $user = request()->user();
-
             $paramsNotify = [
                 "name" => $user->name, 
                 "title" => $found->title, 
@@ -350,6 +345,24 @@ class TicketsController extends Controller
             ];
 
             $found->contact->user->notify(new TicketInProgress($paramsNotify));
+        }
+
+        if(
+            $found->status_ticket_id == 3 && 
+            $original->status_ticket_id != $found->status_ticket_id && 
+            $found->attended_by_user_id != $user->id &&
+            $found->status_ticket && 
+            $found->attended_by_user
+        ){
+
+            $paramsNotify = [
+                "name" => $user->name, 
+                "title" => $found->title, 
+                "id_encrypted" => $found->encript_id, 
+                "id" => $found->id, 
+            ];
+
+            $found->attended_by_user->notify(new TicketResolved($paramsNotify));
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Tickets;
 
+use App\Rules\HasTrackedTime;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TicketsUpdateRequest extends FormRequest
@@ -41,7 +42,7 @@ class TicketsUpdateRequest extends FormRequest
             }
             
             if($this->has("status_ticket_id")){
-                $fields = array_merge($fields, ['status_ticket_id' => "nullable|exists:status_tickets,id"]);
+                $fields = array_merge($fields, ['status_ticket_id' => [ 'nullable', 'exists:status_tickets,id', new HasTrackedTime($this->id)]]);
             }
             
             if($this->has("type_ticket_id")){
@@ -57,7 +58,7 @@ class TicketsUpdateRequest extends FormRequest
                 "title" => "required|string",
                 "contact_id" => "nullable|exists:contacts,id",
                 "type_ticket_id" => "required|exists:type_tickets,id",
-                "status_ticket_id" => "required|exists:status_tickets,id",
+                "status_ticket_id" =>  [ 'nullable', 'exists:status_tickets,id', new HasTrackedTime($this->id)],
                 "priority_id" => "required|exists:priorities,id",
                 "group_id" => "nullable|exists:groups,id",
                 "system_id" => "nullable|exists:systems,id",

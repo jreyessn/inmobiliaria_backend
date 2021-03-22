@@ -81,11 +81,15 @@ class TicketFilterCriteria implements CriteriaInterface
             $model = $model->where(function($query){
                 $userId = request()->user()->id;
 
-                $query->orWhere('user_id', $userId);
+                $query->whereHas('assigned', function($query) use ($userId){
+                    $query->where('user_id', $userId);
+                });
+
                 $query->orWhere('attended_by_user_id', $userId);
             });
 
         }
+
         if($customer_id){
             $explodes = explode(",", $customer_id);
 

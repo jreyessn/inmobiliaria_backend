@@ -36,7 +36,11 @@ class NewReplyTicket extends Notification
     public function via($notifiable)
     {
 
-        $channels = ['database', 'mail'];
+        $channels = ['database'];
+
+        if($notifiable->hasPermissionTo('portal admin')){
+            $channels = ['mail'];
+        }
 
         if($notifiable->players->count() > 0){
             array_push($channels, OneSignalChannel::class);

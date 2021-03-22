@@ -3,14 +3,13 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\HtmlString;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use NotificationChannels\OneSignal\OneSignalChannel;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\HtmlString;
 use NotificationChannels\OneSignal\OneSignalMessage;
 
-class TicketInProgress extends Notification
+class TicketResolved extends Notification
 {
     use Queueable;
 
@@ -51,17 +50,11 @@ class TicketInProgress extends Notification
      */
     public function toMail($notifiable)
     {
-        if($notifiable->hasPermissionTo("portal customer") ?? false){
-            $url = getenv("APP_FRONTEND")."guest/ticket/{$this->data['id_encrypted']}";
-        }
-        else{
-            $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
-        }
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
 
         return (new MailMessage)
-                    ->subject("Ticket en Progreso - {$this->data['title']} [#{$this->data['id']}]")
-                    ->greeting("Buen día.")
-                    ->line(new HtmlString("Su ticket se encuentra ahora en estado de proceso."))
+                    ->subject("Ticket Resuelto - {$this->data['title']} [#{$this->data['id']}]")
+                    ->line(new HtmlString("El ticket ha sido marcado como resuelto por <strong>{$this->data['name']}</strong>."))
                     ->action('Entrar', $url)
                     ->salutation('-');
     }
@@ -75,8 +68,8 @@ class TicketInProgress extends Notification
     public function toArray($notifiable)
     {
         return [
-            "subject" => "Ticket en Progreso - <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
-            "message" => "Su ticket se encuentra ahora en estado de proceso.",
+            "subject" => "Ticket Resuelto - <strong>{$this->data['title']} [#{$this->data['id']}]</strong>",
+            "message" => "El ticket ha sido marcado como resuelto por {$this->data['name']}.",
             "url" => "tickets/{$this->data['id']}"
         ];
     }
@@ -87,16 +80,11 @@ class TicketInProgress extends Notification
     public function toOneSignal($notifiable)
     {
 
-        if($notifiable->hasPermissionTo("portal customer") ?? false){
-            $url = getenv("APP_FRONTEND")."guest/ticket/{$this->data['id_encrypted']}";
-        }
-        else{
-            $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
-        }
-
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+        
         return OneSignalMessage::create()
-            ->setSubject("Ticket en Progreso - {$this->data['title']} [#{$this->data['id']}]")
-            ->setBody("Su ticket se encuentra ahora en estado de proceso.")
+            ->setSubject("Ticket Resuelto - {$this->data['title']} [#{$this->data['id']}]")
+            ->setBody("El ticket ha sido marcado como resuelto por {$this->data['name']}.")
             ->setUrl($url)
             ->setIcon(public_path('logo.png'));
 

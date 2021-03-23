@@ -39,7 +39,7 @@ class NewReplyTicket extends Notification
         $channels = ['database'];
 
         if($notifiable->hasPermissionTo('portal admin')){
-            $channels = ['mail'];
+            array_push($channels, 'mail');
         }
 
         if($notifiable->players->count() > 0){

@@ -24,9 +24,6 @@ class TypeTicketsSeeder extends Seeder
             [
                 'description' => 'Incidencia'
             ],
-            [
-                'description' => 'Problema'
-            ],
         ]);
     }
 }

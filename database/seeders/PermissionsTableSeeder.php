@@ -84,7 +84,8 @@ class PermissionsTableSeeder extends Seeder
         $role = Role::where(['name' => 'Administrador'])->first();
 
         $role->givePermissionTo(Permission::whereNotIn("name", [
-            "portal customer"
+            "portal customer",
+            "only assigned tickets"
         ])->get());
 
         $role = Role::where(['name' => 'Desarrollador'])->first();
@@ -110,6 +111,8 @@ class PermissionsTableSeeder extends Seeder
             "show tickets",
             "store tickets",
             "reply tickets",
+            "reply customer tickets",
+            "details tickets"
         ]);
 
 

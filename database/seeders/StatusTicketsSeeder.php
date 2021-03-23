@@ -21,13 +21,13 @@ class StatusTicketsSeeder extends Seeder
                 'default' => 1
             ],
             [
-                'description' => 'Pendiente',
+                'description' => 'En Proceso',
                 'can_close' => 0,
                 'default' => 0
             ],
             [
                 'description' => 'Resuelto',
-                'can_close' => 1,
+                'can_close' => 0,
                 'default' => 0
             ],
             [
@@ -37,11 +37,6 @@ class StatusTicketsSeeder extends Seeder
             ],
             [
                 'description' => 'Esperando Cliente',
-                'can_close' => 0,
-                'default' => 0
-            ],
-            [
-                'description' => 'Esperando un Tercero',
                 'can_close' => 0,
                 'default' => 0
             ],

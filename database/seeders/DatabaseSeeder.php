@@ -23,7 +23,8 @@ class DatabaseSeeder extends Seeder
             ConfigurationSeeder::class,
             PrioritiesSeeder::class,
             StatusTicketsSeeder::class,
-            TypeTicketsSeeder::class
+            TypeTicketsSeeder::class,
+            StatusRepliesSeeder::class
         ]);
 
     }

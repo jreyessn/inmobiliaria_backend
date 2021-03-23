@@ -98,7 +98,7 @@ class Ticket extends Model implements Transformable
         }
 
         $repy = StatusReply::find(5);
-        $repy->description = "{$this->last_replied_internal_user->name} ha respondido";
+        $repy->description = "{$this->last_replied_internal_user->name} ha contestado";
         $repy->show_in_list = 1;
         return $repy;
     }
@@ -107,7 +107,7 @@ class Ticket extends Model implements Transformable
     {
 
         $user = request()->user();
-
+        
         if($this->status_ticket->can_close ?? false){
             $status = $this->status_ticket;
             $status->color = '#fff';
@@ -120,22 +120,12 @@ class Ticket extends Model implements Transformable
         if($user){
 
             if($user->hasPermissionTo('portal admin')){
-                return $this->reply_status_to_users;
+                return StatusReply::find($this->reply_status_to_users_id);
             }
 
         }
 
-        return $this->reply_status_to_contact;
-    }
-
-    public function reply_status_to_contact()
-    {
-        return $this->belongsTo(StatusReply::class, 'reply_status_to_contact_id');
-    }
-    
-    public function reply_status_to_users()
-    {
-        return $this->belongsTo(StatusReply::class, 'reply_status_to_users_id');
+        return StatusReply::find($this->reply_status_to_contact_id);
     }
 
     public function type_ticket()

@@ -80,7 +80,9 @@ class DashboardController extends Controller
                 $query->whereBetween(DB::raw('DATE(created_at)'), [$request->since, $request->until]);
             })->count();
 
-            $item->percentage_tickets = ($item->tickets_count * 100 ) / Ticket::get()->count();
+            $ticketsQuantity = Ticket::get()->count() == 0? 1 : Ticket::get()->count();
+
+            $item->percentage_tickets = ($item->tickets_count * 100 ) / $ticketsQuantity;
             $item->percentage_tickets = decimal($item->percentage_tickets);
             
             return $item;

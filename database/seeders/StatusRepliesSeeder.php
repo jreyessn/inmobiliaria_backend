@@ -15,7 +15,7 @@ class StatusRepliesSeeder extends Seeder
     public function run()
     {
         StatusReply::create([
-            "description" => "Atendido",
+            "description" => "Atendiendo",
             "background_color" => "#0ee494",
             "border_color" => "#0CC27E",
             "color" => "#021a11",

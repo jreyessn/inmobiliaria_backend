@@ -24,11 +24,20 @@ class CustomerCriteria implements CriteriaInterface
     {
 
         $customers = request()->get('customer_id', null);
-
+        $user = request()->user();
+        
         if($customers){
             $explodes = explode(",", $customers);
 
             $model = $model->whereIn("customer_id", $explodes);
+        }
+
+        if($user->hasPermissionTo("portal customer")){
+            $customer = $user->contact->customer ?? null;
+            
+            $model = $model->when($customer, function($query) use ($customer){
+                $query->where("customer_id", $customer);
+            });
         }
 
         return $model;

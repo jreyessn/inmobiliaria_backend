@@ -55,6 +55,8 @@ class Ticket extends Model implements Transformable
         "last_replied_internal_user_id",
         "reply_status_to_contact_id",
         "reply_status_to_users_id",
+        "tracked_time",
+        "description"
     ];
 
     protected $appends = [

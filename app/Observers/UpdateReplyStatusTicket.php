@@ -24,7 +24,7 @@ class UpdateReplyStatusTicket
                 // user support
                 if($user && $user->hasPermissionTo("portal admin")){
 
-                    if($ticketMessage->ticket->messages->count() == 1){
+                    if($ticketMessage->ticket->messages->count() == 1 && !is_null($ticketMessage->ticket->reply_status_to_contract_id)){
                         $ticketMessage->ticket->update([
                             "reply_status_to_contact_id" => 7
                         ]);
@@ -35,17 +35,12 @@ class UpdateReplyStatusTicket
                             "reply_status_to_users_id" => 1
                         ]); 
 
-                        // TicketTimeline::create([
-                        //     'made_by_user' => $user->id,
-                        //     'ticket_id' => $ticketMessage->ticket->id,
-                        //     'note' => "Ha respondido."
-                        // ]);
                     }
 
                 }
                 else{
 
-                    if($ticketMessage->ticket->messages->count() == 1){
+                    if($ticketMessage->ticket->messages->count() == 1 && !is_null($ticketMessage->ticket->reply_status_to_users_id)){
                         $ticketMessage->ticket->update([
                             "reply_status_to_users_id" => 6
                         ]);
@@ -56,11 +51,6 @@ class UpdateReplyStatusTicket
                             "reply_status_to_users_id" => 3
                         ]); 
 
-                        // TicketTimeline::create([
-                        //     'made_by_user' => $user->id,
-                        //     'ticket_id' => $ticketMessage->ticket->id,
-                        //     'note' => "Ha respondido."
-                        // ]);
                     }
                 }
 

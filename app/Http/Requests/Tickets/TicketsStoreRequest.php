@@ -25,6 +25,7 @@ class TicketsStoreRequest extends FormRequest
     {
         return [
             "title" => "required",
+            "description" => "nullable|string",
             "contact_id" => "nullable|exists:contacts,id",
             "cc" => "nullable|string",
             "type_ticket_id" => "required|exists:type_tickets,id",
@@ -35,7 +36,7 @@ class TicketsStoreRequest extends FormRequest
             "user_id" => "array",
             "deadline_date" => "nullable|date",
             "deadline_time" => "nullable|string",
-            "message" => "required|string",
+            "message" => "nullable|string",
             "files" => "nullable|array"
         ];
     }

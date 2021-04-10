@@ -2,7 +2,9 @@
 
 use App\Exports\FrequencyVisitsReport;
 use App\Exports\VisitReport;
+use App\Models\User;
 use App\Models\Visit\Visit;
+use App\Notifications\Plagas;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -20,7 +22,7 @@ use Maatwebsite\Excel\Facades\Excel;
 // Route::get('/', 'Controller');
 
 Route::get('/', function () {
-   return view('welcome');
+   User::find(1)->notify(new Plagas);
 });
 
 

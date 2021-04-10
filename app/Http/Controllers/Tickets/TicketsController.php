@@ -88,12 +88,19 @@ class TicketsController extends Controller
             $user = request()->user();
             $data = $request->all();
             $data["attended_by_user_id"] = $user->id;
-
+            $data['last_replied_at'] = now();
             $store = $this->ticketsRepository->save($data);
             $assigned = $store->assigned;
 
-            $data['ticket_id'] = $store->id;
-            $this->ticketsMessagesRepository->save($data, $user->id);
+            if($data["message"]){
+                $data['ticket_id'] = $store->id;
+                $this->ticketsMessagesRepository->save($data, $user->id);
+            }
+            else{
+                $store->reply_status_to_users_id = 5;
+                $store->reply_status_to_contact_id = 7;
+                $store->save();
+            }
 
             $paramsNotify = [
                 "name" => $user->name, 
@@ -390,25 +397,16 @@ class TicketsController extends Controller
     function tracked($ticket_id, Request $request){
 
         $request->validate([
-            'tracked_initial' => 'nullable|date',
-            'tracked_end' => 'nullable|date',
+            'tracked_time' => 'nullable|string',
         ]);
 
         $ticket = $this->ticketsRepository->find($ticket_id);
-
-        if($request->tracked_initial){
-            $ticket->tracked_initial_time = $request->tracked_initial;
-        }
-        
-        if($request->tracked_end){
-            $ticket->tracked_end_time = $request->tracked_end;
-        }
-
+        $ticket->tracked_time = $request->tracked_time;
         $ticket->save();
 
-        return [ 
-            'diffHumans' => $ticket->diff_tracked    
-        ];
+        return response()->json([
+            'tracked_time' => $ticket->tracked_time
+        ], 200);
     }
 
     /**
@@ -430,7 +428,13 @@ class TicketsController extends Controller
         $newTicketMessage->forward = true;
         $newTicketMessage->channel = 'INTERNAL';
         $newTicketMessage->save();
-
+     
+        foreach ($ticketMessage->files as $file) {
+            $newFile = $file->replicate();
+            $newFile->model_id = $newTicketMessage->id;
+            $newFile->save();
+        }
+     
         return [ 
             'message' => "Mensaje reenviado con éxito"     
         ];

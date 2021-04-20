@@ -45,7 +45,6 @@ class UserCreateRequest extends FormRequest
             'roles'                 =>  'required|array',
             'roles.*'               =>  'required|exists:roles,id',
             'phone'                 =>  'nullable|string|max:14',
-            'farms.*'               =>  'nullable|exists:farms,id',
         ];
     }
 

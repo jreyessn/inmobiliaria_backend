@@ -31,7 +31,7 @@ class User extends Authenticatable
         "notification_all_tickets",
         'password_changed_at',
         'phone',
-        'type_provider_id'
+        'slack_player'
     ];
 
     /**

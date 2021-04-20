@@ -4,7 +4,9 @@ namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Channels\SlackWebhookChannel;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 use NotificationChannels\OneSignal\OneSignalChannel;
@@ -44,6 +46,10 @@ class NewReplyTicket extends Notification
 
         if($notifiable->players->count() > 0){
             array_push($channels, OneSignalChannel::class);
+        }
+
+        if($notifiable->slack_player){
+            array_push($channels, SlackWebhookChannel::class);
         }
 
         return $channels;
@@ -88,6 +94,25 @@ class NewReplyTicket extends Notification
             "id" => $this->data["id"],
             "url" => "tickets/{$this->data['id']}"
         ];
+    }
+
+    /**
+     * Get the slack representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toSlack($notifiable)
+    {
+        $url = getenv("APP_FRONTEND")."tickets/{$this->data['id']}";
+
+        return (new SlackMessage)
+            ->info()
+            ->content("<{$url}|Ticket [#{$this->data['id']}] - {$this->data['title']}>. *{$this->data["name"]}* ha respondido el ticket.")
+            ->from("Soporte JeanLogistics", ":mega:")
+            ->to($notifiable->slack_player)
+            ->http(['http_errors' => false]);
+            
     }
 
     /**

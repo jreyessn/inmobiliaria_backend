@@ -97,8 +97,6 @@ class TicketsMessagesController extends Controller
 
             $ticketMessage = $this->ticketsMessagesRepository->save($data, $user->id ?? null);
 
-            DB::commit();
-
             $paramsNotify = [
                 "title" => $ticketMessage->ticket->title, 
                 "id_encrypted" => $ticketMessage->ticket->encript_id, 
@@ -153,7 +151,8 @@ class TicketsMessagesController extends Controller
                         $userAttended->notify(new NewReplyTicket($paramsNotify));
                 }
             }
-    
+
+            DB::commit();
 
             return response()->json([
                 "message" => "Mensaje enviado con éxito",

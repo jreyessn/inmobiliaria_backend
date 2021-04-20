@@ -3,6 +3,7 @@
 namespace App\Notifications\Tickets;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Channels\SlackWebhookChannel;
 use Illuminate\Support\HtmlString;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -39,6 +40,10 @@ class OpenTicketToAssigned extends Notification
 
         if($notifiable->players->count() > 0){
             array_push($channels, OneSignalChannel::class);
+        }
+
+        if($notifiable->slack_player){
+            array_push($channels, SlackWebhookChannel::class);
         }
 
         return $channels;
@@ -91,8 +96,9 @@ class OpenTicketToAssigned extends Notification
         return (new SlackMessage)
             ->info()
             ->content("<{$url}|Ticket Abierto [#{$this->data['id']}] - {$this->data['title']}>. Se le ha asignado para dar seguimiento.")
-            ->from("Soporte JeanLogistics", ":ghost:")
-            ->to('#general');
+            ->from("Soporte JeanLogistics", ":mega:")
+            ->to($notifiable->slack_player)
+            ->http(['http_errors' => false]);
             
     }
 

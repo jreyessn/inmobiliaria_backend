@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth:api']], function(){
      * put profile customers
      */
     Route::put("contacts/profile", 'Contacts\ContactsController@update')->middleware("permission:portal customer");
+    Route::put("user/profile", 'UserController@updateProfile')->middleware("permission:portal admin");
 
     Route::apiResources([
         'customers' => 'Customer\CustomerController',

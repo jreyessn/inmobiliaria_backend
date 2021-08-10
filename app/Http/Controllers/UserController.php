@@ -46,12 +46,7 @@ class UserController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        $this->repository->pushCriteria(GroupCriteria::class);
-        $this->repository->pushCriteria(RoleCriteria::class);
-
-        return $this->repository->with(['roles', 'groups'])->whereHas("roles", function($q){
-            $q->where("name", "!=" ,"Cliente");
-        })->paginate($perPage);
+        return $this->repository->paginate($perPage);
 
     }
 
@@ -70,7 +65,6 @@ class UserController extends Controller
         try{
             $user = $this->repository->create($request->all());
             $user->roles()->sync($request->roles);
-            $user->groups()->sync($request->groups);
             
             DB::commit();
 
@@ -95,7 +89,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions', 'groups'])->find($id);
+        return $this->repository->with(['roles.permissions'])->find($id);
     }
 
     /**
@@ -146,7 +140,7 @@ class UserController extends Controller
 
         try{
             $user = $request->user();
-            $user->fill( $request->only(['name', 'slack_player', 'email']) );
+            $user->fill( $request->only(['name', 'email']) );
 
             if($request->has('password')){
                 $user->password = $request->password;

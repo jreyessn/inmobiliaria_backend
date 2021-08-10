@@ -31,9 +31,6 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         $response['data'] = $this->repository->get();
-        $response['data'] = $response['data']->filter(function($item){
-            return $item->id != 3;
-        });;
 
         return $response;
     }

@@ -40,23 +40,29 @@ if (! function_exists('month_en')) {
     }
 }
 
-function getCode(int $number, $format = 5)
-{
-    return str_pad($number, $format, 0, STR_PAD_LEFT);
-}
+if(!function_exists("decimal")){
 
-function descryptId($str){
-    if(strlen($str) > 100){
-        try {
-            return Crypt::decrypt($str);
-        } catch (\Throwable $th) {
-            return $str;
-        }
+    function decimal($num, $points = 2){
+        return (float) number_format($num, $points, '.', '');
     }
-
-    return $str;
 }
 
-function decimal($num, $points = 2){
-    return (float) number_format($num, $points, '.', '');
+if(!function_exists("last_query")){
+
+    function last_query(){
+        $queries = DB::getQueryLog();
+
+        if(count($queries) == 0)
+            return null;
+
+        $last_query = end($queries);
+
+        if(array_key_exists("query", $last_query) && array_key_exists("bindings", $last_query)){
+            
+            return vsprintf(str_replace('?', '`%s`', $last_query['query']), $last_query['bindings']);
+        
+        }
+
+        return null;
+    }
 }

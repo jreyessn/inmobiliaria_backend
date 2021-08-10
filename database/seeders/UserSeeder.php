@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             "email" => "juan.reyes@jeanlogistics.com",
             "password" => "1234"
         ]);
-        $user->assignRole(['Desarrollador']);
+        $user->assignRole(['Administrador']);
 
         $user = User::create([
             'name' => "Jesus Basurto",

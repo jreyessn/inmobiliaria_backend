@@ -21,10 +21,6 @@ class DatabaseSeeder extends Seeder
             PermissionsTableSeeder::class,
             UserSeeder::class,
             ConfigurationSeeder::class,
-            PrioritiesSeeder::class,
-            StatusTicketsSeeder::class,
-            TypeTicketsSeeder::class,
-            StatusRepliesSeeder::class
         ]);
 
     }

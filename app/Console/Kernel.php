@@ -2,7 +2,7 @@
 
 namespace App\Console;
 
-use App\Console\Commands\DailyGetFarms;
+use App\Console\Commands\SubscriptionCustomers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        DailyGetFarms::class
+        SubscriptionCustomers::class
     ];
 
     /**
@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('farms:daily')->everyMinute();
+        $schedule->command(SubscriptionCustomers::class)->daily()->at("00:00");
     }
 
     /**

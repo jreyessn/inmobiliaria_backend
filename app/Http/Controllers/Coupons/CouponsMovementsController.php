@@ -1,26 +1,29 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Coupons;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Customer\StoreCustomerRequest;
-use App\Http\Requests\Customer\UpdateCustomerRequest;
-use App\Repositories\Customer\CustomerRepositoryEloquent;
+use App\Http\Requests\Coupons\StoreCouponsRequest;
+use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
+use App\Rules\CanDeleteCouponMovement;
+use App\Rules\CustomerCouponsAvailables;
+use Dotenv\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
 
-class CustomerController extends Controller
+class CouponsMovementsController extends Controller
 {
 
-    private $customerRepository;
+    private $couponsMovementsRepository;
 
-    function __construct(
-        CustomerRepositoryEloquent $customerRepository
+    public function __construct(
+        CouponsMovementsRepositoryEloquent $couponsMovementsRepository
     )
     {
-        $this->customerRepository = $customerRepository;
+        $this->couponsMovementsRepository = $couponsMovementsRepository;    
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,7 +41,7 @@ class CustomerController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->customerRepository->paginate($perPage);
+        return $this->couponsMovementsRepository->paginate($perPage);
     }
 
     /**
@@ -47,13 +50,13 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCustomerRequest $request)
+    public function store(StoreCouponsRequest $request)
     {
         DB::beginTransaction();
 
         try{
             
-            $data = $this->customerRepository->save($request->all());
+            $data = $this->couponsMovementsRepository->save($request->all());
             
             DB::commit();
 
@@ -67,6 +70,7 @@ class CustomerController extends Controller
             
             return response()->json(['message' => $e->getMessage()], 500);
         }
+
     }
 
     /**
@@ -77,9 +81,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $data = $this->customerRepository->find($id)->load("subscriptions");
-
-        return compact('data');
+        return $this->couponsMovementsRepository->find($id)->load("customer");
     }
 
     /**
@@ -89,24 +91,9 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCustomerRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        DB::beginTransaction();
-
-        try{
-            $this->customerRepository->saveUpdate($request->all(), $id);
-            
-            DB::commit();
-
-            return response()->json([
-                "message" => "Actualización éxitosa",
-            ], 201);
-
-        }catch(\Exception $e){
-            DB::rollback();
-
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
+        //
     }
 
     /**
@@ -117,34 +104,30 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        DB::beginTransaction();
 
-            $this->customerRepository->delete($id);
+        $validator = FacadesValidator::make(["id" => $id], [
+            "id" => [ new CanDeleteCouponMovement($id) ]
+        ]);
+
+        if($validator->fails()){
+            return response([
+                "errors" => $validator->getMessageBag()
+            ], 422);
+        }
+        
+        try{
+            
+            $this->couponsMovementsRepository->delete($id);
+            
+            DB::commit();
 
             return response()->json(null, 204);
 
         }catch(\Exception $e){
-
-            return response()->json(null, 404);
-
+            DB::rollback();
+            
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
-
-    /**
-     * Muestra el QR en base_64
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function qr($id){
-        $customer = $this->customerRepository->find($id);
-
-        if(is_null($customer))
-            return null;
-
-        $format = "{$customer->id}|{$customer->tradename}|{$customer->business_name}|{$customer->coupons}";
-
-        return "data:image/png;base64,".base64_encode(QrCode::format("png")->generate($format));
-    }
-
 }

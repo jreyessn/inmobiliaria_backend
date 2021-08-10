@@ -6,9 +6,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Customer\CustomerRepository;
 use App\Models\Customer\Customer;
-use App\Validators\Customer\CustomerValidator;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Customer\CustomerSubscription;
 
 /**
  * Class CustomerRepositoryEloquent.
@@ -24,7 +22,6 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         'description' => 'like',
     ];
 
-
     /**
      * Specify Model class name
      *
@@ -34,8 +31,6 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     {
         return Customer::class;
     }
-
-    
 
     /**
      * Boot up the repository, pushing criteria
@@ -47,44 +42,54 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
 
     public function save(array $data)
     {
-
-        $imageFile = $data['image'] ?? '';
-
-        $data['image'] = null;
+        $data["coupons"] = 0;
 
         $store = $this->create($data);
-        $store->image = $this->saveImage($imageFile, $store->id);
-        $store->save();
+
+        $this->saveSubscriptions($store, $data["subscriptions"]);
 
         return $store;
+    }
+    
+    public function saveSubscriptions(Customer $store, array $subscriptions)
+    {   
+        foreach ($subscriptions as $sub) {
+            if(is_null($sub["id"] ?? null)){
+                $store->subscriptions()->save(
+                    new CustomerSubscription($sub)
+                );
+            }
+            else{
+                $subStore = CustomerSubscription::find($sub["id"]);
+                $subStore->fill($sub);
+                $subStore->save();
+            }
+        }
+    }
+
+    public function emptySubscriptions(Customer $store, $subscriptions_id = [])
+    {
+        $store->subscriptions()->whereNotIn("id", $subscriptions_id)->delete();
     }
 
     public function saveUpdate(array $data, int $id)
     {
 
-        $imageFile = $this->saveImage($data['image'] ?? null, $id);
-
-        if(is_null($imageFile)){
-            unset($data['image']);
-        }
-
         $store = $this->find($id);
         $store->fill($data);
         $store->save();
 
+        $subscriptions_id = collect($data["subscriptions"])->map(function($item){
+            return $item["id"];
+        })->filter(function($id){
+            return !is_null($id);
+        });
+
+        $this->emptySubscriptions($store, $subscriptions_id);
+        $this->saveSubscriptions($store, $data["subscriptions"]);
+
         return $store;
     }
 
-    private function saveImage($imageFile, $id = 0){
 
-        if($imageFile){
-            $file =  new File($imageFile);
-
-            return basename(Storage::disk('local')->putFileAs('customer/profile', $file, "{$id}-{$file->hashName()}"));
-        }
-
-        return null;
-        
-    }
-    
 }

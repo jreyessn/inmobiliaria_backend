@@ -62,8 +62,9 @@ class CouponsRequestController extends Controller
         DB::beginTransaction();
 
         try{
-            
-            $data = $this->couposRepository->save($request->all());
+            $form = $request->except(["approved", "observation"]);
+
+            $data = $this->couposRepository->save($form);
             
             DB::commit();
 

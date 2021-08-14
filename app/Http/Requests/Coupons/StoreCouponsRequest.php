@@ -25,15 +25,17 @@ class StoreCouponsRequest extends FormRequest
     public function rules()
     {
         return [
-            'customer_id'    => "required|exists:customers,id",
-            'type_movement'  => "required|in:Compra,Venta,Devolución",
+            'customer_id'        => "required|exists:customers,id",
+            'type_movement'      => "required|in:Compra,Venta,Devolución",
+            'payment_method_id'  => "required|exists:payment_methods,id",
             'quantity'       => [
                 'required',
                 'numeric', 
                 'min:1', 
                 new CustomerCouponsAvailables($this->customer_id, $this->type_movement)
             ],
-            'comment'        => 'nullable',
+            'num_invoice'        => 'nullable',
+            'comment'            => 'nullable',
         ];
     }
     

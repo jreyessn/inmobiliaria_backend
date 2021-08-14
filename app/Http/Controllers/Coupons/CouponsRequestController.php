@@ -153,7 +153,7 @@ class CouponsRequestController extends Controller
     public function approver(Request $request, $id)
     {
         $request->validate([
-            "approved" => ["required", "boolean", new IsApprovedRequestCoupon($id)],
+            "approved" => ["required", "numeric", new IsApprovedRequestCoupon($id)],
             "observation" => "nullable|string"
         ]);
 
@@ -167,13 +167,17 @@ class CouponsRequestController extends Controller
             ]);
             $couponRequest->save();
 
-            $this->couponsMovementsRepository->save([
-                "customer_id"   => $couponRequest->customer_id,
-                "type_movement" => "Compra",
-                "quantity"      => $couponRequest->quantity_coupons,
-                "price"         => $couponRequest->customer->price_coupon ?? 0,
-                "is_automatic"  => 0, 
-            ]);
+            if($request->get("approved") == 1){
+
+                $this->couponsMovementsRepository->save([
+                    "customer_id"   => $couponRequest->customer_id,
+                    "type_movement" => "Compra",
+                    "quantity"      => $couponRequest->quantity_coupons,
+                    "price"         => $couponRequest->customer->price_coupon ?? 0,
+                    "is_automatic"  => 0, 
+                ]);
+                
+            }
 
             return response()->json([
                 "message" => "Aprobación éxitosa",

@@ -79,7 +79,7 @@ class CustomerController extends Controller
     {
         $data = $this->customerRepository->find($id)->load("subscriptions");
 
-        return compact('data');
+        return $data;
     }
 
     /**
@@ -143,8 +143,8 @@ class CustomerController extends Controller
             return null;
 
         $format = "{$customer->id}|{$customer->tradename}|{$customer->business_name}|{$customer->coupons}";
-
-        return "data:image/png;base64,".base64_encode(QrCode::format("png")->generate($format));
+          
+        return response(QrCode::format("png")->size(400)->generate($format))->header('Content-Type', 'image/png');
     }
 
 }

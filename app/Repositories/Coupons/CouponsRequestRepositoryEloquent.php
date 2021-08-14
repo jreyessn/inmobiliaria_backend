@@ -15,6 +15,14 @@ use App\Validators\Coupons\CouponsRequestValidator;
  */
 class CouponsRequestRepositoryEloquent extends BaseRepository implements CouponsRequestRepository
 {
+
+    protected $fieldSearchable = [
+        'customer.tradename' => 'like',
+        'customer.business_name' => 'like',
+        'quantity_coupons' => 'like',
+        'user_request.name' => 'like',
+    ];
+
     /**
      * Specify Model class name
      *

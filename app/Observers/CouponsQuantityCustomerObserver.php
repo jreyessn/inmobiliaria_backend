@@ -11,7 +11,7 @@ class CouponsQuantityCustomerObserver
     {
         
         $customer = $store->customer;
-        
+
         if($store->type_movement == "Compra"){
             $customer->coupons = (int) $customer->coupons + (int) $store->quantity; 
             $customer->save();

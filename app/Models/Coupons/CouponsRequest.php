@@ -3,6 +3,7 @@
 namespace App\Models\Coupons;
 
 use App\Models\Customer\Customer;
+use App\Models\PaymentMethod;
 use App\Models\User;
 use App\Observers\CouponMovementObserver;
 use Illuminate\Database\Eloquent\Model;
@@ -31,11 +32,23 @@ class CouponsRequest extends Model implements Transformable
         "approved",
         "observation",
         "approved_at",
+        "payment_method_id",
+        "comment",
+    ];
+
+    protected $with = [
+        "customer",
+        "user_request"
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class)->withTrashed();
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(PaymentMethod::class)->withTrashed();
     }
     
     public function user_request()

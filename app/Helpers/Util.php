@@ -66,3 +66,11 @@ if(!function_exists("last_query")){
         return null;
     }
 }
+
+if(!function_exists("format_ceros")){
+
+    function format_ceros($value = 0, $zeros = 4){
+        return str_pad($value, $zeros, "0", STR_PAD_LEFT);
+    }
+}
+

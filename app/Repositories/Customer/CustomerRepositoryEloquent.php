@@ -17,9 +17,9 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
 {
 
     protected $fieldSearchable = [
-        'name' => 'like',
-        'domains' => 'like',
-        'description' => 'like',
+        'business_name' => 'like',
+        'tradename' => 'like',
+        'coupons' => 'like',
     ];
 
     /**

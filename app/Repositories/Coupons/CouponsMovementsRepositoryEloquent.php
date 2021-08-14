@@ -15,6 +15,15 @@ use App\Validators\Coupons\CouponsMovementsValidator;
  */
 class CouponsMovementsRepositoryEloquent extends BaseRepository implements CouponsMovementsRepository
 {
+
+    protected $fieldSearchable = [
+        'id' => 'like',
+        'customer.tradename' => 'like',
+        'customer.business_name' => 'like',
+        'quantity' => 'like',
+        'user_created.name' => 'like',
+    ];
+
     /**
      * Specify Model class name
      *

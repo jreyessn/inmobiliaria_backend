@@ -4,6 +4,7 @@ namespace App\Models\Coupons;
 
 use App\Models\Audit;
 use App\Models\Customer\Customer;
+use App\Models\PaymentMethod;
 use App\Models\User;
 use App\Observers\CouponsQuantityCustomerObserver;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,8 @@ class CouponsMovements extends Model implements Transformable
         "price",
         "is_automatic",
         "comment",
+        "num_invoice",
+        "payment_method_id"
     ];
 
     protected $casts = [
@@ -43,11 +46,14 @@ class CouponsMovements extends Model implements Transformable
     ];
 
     protected $appends = [
-        "total"
+        "total",
+        "folio"
     ];
 
     protected $with = [
-        "user_created"
+        "user_created",
+        "customer",
+        "payment_method"
     ];
 
     protected static function boot()
@@ -59,12 +65,22 @@ class CouponsMovements extends Model implements Transformable
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Customer::class)->withTrashed();
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(PaymentMethod::class)->withTrashed();
     }
 
     public function getTotalAttribute()
     {
         return decimal($this->price * $this->quantity);
+    }
+
+    public function getFolioAttribute()
+    {
+        return format_ceros($this->id, 5);
     }
 
     /**

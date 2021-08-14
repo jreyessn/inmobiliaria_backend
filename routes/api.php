@@ -41,6 +41,8 @@ Route::group(['middleware' => ['auth:api']], function(){
 
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
+    Route::get('type_movements', 'controller@typeMovements');
+    Route::get('payment_methods', 'controller@paymentMethods');
     /**
      * puts
      */

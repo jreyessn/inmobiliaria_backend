@@ -2,6 +2,7 @@
 
 namespace App\Models\Customer;
 
+use App\Models\Coupons\CouponsMovements;
 use Illuminate\Database\Eloquent\Model;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,11 +28,30 @@ class Customer extends Model implements Transformable
         'business_name',
         'coupons',
         'price_coupon',
+        'street',
+        'street_number',
+        'colony',
+        'phone',
+        'email',
     ];
     
+    protected $appends = [
+        "coupons_used"
+    ];
+
     public function subscriptions()
     {
         return $this->hasMany(CustomerSubscription::class);
+    }
+
+    public function movements()
+    {
+        return $this->hasMany(CouponsMovements::class);
+    }
+
+    public function getCouponsUsedAttribute()
+    {
+        return $this->movements()->where("type_movement", "Venta")->count();
     }
 
 }

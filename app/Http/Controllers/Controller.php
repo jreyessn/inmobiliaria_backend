@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentMethod;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -16,33 +17,23 @@ class Controller extends BaseController
             'data' => [
                 [
                     'id' => 1,
-                    'description' => 'Hoy'
+                    'description' => 'Compra'
                 ],
                 [
                     'id' => 2,
-                    'description' => 'Ayer'
+                    'description' => 'Venta'
                 ],
                 [
                     'id' => 3,
-                    'description' => 'Ultimos 3 días'
-                ],
-                [
-                    'id' => 4,
-                    'description' => 'Esta semana'
-                ],
-                [
-                    'id' => 5,
-                    'description' => 'Ultimos 7 días'
-                ],
-                [
-                    'id' => 6,
-                    'description' => 'Este mes'
-                ],
-                [
-                    'id' => 7,
-                    'description' => 'Ultimos 30 días'
+                    'description' => 'Devolución'
                 ],
             ]
+        ];
+    }
+
+    function paymentMethods(){
+        return [
+            'data' => PaymentMethod::all()
         ];
     }
 

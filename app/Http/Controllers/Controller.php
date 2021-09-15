@@ -17,15 +17,18 @@ class Controller extends BaseController
             'data' => [
                 [
                     'id' => 1,
-                    'description' => 'Compra'
+                    'description' => getMovement(1),
+                    'use_payment_method' => true 
                 ],
                 [
                     'id' => 2,
-                    'description' => 'Venta'
+                    'description' => getMovement(2),
+                    'use_payment_method' => false 
                 ],
                 [
                     'id' => 3,
-                    'description' => 'Devolución'
+                    'description' => getMovement(4),
+                    'use_payment_method' => false 
                 ],
             ]
         ];

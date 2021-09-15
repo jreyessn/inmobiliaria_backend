@@ -12,12 +12,12 @@ class CouponsQuantityCustomerObserver
         
         $customer = $store->customer;
 
-        if($store->type_movement == "Compra"){
+        if($store->type_movement == getMovement(1)  || $store->type_movement == getMovement(2)){
             $customer->coupons = (int) $customer->coupons + (int) $store->quantity; 
             $customer->save();
         }
         
-        if($store->type_movement == "Venta" || $store->type_movement == "Devolución"){
+        if($store->type_movement == getMovement(3) || $store->type_movement == getMovement(4)){
             $customer->coupons = (int) $customer->coupons - (int) $store->quantity; 
             $customer->save();
         }
@@ -29,12 +29,12 @@ class CouponsQuantityCustomerObserver
         
         $customer = $store->customer;
         
-        if($store->type_movement == "Compra"){
+        if($store->type_movement == getMovement(1) || $store->type_movement == getMovement(2)){
             $customer->coupons = (int) $customer->coupons - (int) $store->quantity; 
             $customer->save();
         }
         
-        if($store->type_movement == "Venta" || $store->type_movement == "Devolución"){
+        if($store->type_movement == getMovement(3) || $store->type_movement == getMovement(4)){
             $customer->coupons = (int) $customer->coupons + (int) $store->quantity; 
             $customer->save();
         }

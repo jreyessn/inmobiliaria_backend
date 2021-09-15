@@ -24,6 +24,15 @@ class PaymentMethodsSeeder extends Seeder
             [
                 "description" => "Efectivo"
             ],
+            [
+                "description" => "Cheque"
+            ],
+            [
+                "description" => "Tarjeta de Débito"
+            ],
+            [
+                "description" => "Tarjeta de Crédito"
+            ],
         ];
 
         foreach($data as $item){

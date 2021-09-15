@@ -74,3 +74,27 @@ if(!function_exists("format_ceros")){
     }
 }
 
+if(!function_exists("getMovement")){
+
+    function getMovement($value = 1){
+
+       if($value == 1){
+           return "Compra";
+       }
+       
+       if($value == 2){
+           return "Devolución";
+       }
+
+       if($value == 3){
+           return "Venta";
+       }
+       
+       if($value == 4){
+           return "Ajuste";
+       }
+
+
+    }
+}
+

@@ -33,7 +33,7 @@ class StoreCustomerRequest extends FormRequest
             'phone'          => 'required|string',
             'email'          => 'required|email',
             'subscriptions'  => 'array',
-            'subscriptions.*.start_date'          => 'required|date',
+            'subscriptions.*.start_date'       => 'required|date',
             'subscriptions.*.every_day'        => 'required|numeric',
             'subscriptions.*.quantity_coupons' => 'required|numeric',
         ];
@@ -41,7 +41,8 @@ class StoreCustomerRequest extends FormRequest
 
     public function attributes()
     {
-    
+        $titles = [];
+        
         foreach ($this->get('subscriptions') as $key => $val) {
             $titles["subscriptions.$key.start_date"] = "Fecha de Inicio";
             $titles["subscriptions.$key.every_day"] = "Frecuencia de Días";

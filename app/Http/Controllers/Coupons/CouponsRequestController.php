@@ -172,7 +172,7 @@ class CouponsRequestController extends Controller
 
                 $this->couponsMovementsRepository->save([
                     "customer_id"   => $couponRequest->customer_id,
-                    "type_movement" => "Compra",
+                    "type_movement" => getMovement(1),
                     "quantity"      => $couponRequest->quantity_coupons,
                     "price"         => $couponRequest->customer->price_coupon ?? 0,
                     "is_automatic"  => 0, 

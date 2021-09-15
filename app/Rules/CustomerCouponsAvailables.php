@@ -36,7 +36,7 @@ class CustomerCouponsAvailables implements Rule
     {
         $customer = Customer::find($this->id);
 
-        if($this->type_movement == "Compra")
+        if($this->type_movement == getMovement(1) || $this->type_movement == getMovement(2))
             return true;
 
         if(is_null($customer))

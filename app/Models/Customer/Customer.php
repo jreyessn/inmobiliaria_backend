@@ -36,7 +36,9 @@ class Customer extends Model implements Transformable
     ];
     
     protected $appends = [
-        "coupons_used"
+        "coupons_used",
+        "coupons_bought",
+        "coupons_returned",
     ];
 
     public function subscriptions()
@@ -51,7 +53,17 @@ class Customer extends Model implements Transformable
 
     public function getCouponsUsedAttribute()
     {
-        return $this->movements()->where("type_movement", "Venta")->count();
+        return $this->movements()->where("type_movement", getMovement(3))->sum("quantity");
+    }
+
+    public function getCouponsBoughtAttribute()
+    {
+        return $this->movements()->where("type_movement", getMovement(1))->sum("quantity");
+    }
+
+    public function getCouponsReturnedAttribute()
+    {
+        return $this->movements()->where("type_movement", getMovement(1))->sum("quantity");
     }
 
 }

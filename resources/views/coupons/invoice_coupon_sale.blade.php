@@ -17,7 +17,7 @@
             <tr>
                 <td class="width-15">
                     
-                    <img src="{{ public_path('imgs/logo.png') }}" alt="logo" class="logo">
+                    <img src="{{ public_path('logo.png') }}" alt="logo" class="logo">
 
                 </td>
                 <td class="width-20">

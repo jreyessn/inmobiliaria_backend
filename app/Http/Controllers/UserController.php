@@ -46,6 +46,8 @@ class UserController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
+        $this->repository->pushCriteria(RoleCriteria::class);
+
         return $this->repository->paginate($perPage);
 
     }

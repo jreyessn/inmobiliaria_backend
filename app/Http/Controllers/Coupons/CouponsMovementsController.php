@@ -5,18 +5,23 @@ namespace App\Http\Controllers\Coupons;
 use App\Criteria\CustomerCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coupons\StoreCouponsRequest;
+use App\Notifications\Coupons\CustomerPurchaseCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
+use App\Repositories\Customer\CustomerRepositoryEloquent;
 use App\Rules\CanDeleteCouponMovement;
 use App\Rules\CustomerCouponsAvailables;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class CouponsMovementsController extends Controller
 {
 
     private $couponsMovementsRepository;
+
 
     public function __construct(
         CouponsMovementsRepositoryEloquent $couponsMovementsRepository
@@ -60,7 +65,17 @@ class CouponsMovementsController extends Controller
         try{
             
             $data = $this->couponsMovementsRepository->save($request->all());
-            
+
+            if($data->customer->email && $data->type_movement == "Compra"){
+                FacadesNotification::route("mail", $data->customer->email)->notify(
+                    new CustomerPurchaseCoupon([
+                        "quantity"       => $data->quantity,
+                        "quantity_total" => $data->customer->coupons,
+                        "total"          => $data->total 
+                    ])
+                );
+            }
+
             DB::commit();
 
             return response()->json([

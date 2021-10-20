@@ -36,6 +36,8 @@ Route::group(['prefix' => "customers"], function(){
     Route::get('qr/{id}', 'Customer\CustomerController@qr');
 });
 
+Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
+Route::get("reports/renewal_customers", 'Reports\ReportsSalesController@renewalCustomerCoupons');
 
 Route::group(['middleware' => ['auth:api']], function(){
 
@@ -43,11 +45,17 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('roles', 'RoleController@index');
     Route::get('type_movements', 'controller@typeMovements');
     Route::get('payment_methods', 'controller@paymentMethods');
+
     /**
      * puts
      */
     Route::put("user/profile", 'UserController@updateProfile');
     Route::put("coupons_request/approver/{coupon_request}", 'Coupons\CouponsRequestController@approver');
+
+    /**
+     * Reports
+     */
+    // Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
 
     Route::apiResources([
         'customers' => 'Customer\CustomerController',

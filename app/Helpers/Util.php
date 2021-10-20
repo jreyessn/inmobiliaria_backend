@@ -98,3 +98,10 @@ if(!function_exists("getMovement")){
     }
 }
 
+if(!function_exists("currency")){
+
+    function currency(){
+      return "$";
+    }
+}
+

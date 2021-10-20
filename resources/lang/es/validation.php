@@ -160,6 +160,7 @@ return [
         "observation"       => "Observación",
         "quantity"          => "Cantidad",
         "type_movement"     => "Tipo de Movimiento",
+        "format"            => "Formato de Descarga",
     ],
 
 ];

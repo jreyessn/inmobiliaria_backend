@@ -105,3 +105,27 @@ if(!function_exists("currency")){
     }
 }
 
+if(!function_exists("period_months")){
+
+    function period_months($since, $until){
+
+        $since  = \Carbon\Carbon::parse($since)->format("Y-m-d");
+        $until  = \Carbon\Carbon::parse($until)->format("Y-m-d");
+
+        $period = \Carbon\CarbonPeriod::create($since, '1 month', $until);
+        $months = [];
+
+        foreach ($period as $dt) {
+            array_push($months, [
+                'month_year' => $dt->format("Y-m"),
+                'first_day' => $dt->format("Y-m-01"),
+                'end_day' =>  $dt->format("Y-m-{$dt->endOfMonth()->format('d')}"),
+                'description' => ucwords("{$dt->year} - {$dt->monthName}")
+            ]);
+       }
+
+       return $months;
+    }
+}
+
+

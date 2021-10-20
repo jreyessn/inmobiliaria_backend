@@ -36,8 +36,6 @@ Route::group(['prefix' => "customers"], function(){
     Route::get('qr/{id}', 'Customer\CustomerController@qr');
 });
 
-Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
-Route::get("reports/renewal_customers", 'Reports\ReportsSalesController@renewalCustomerCoupons');
 
 Route::group(['middleware' => ['auth:api']], function(){
 
@@ -55,8 +53,11 @@ Route::group(['middleware' => ['auth:api']], function(){
     /**
      * Reports
      */
-    // Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
-
+    Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
+    Route::get("reports/renewal_customers", 'Reports\ReportsSalesController@renewalCustomerCoupons');
+    Route::get("statistics", 'Reports\StatisticsController@graphics');
+    
+    
     Route::apiResources([
         'customers' => 'Customer\CustomerController',
         'users' => 'UserController',

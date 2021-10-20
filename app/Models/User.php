@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Contact\Contact;
+use App\Models\Coupons\CouponsMovements;
 use App\Models\Farm\Farm;
 use App\Models\Farm\FarmUser;
 use App\Models\Group\Group;
@@ -63,6 +64,14 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = bcrypt($password);
+    }
+
+    public function movements_coupons()
+    {
+        return $this->hasManyThrough(CouponsMovements::class, Audit::class, "user_id", "id", "id", "model_id")->where([
+            "model_type" => CouponsMovements::class,
+            "action"     => "CREAR"
+        ]);
     }
 
     // public function routeNotificationForSlack($notification)

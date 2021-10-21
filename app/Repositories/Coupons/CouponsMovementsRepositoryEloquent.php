@@ -46,6 +46,11 @@ class CouponsMovementsRepositoryEloquent extends BaseRepository implements Coupo
 
     public function save($data)
     {
+        // Si es diferente a ajuste, se define si es entrada o salida el tipo de movimiento
+        if($data["type_movement"] != getMovement(4)){
+            $data["io"] = getIo($data["type_movement"]);
+        }
+
         $store = $this->create($data);
         $store->price = $store->customer->price_coupon;
         $store->save();

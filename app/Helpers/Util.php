@@ -98,6 +98,27 @@ if(!function_exists("getMovement")){
     }
 }
 
+if(!function_exists("getIo")){
+
+    function getIo($type_movement){
+
+       if($type_movement == "Venta"){
+           return 1;
+       }
+
+       if($type_movement == "Devolución"){
+           return 1;
+       }
+
+       if($type_movement == "Entrega"){
+           return 2;
+       }
+
+       return 1;
+       
+    }
+}
+
 if(!function_exists("currency")){
 
     function currency(){

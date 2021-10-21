@@ -32,6 +32,7 @@ class CouponsMovements extends Model implements Transformable
     protected $fillable = [
         "customer_id",
         "type_movement",
+        "io",
         "quantity",
         "price",
         "is_automatic",

@@ -32,7 +32,7 @@ class StoreCouponsRequest extends FormRequest
                 'required',
                 'numeric', 
                 'min:1', 
-                new CustomerCouponsAvailables($this->customer_id, $this->type_movement)
+                new CustomerCouponsAvailables($this->customer_id, $this->type_movement, $this->io)
             ],
             'num_invoice'        => 'nullable',
             'comment'            => 'nullable',

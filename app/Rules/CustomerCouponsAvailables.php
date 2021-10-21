@@ -14,15 +14,18 @@ class CustomerCouponsAvailables implements Rule
 
     private $type_movement;
 
+    private $io;
+
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($id, $type_movement)
+    public function __construct($id, $type_movement, $io = 1)
     {
         $this->id = $id;
         $this->type_movement = $type_movement;
+        $this->io = $io;
     }
 
     /**
@@ -36,7 +39,11 @@ class CustomerCouponsAvailables implements Rule
     {
         $customer = Customer::find($this->id);
 
-        if($this->type_movement == getMovement(1) || $this->type_movement == getMovement(2))
+        if(
+            $this->type_movement == getMovement(1) || 
+            $this->type_movement == getMovement(2) || 
+            ($this->type_movement == getMovement(4) && $this->io == 1)
+        )
             return true;
 
         if(is_null($customer))

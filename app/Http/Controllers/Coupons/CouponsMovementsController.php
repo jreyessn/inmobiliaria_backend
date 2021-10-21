@@ -43,6 +43,7 @@ class CouponsMovementsController extends Controller
             'search'        =>  'nullable|string',
             'orderBy'       =>  'nullable|string',
             'sortBy'        =>  'nullable|in:desc,asc',
+            'customer_id'   =>  'nullable|string',
         ]);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
@@ -66,7 +67,7 @@ class CouponsMovementsController extends Controller
             
             $data = $this->couponsMovementsRepository->save($request->all());
 
-            if($data->customer->email && $data->type_movement == "Compra"){
+            if($data->customer->email && $data->type_movement == getMovement(1)){
                 FacadesNotification::route("mail", $data->customer->email)->notify(
                     new CustomerPurchaseCoupon([
                         "quantity"       => $data->quantity,

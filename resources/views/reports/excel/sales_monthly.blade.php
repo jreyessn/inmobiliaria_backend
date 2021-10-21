@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte de Entregas</title>
+    <title>Reporte de Ventas</title>
 </head>
 <body>
     <table>
@@ -18,7 +18,7 @@
         <tr>
             <td></td>
             <td>
-                <b>Entregas Realizadas</b>
+                <b>Ventas Realizadas</b>
             </td>
         </tr>
 
@@ -41,7 +41,6 @@
 
     <table cellspacing="0" class="col-10 mt10 border-2">
         <thead>
-
             <tr>
                 <td class="align-center fcw bg-blue">
                     <b>Fecha:</b>
@@ -55,10 +54,6 @@
                     <b>Cliente:</b>
                 </td>
 
-                <td class="align-center fcw bg-blue">
-                    <b>Repartidor:</b>
-                </td>
-                
                 <td class="align-center fcw bg-blue">
                     <b>Cupones:</b>
                 </td>
@@ -88,9 +83,7 @@
                     <td class="align-center">
                         {{ $item->customer->business_name }}
                     </td>
-                    <td class="align-center">
-                        {{ $item->user_created->name ?? '-' }}
-                    </td>
+
                     <td class="align-center">
                         {{ $item->quantity }}
                     </td>
@@ -106,7 +99,7 @@
                 </tr>
             @endforeach
             <tr>
-                <td colspan="6"></td>
+                <td colspan="5"></td>
                 <td class="align-center"> 
                     <b> Total </b> 
                 </td>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Reports;
 
+use App\Criteria\CustomerCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Criteria\UserAuditCriteria;
 use App\Exports\ViewExport;
@@ -53,12 +54,12 @@ class ReportsSalesController extends Controller
             case 'json':
 
                 $perPage    = $request->get('perPage', config('repository.pagination.limit'));
-                $data       = $this->couponsMovementRepositoryEloquent->where("type_movement", "Venta")->paginate($perPage);
+                $data       = $this->couponsMovementRepositoryEloquent->where("type_movement", getMovement(3))->paginate($perPage);
 
                 return $data;
             break;
             case 'pdf':
-                $data = $this->couponsMovementRepositoryEloquent->where("type_movement", "Venta")->get();
+                $data = $this->couponsMovementRepositoryEloquent->where("type_movement", getMovement(3))->get();
 
                 return PDF::loadView('reports/pdf/deliveries', [
                     
@@ -69,7 +70,7 @@ class ReportsSalesController extends Controller
                 ])->download('deliveries.pdf');
             break;
             case 'excel':
-                $data = $this->couponsMovementRepositoryEloquent->where("type_movement", "Venta")->get();
+                $data = $this->couponsMovementRepositoryEloquent->where("type_movement", getMovement(3))->get();
 
                 return Excel::download(
                     new ViewExport ([
@@ -89,7 +90,7 @@ class ReportsSalesController extends Controller
     }
 
     /**
-     * Clientes con cupones por renover
+     * Clientes con cupones por renovar
      */
 
      public function renewalCustomerCoupons(Request $request)
@@ -138,6 +139,68 @@ class ReportsSalesController extends Controller
                         'view' => 'reports.excel.renewal_customers'
                     ]),
                     'renewal_customers.xlsx'
+                );
+            break;
+
+        }
+     }
+
+    /**
+     * Ventas Mensuales
+     */
+
+     public function salesMonthly(Request $request)
+     {
+        $request->validate([
+            'perPage'       =>  'nullable|integer',
+            'page'          =>  'nullable|integer',
+            'search'        =>  'nullable|string',
+            'orderBy'       =>  'nullable|string',
+            'sortBy'        =>  'nullable|in:desc,asc',
+            "format"        =>  "in:pdf,excel,json",
+            "customer_id"   =>  "nullable|string",
+        ]);
+
+        $this->couponsMovementRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->couponsMovementRepositoryEloquent->pushCriteria(CustomerCriteria::class);
+
+        switch ($request->format) {
+            case 'json':
+
+                $perPage    = $request->get('perPage', config('repository.pagination.limit'));
+                $data       = $this->couponsMovementRepositoryEloquent->where([
+                    "type_movement" => getMovement(1)
+                ])->paginate($perPage);
+
+                return $data;
+            break;
+            case 'pdf':
+                $data = $this->couponsMovementRepositoryEloquent->where([
+                    "type_movement" => getMovement(1)
+                ])->get();
+
+                return PDF::loadView('reports/pdf/sales_monthly', [
+                    
+                    "data"  => $data,
+                    "since" => $request->since? Carbon::parse($request->since) : null,
+                    "until" => $request->until? Carbon::parse($request->until) : null,
+                ])->download('sales_monthly.pdf');
+            break;
+            case 'excel':
+                $data = $this->couponsMovementRepositoryEloquent->where([
+                    "type_movement" => getMovement(1)
+                ])->get();
+
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                            "since" => $request->since? Carbon::parse($request->since) : null,
+                            "until" => $request->until? Carbon::parse($request->until) : null,
+                        ],
+                        'view' => 'reports.excel.sales_monthly'
+                    ]),
+                    'sales_monthly.xlsx'
                 );
             break;
 

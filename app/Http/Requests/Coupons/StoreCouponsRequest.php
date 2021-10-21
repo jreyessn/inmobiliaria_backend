@@ -26,7 +26,7 @@ class StoreCouponsRequest extends FormRequest
     {
         return [
             'customer_id'        => "required|exists:customers,id",
-            'type_movement'      => "required|in:Compra,Ajuste,Devolución,Venta",
+            'type_movement'      => "required|in:Entrega,Ajuste,Devolución,Venta",
             'payment_method_id'  => "nullable|exists:payment_methods,id",
             'quantity'       => [
                 'required',

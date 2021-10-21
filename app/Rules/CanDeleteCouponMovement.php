@@ -23,7 +23,7 @@ class CanDeleteCouponMovement implements Rule
     }
 
     /**
-     * Al eliminar un movimiento hay que ajustar el inventario de cupones. Los movimientos de compra son los que al ser eliminados, deben
+     * Al eliminar un movimiento hay que ajustar el inventario de cupones. Los movimientos de venta son los que al ser eliminados, deben
      * hacer una "devolución" del inventario. Por esa razón, la validacion evita que se pueda desfasar el inventario del cliente 
      *
      * @param  string  $attribute
@@ -38,13 +38,13 @@ class CanDeleteCouponMovement implements Rule
         if(is_null($movement) || is_null($customer))
             return false;
 
-        if($customer->coupons == 0 && $movement->type_movement == "Compra"){
-            $this->messageValidation = "No puede eliminar el movimiento porque el cliente tiene 0 cupones. No es suficiente para ajustar el inventario.";
+        if($customer->coupons == 0 && $movement->type_movement == getMovement(1)){
+            $this->messageValidation = "No puede eliminar el movimiento porque el cliente tiene 0 cupones. No es suficiente para reajustar el inventario.";
             return false;
         }
 
-        if($movement->quantity > $customer->coupons && $movement->type_movement == "Compra"){
-            $this->messageValidation = "No puede eliminar el movimiento puesto que el cliente solo tiene {$customer->coupons} cupones. No es suficiente para ajustar el inventario.";
+        if($movement->quantity > $customer->coupons && $movement->type_movement == getMovement(1)){
+            $this->messageValidation = "No puede eliminar el movimiento puesto que el cliente solo tiene {$customer->coupons} cupones. No es suficiente para reajustar el inventario.";
             return false;
         }
 

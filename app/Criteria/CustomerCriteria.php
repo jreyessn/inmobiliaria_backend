@@ -26,7 +26,8 @@ class CustomerCriteria implements CriteriaInterface
         $customer_id = request()->get("customer_id", null);
 
         if($customer_id){
-            $model = $model->where("customer_id", $customer_id);
+            $explodeIds = explode(",", $customer_id);
+            $model = $model->whereIn("customer_id", $explodeIds);
         }
 
         return $model;

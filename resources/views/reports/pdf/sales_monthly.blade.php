@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ public_path('css/pdf-reports.css') }}">
 
-    <title>Reporte de Entregas</title>
+    <title>Reporte de Ventas</title>
 
 </head>
 
@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <h2 class="fcb align-center">Reporte de Entregas</h2>
+                    <h2 class="fcb align-center">Reporte de Ventas</h2>
                 </td>
             </tr>
         </tbody>
@@ -65,11 +65,6 @@
                 <td class="align-center fcw bg-blue">
                     <b>Cliente:</b>
                 </td>
-
-                <td class="align-center fcw bg-blue">
-                    <b>Repartidor:</b>
-                </td>
-                
                 <td class="align-center fcw bg-blue">
                     <b>Cupones:</b>
                 </td>
@@ -99,9 +94,7 @@
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->customer->business_name }}
                     </td>
-                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->user_created->name ?? '-' }}
-                    </td>
+ 
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->quantity }}
                     </td>
@@ -117,7 +110,7 @@
                 </tr>
             @endforeach
             <tr>
-                <td colspan="6" style="border-top: 1px solid #f3f3f3"></td>
+                <td colspan="5" style="border-top: 1px solid #f3f3f3"></td>
                 <td class="align-center" style="border-top: 1px solid #f3f3f3"> 
                     <b> Total </b> 
                 </td>

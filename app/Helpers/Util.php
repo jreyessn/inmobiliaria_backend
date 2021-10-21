@@ -79,7 +79,7 @@ if(!function_exists("getMovement")){
     function getMovement($value = 1){
 
        if($value == 1){
-           return "Compra";
+           return "Venta";
        }
        
        if($value == 2){
@@ -87,7 +87,7 @@ if(!function_exists("getMovement")){
        }
 
        if($value == 3){
-           return "Venta";
+           return "Entrega";
        }
        
        if($value == 4){

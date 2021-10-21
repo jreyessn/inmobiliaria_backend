@@ -68,7 +68,7 @@ class SubscriptionCustomers extends Command
                 // movimiento cupon
                 $this->saveAutomatic([
                     "customer_id"   => $subscription->customer_id,
-                    "type_movement" => "Venta",
+                    "type_movement" => getMovement(1),
                     "quantity"      => $subscription->quantity_coupons,
                     "is_automatic"  => 1
                 ]);

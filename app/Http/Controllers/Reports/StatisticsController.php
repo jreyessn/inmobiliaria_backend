@@ -40,13 +40,14 @@ class StatisticsController extends Controller
 
         $data["deliveriesMonthly"]      = $this->deliveriesMonthly($request);
         $data["customersMorePurchases"] = $this->customersMorePurchases($request);
-        $data["usersMoreDeliveries"]       = $this->usersMoreDeliveries($request);
+        $data["usersMoreDeliveries"]    = $this->usersMoreDeliveries($request);
+        $data["salesMonthly"]           = $this->salesMonthly($request);
         
         return $data;
     }
 
     /**
-     * Ventas mensuales
+     * Entregas mensuales
      */
     private function deliveriesMonthly($request)
     {
@@ -56,7 +57,30 @@ class StatisticsController extends Controller
         foreach ($months as $key => $month) {
             
             $quantity = $this->couponsMovementRepositoryEloquent
-                                ->where("type_movement", "Venta")
+                                ->where("type_movement", getMovement(3))
+                                ->whereBetween("created_at", [ $month["first_day"], $month["end_day"] ])
+                                ->get();
+
+           $months[$key]['data'] = $quantity->count();
+
+       }
+
+       return $months;
+
+    }
+
+    /**
+     * Ventas mensuales
+     */
+    private function salesMonthly($request)
+    {
+
+        $months = period_months($request->since, $request->until);
+        
+        foreach ($months as $key => $month) {
+            
+            $quantity = $this->couponsMovementRepositoryEloquent
+                                ->where("type_movement", getMovement(1))
                                 ->whereBetween("created_at", [ $month["first_day"], $month["end_day"] ])
                                 ->get();
 

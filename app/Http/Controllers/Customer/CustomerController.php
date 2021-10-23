@@ -142,7 +142,7 @@ class CustomerController extends Controller
         if(is_null($customer))
             return null;
 
-        $format = "{$customer->id}|{$customer->tradename}|{$customer->business_name}|{$customer->coupons}";
+        $format = "customer|{$customer->id}|{$customer->tradename}|{$customer->business_name}|{$customer->coupons}";
           
         return response(QrCode::format("png")->size(400)->generate($format))->header('Content-Type', 'image/png');
     }

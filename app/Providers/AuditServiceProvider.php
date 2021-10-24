@@ -6,6 +6,7 @@ use App\Models\Coupons\CouponsMovements;
 use App\Models\Coupons\CouponsRequest;
 use App\Models\Customer\Customer;
 use App\Models\User;
+use App\Models\Visit\Visit;
 use App\Observers\AuditObserver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
@@ -38,5 +39,6 @@ class AuditServiceProvider extends ServiceProvider
         CouponsMovements::observe(AuditObserver::class);
         Customer::observe(AuditObserver::class);
         User::observe(AuditObserver::class);
+        Visit::observe(AuditObserver::class);
     }
 }

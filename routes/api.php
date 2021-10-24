@@ -39,10 +39,14 @@ Route::group(['prefix' => "customers"], function(){
 
 Route::group(['middleware' => ['auth:api']], function(){
 
+    /**
+     * gets simples
+     */
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
     Route::get('type_movements', 'controller@typeMovements');
     Route::get('payment_methods', 'controller@paymentMethods');
+    Route::get('visits/is_visited_customer', 'Visits\VisitsController@hasVisitedToday');
 
     /**
      * puts
@@ -63,7 +67,8 @@ Route::group(['middleware' => ['auth:api']], function(){
         'customers' => 'Customer\CustomerController',
         'users' => 'UserController',
         'coupons_request' => 'Coupons\CouponsRequestController',
-        'coupons_movements' => 'Coupons\CouponsMovementsController'
+        'coupons_movements' => 'Coupons\CouponsMovementsController',
+        'visits' => 'Visits\VisitsController',
     ]);
     
 });

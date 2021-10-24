@@ -3,6 +3,7 @@
 namespace App\Models\Customer;
 
 use App\Models\Coupons\CouponsMovements;
+use App\Models\Visit\Visit;
 use Illuminate\Database\Eloquent\Model;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -49,6 +50,11 @@ class Customer extends Model implements Transformable
     public function movements()
     {
         return $this->hasMany(CouponsMovements::class);
+    }
+
+    public function visits()
+    {
+        return $this->hasMany(Visit::class)->orderBy("created_at", "desc");
     }
 
     public function getCouponsUsedAttribute()

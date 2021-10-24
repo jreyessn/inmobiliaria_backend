@@ -156,6 +156,7 @@ return [
         "every_day"         => "Frecuencia de Días",
         "quantity_coupons"  => "Cantidad de Cupones",
         "customer_id"       => "Cliente",
+        "user_id"           => "Cliente",
         "approved"          => "Aprobación",
         "observation"       => "Observación",
         "quantity"          => "Cantidad",

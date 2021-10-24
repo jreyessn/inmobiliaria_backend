@@ -1,27 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Visits;
 
-use App\Criteria\VisitUserCustomerCriteria;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Customer\StoreCustomerRequest;
-use App\Http\Requests\Customer\UpdateCustomerRequest;
-use App\Repositories\Customer\CustomerRepositoryEloquent;
+use App\Repositories\Visit\VisitRepositoryEloquent;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-class CustomerController extends Controller
+class VisitsController extends Controller
 {
-
-    private $customerRepository;
+    private $visitRepository;
 
     function __construct(
-        CustomerRepositoryEloquent $customerRepository
+        VisitRepositoryEloquent $visitRepository
     )
     {
-        $this->customerRepository = $customerRepository;
+        $this->visitRepository = $visitRepository;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,7 +36,7 @@ class CustomerController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->customerRepository->paginate($perPage);
+        return $this->visitRepository->paginate($perPage);
     }
 
     /**
@@ -48,13 +45,19 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreCustomerRequest $request)
+    public function store(Request $request)
     {
+
+        $request->validate([
+            "customer_id" => "required|exists:customers,id",
+            "user_id"     => "required|exists:users,id"
+        ]);
+
         DB::beginTransaction();
 
         try{
             
-            $data = $this->customerRepository->save($request->all());
+            $data = $this->visitRepository->save($request->all());
             
             DB::commit();
 
@@ -78,9 +81,7 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $this->customerRepository->pushCriteria(VisitUserCustomerCriteria::class);
-
-        $data = $this->customerRepository->find($id)->load("subscriptions", "visits");
+        $data = $this->visitRepository->find($id);
 
         return $data;
     }
@@ -92,12 +93,17 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateCustomerRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $request->validate([
+            "customer_id" => "required|exists:customers,id",
+            "user_id"     => "required|exists:users,id"
+        ]);
+
         DB::beginTransaction();
 
         try{
-            $this->customerRepository->saveUpdate($request->all(), $id);
+            $this->visitRepository->saveUpdate($request->all(), $id);
             
             DB::commit();
 
@@ -122,7 +128,7 @@ class CustomerController extends Controller
     {
         try{
 
-            $this->customerRepository->delete($id);
+            $this->visitRepository->delete($id);
 
             return response()->json(null, 204);
 
@@ -134,20 +140,26 @@ class CustomerController extends Controller
     }
 
     /**
-     * Muestra el QR en base_64
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Verifica si un usuario ha visitado el día actual
      */
-    public function qr($id){
-        $customer = $this->customerRepository->find($id);
+    public function hasVisitedToday(Request $request)
+    {
+        $request->validate([
+            "customer_id" => "required|exists:customers,id",
+            "user_id"     => "required|exists:users,id"
+        ]);
 
-        if(is_null($customer))
-            return null;
+        $visit = $this->visitRepository
+                    ->where([
+                        "customer_id" => $request->customer_id,
+                        "user_id"     => $request->user_id,
+                    ])
+                    ->whereDate("created_at", Carbon::today())
+                    ->first();
 
-        $format = "customer|{$customer->id}|{$customer->tradename}|{$customer->business_name}|{$customer->coupons}";
-          
-        return response(QrCode::format("png")->size(400)->generate($format))->header('Content-Type', 'image/png');
+        return [
+            "is_visited" => $visit? true : false,
+            "visit"      => $visit
+        ];
     }
-
 }

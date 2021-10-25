@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Criteria\VisitUserCustomerCriteria;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\StoreCustomerRequest;
@@ -78,9 +77,13 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        $this->customerRepository->pushCriteria(VisitUserCustomerCriteria::class);
+        $visit_user_id = request()->get("visit_user_id", null);
 
         $data = $this->customerRepository->find($id)->load("subscriptions", "visits");
+
+        if($visit_user_id){
+            $data->visits = $data->visits()->where("user_id", $visit_user_id)->get();
+        }
 
         return $data;
     }

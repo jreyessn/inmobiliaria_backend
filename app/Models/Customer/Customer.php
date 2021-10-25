@@ -64,7 +64,10 @@ class Customer extends Model implements Transformable
 
     public function getCouponsBoughtAttribute()
     {
-        return $this->movements()->where("type_movement", getMovement(1))->sum("quantity");
+        return $this->movements()->where(function($q){
+            $q->whereIn("type_movement", [ getMovement(1), getMovement(4) ]);
+            $q->where("io", 1);
+        })->sum("quantity");
     }
 
     public function getCouponsReturnedAttribute()

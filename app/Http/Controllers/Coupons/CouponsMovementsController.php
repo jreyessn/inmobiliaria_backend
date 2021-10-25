@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Coupons;
 
 use App\Criteria\CustomerCriteria;
+use App\Criteria\FilterTypeMovementCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coupons\StoreCouponsRequest;
 use App\Notifications\Coupons\CustomerPurchaseCoupon;
@@ -49,6 +50,7 @@ class CouponsMovementsController extends Controller
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
         
         $this->couponsMovementsRepository->pushCriteria(CustomerCriteria::class);
+        $this->couponsMovementsRepository->pushCriteria(FilterTypeMovementCriteria::class);
 
         return $this->couponsMovementsRepository->paginate($perPage);
     }

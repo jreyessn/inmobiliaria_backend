@@ -79,7 +79,7 @@ class CustomerController extends Controller
     {
         $visit_user_id = request()->get("visit_user_id", null);
 
-        $data = $this->customerRepository->find($id)->load("subscriptions", "visits");
+        $data = $this->customerRepository->find($id)->load("subscriptions");
 
         if($visit_user_id){
             $data->visits = $data->visits()->where("user_id", $visit_user_id)->get();

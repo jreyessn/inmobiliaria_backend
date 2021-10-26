@@ -6,6 +6,7 @@ use App\Criteria\CustomerCriteria;
 use App\Criteria\FilterTypeMovementCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Coupons\StoreCouponsRequest;
+use App\Notifications\Coupons\CustomerDeliveryCoupon;
 use App\Notifications\Coupons\CustomerPurchaseCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
@@ -72,9 +73,23 @@ class CouponsMovementsController extends Controller
             if($data->customer->email && $data->type_movement == getMovement(1)){
                 FacadesNotification::route("mail", $data->customer->email)->notify(
                     new CustomerPurchaseCoupon([
+                        "folio"          => $data->folio,
                         "quantity"       => $data->quantity,
                         "quantity_total" => $data->customer->coupons,
-                        "total"          => $data->total 
+                        "total"          => $data->total,
+                        "encrypt_id"     => $data->customer->encrypt_id
+                    ])
+                );
+            }
+
+            if($data->customer->email && $data->type_movement == getMovement(3)){
+                FacadesNotification::route("mail", $data->customer->email)->notify(
+                    new CustomerDeliveryCoupon([
+                        "folio"          => $data->folio,
+                        "quantity"       => $data->quantity,
+                        "total"          => $data->total,
+                        "quantity_total" => $data->customer->coupons,
+                        "encrypt_id"     => $data->customer->encrypt_id
                     ])
                 );
             }

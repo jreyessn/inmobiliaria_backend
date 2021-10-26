@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class CustomerPurchaseCoupon extends Notification
+class ApprovedRequestCoupon extends Notification
 {
     use Queueable;
 
@@ -44,9 +44,9 @@ class CustomerPurchaseCoupon extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Compra de Cupones #{$this->data["folio"]} - " . getenv("APP_NAME"))
+                    ->subject("Solicitud Aprobada #{$this->data["folio"]} - " . getenv("APP_NAME"))
                     ->line('Estimado cliente,')
-                    ->line(new HtmlString("Se ha procesado una compra de cupones a las <strong>" . date('d/m/Y h:i A') . "</strong>."))
+                    ->line(new HtmlString("Se ha procesado su solicitud y se han cargado los cupones satisfactoriamente a su balance.</strong>."))
                     ->line(new HtmlString("Resumen:"))
                     ->line(new HtmlString("- <strong>Cantidad adquirida:</strong> {$this->data["quantity"]}"))
                     ->line(new HtmlString("- <strong>Costo:</strong> ".currency()." {$this->data["total"]}"))

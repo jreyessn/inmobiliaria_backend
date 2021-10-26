@@ -3,11 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Models\Customer\CustomerSubscription;
+use App\Notifications\Coupons\AutomaticFailedPurchaseCoupon;
+use App\Notifications\Coupons\AutomaticPurchaseCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
 use App\Rules\CustomerCouponsAvailables;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Notification;
 
 class SubscriptionCustomers extends Command
 {
@@ -62,18 +65,37 @@ class SubscriptionCustomers extends Command
                 ]);
         
                 if($validator->fails()){
-                  return dump("Enviar correo de que no se ha realizado la venta");
+
+                    Notification::route("mail", $subscription->customer->email)->notify(
+                        new AutomaticFailedPurchaseCoupon([
+                            "tradename"      => $subscription->customer->tradename,
+                            "quantity"       => $subscription->quantity_coupons,
+                        ])
+                    );
+
+                    return dump("Enviar correo de que no se ha realizado la venta");
                 }
 
                 // movimiento cupon
-                $this->saveAutomatic([
+                $couponMovement = $this->saveAutomatic([
                     "customer_id"   => $subscription->customer_id,
                     "type_movement" => getMovement(1),
                     "quantity"      => $subscription->quantity_coupons,
                     "is_automatic"  => 1
                 ]);
 
-                dump("Enviado");
+                if($subscription->customer->email){
+                    Notification::route("mail", $subscription->customer->email)->notify(
+                        new AutomaticPurchaseCoupon([
+                            "folio"          => $couponMovement->folio,
+                            "quantity"       => $couponMovement->quantity,
+                            "quantity_total" => $couponMovement->customer->coupons,
+                            "total"          => $couponMovement->total,
+                            "encrypt_id"     => $couponMovement->customer->encrypt_id,
+                            "next_pay_date"  => $subscription->next_pay_date
+                        ])
+                    );
+                }
                 
                 $subscription->save();
             }
@@ -85,6 +107,6 @@ class SubscriptionCustomers extends Command
 
     public function saveAutomatic(array $data)
     {
-        $this->couponsMovementsRepository->save($data);
+        return $this->couponsMovementsRepository->save($data);
     }
 }

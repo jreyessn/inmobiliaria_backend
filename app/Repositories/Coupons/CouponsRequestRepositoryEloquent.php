@@ -43,9 +43,13 @@ class CouponsRequestRepositoryEloquent extends BaseRepository implements Coupons
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * Almacena las solicitudes. Cuando no existe una ID de usuario, el null hace referencia a que
+     * fue solicitada de forma externa. 
+     */
     public function save($data)
     {
-        $data["user_request_id"] = request()->user()->id;
+        $data["user_request_id"] = request()->user()->id ?? null;
 
         $store = $this->create($data);
 

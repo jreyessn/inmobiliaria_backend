@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Customer;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EncryptIsValid;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Notifications\Customers\SendLinkProfile;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 
 class CustomerController extends Controller
 {
@@ -20,6 +23,10 @@ class CustomerController extends Controller
     )
     {
         $this->customerRepository = $customerRepository;
+
+        $this->middleware(EncryptIsValid::class, [
+            "only" => ["showEncrypted"]
+        ]);
     }
     /**
      * Display a listing of the resource.
@@ -70,7 +77,7 @@ class CustomerController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar un registro
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -84,6 +91,21 @@ class CustomerController extends Controller
         if($visit_user_id){
             $data->visits = $data->visits()->where("user_id", $visit_user_id)->get();
         }
+
+        return $data;
+    }
+
+    /**
+     * Mostrar un registro con ID cifrada
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showEncrypted($id)
+    {
+        $id = decrypt($id);
+
+        $data = $this->show($id);
 
         return $data;
     }
@@ -153,4 +175,24 @@ class CustomerController extends Controller
         return response(QrCode::format("png")->size(400)->generate($format))->header('Content-Type', 'image/png');
     }
 
+    /**
+     * Envia el enlace de acceso privado para clientes por correo
+     */
+    public function sendLinkProfile($id){
+        $customer = $this->customerRepository->find($id);
+        
+        if(is_null($customer)){
+            return response()->json(null, 404);
+        }
+
+        FacadesNotification::route("mail", $customer->email)->notify(
+            new SendLinkProfile([
+                "encrypt_id"     => $customer->encrypt_id,
+            ])
+        );
+
+        return response()->json([
+            "message" => "Correo enviado con éxito",
+        ], 201);
+    }
 }

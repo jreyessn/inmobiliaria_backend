@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class CustomerPurchaseCoupon extends Notification
+class RejectRequestCoupon extends Notification
 {
     use Queueable;
 
@@ -44,13 +44,11 @@ class CustomerPurchaseCoupon extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject("Compra de Cupones #{$this->data["folio"]} - " . getenv("APP_NAME"))
+                    ->subject("Solicitud Rechazada #{$this->data["folio"]} - " . getenv("APP_NAME"))
                     ->line('Estimado cliente,')
-                    ->line(new HtmlString("Se ha procesado una compra de cupones a las <strong>" . date('d/m/Y h:i A') . "</strong>."))
-                    ->line(new HtmlString("Resumen:"))
-                    ->line(new HtmlString("- <strong>Cantidad adquirida:</strong> {$this->data["quantity"]}"))
-                    ->line(new HtmlString("- <strong>Costo:</strong> ".currency()." {$this->data["total"]}"))
-                    ->line(new HtmlString("- <strong>Cantidad disponible:</strong> {$this->data["quantity_total"]}"))
+                    ->line(new HtmlString("Su solicitud de cupones ha sido rechazada."))
+                    ->line(new HtmlString("<strong>Motivo:</strong>"))
+                    ->line(new HtmlString($this->data["observation"]))
                     ->line(new HtmlString("Recuerde que puede revisar su balance mediante el siguiente enlace:"))
                     ->action("Entrar", getenv("APP_FRONTEND") . "/profile/" . $this->data["encrypt_id"])
                     ->salutation(new HtmlString("Se despide, <br /> " . getenv("APP_NAME") ."."));

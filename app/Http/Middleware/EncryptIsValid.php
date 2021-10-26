@@ -25,7 +25,7 @@ class EncryptIsValid
 
         } catch (\Throwable $th) {
             return response()->json([
-                'message' => 'ID de Ticket invalida'
+                'message' => 'ID cifrada es invalida'
             ], 403);
         }
 

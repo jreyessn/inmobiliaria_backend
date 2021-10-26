@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Coupons;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\EncryptIsValid;
+use App\Notifications\Coupons\ApprovedRequestCoupon;
+use App\Notifications\Coupons\CustomerDeliveryCoupon;
+use App\Notifications\Coupons\CustomerRequestedCoupon;
+use App\Notifications\Coupons\RejectRequestCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
 use App\Repositories\Coupons\CouponsRequestRepositoryEloquent;
 use App\Rules\IsApprovedRequestCoupon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class CouponsRequestController extends Controller
 {
@@ -22,7 +28,11 @@ class CouponsRequestController extends Controller
     )
     {
         $this->couposRepository = $couposRepository;    
-        $this->couponsMovementsRepository = $couponsMovementsRepository;    
+        $this->couponsMovementsRepository = $couponsMovementsRepository;   
+        
+        $this->middleware(EncryptIsValid::class, [
+            "only" => ["storeEncrypted"]
+        ]);
     }
     /**
      * Display a listing of the resource.
@@ -62,9 +72,19 @@ class CouponsRequestController extends Controller
         DB::beginTransaction();
 
         try{
-            $form = $request->except(["approved", "observation"]);
+            $form = $request->except(["approved", "observation", "id"]);
 
             $data = $this->couposRepository->save($form);
+            
+            if($data->customer->email){
+                Notification::route("mail", $data->customer->email)->notify(
+                    new CustomerRequestedCoupon([
+                        "folio"          => $data->folio,
+                        "quantity"       => $data->quantity_coupons,
+                        "encrypt_id"     => $data->customer->encrypt_id
+                    ])
+                );
+            }
             
             DB::commit();
 
@@ -78,6 +98,20 @@ class CouponsRequestController extends Controller
 
             return response()->json(['message' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Guardar solicitudes externas con ID de cliente cifrada
+     * 
+     * @param array $request["id"] ID cifrada del cliente. NO es la ID de la solicitud 
+     */
+    public function storeEncrypted(Request $request)
+    {
+        $id = decrypt($request->id);
+        
+        $request->merge(["customer_id" => $id]);
+
+        return $this->store($request);
     }
 
     /**
@@ -167,17 +201,40 @@ class CouponsRequestController extends Controller
                 "observation" => $request->get("observation") ?? null
             ]);
             $couponRequest->save();
+            $customer = $couponRequest->customer;
 
             if($request->get("approved") == 1){
 
-                $this->couponsMovementsRepository->save([
+                $couponMovement = $this->couponsMovementsRepository->save([
                     "customer_id"   => $couponRequest->customer_id,
                     "type_movement" => getMovement(1),
                     "quantity"      => $couponRequest->quantity_coupons,
                     "price"         => $couponRequest->customer->price_coupon ?? 0,
                     "is_automatic"  => 0, 
                 ]);
+
+                if($customer->email){
+                    Notification::route("mail", $customer->email)->notify(
+                        new ApprovedRequestCoupon([
+                            "folio"          => $couponRequest->folio,
+                            "quantity"       => $couponMovement->quantity,
+                            "total"          => $couponMovement->total,
+                            "quantity_total" => $couponMovement->customer->coupons,
+                            "encrypt_id"     => $customer->encrypt_id
+                        ])
+                    );
+                }
                 
+            }
+
+            if($request->get("approved") == 2 && $customer->email){
+                Notification::route("mail", $customer->email)->notify(
+                    new RejectRequestCoupon([
+                        "folio"          => $couponRequest->folio,
+                        "observation"    => $couponRequest->observation,
+                        "encrypt_id"     => $customer->encrypt_id
+                    ])
+                );
             }
 
             return response()->json([

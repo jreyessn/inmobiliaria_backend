@@ -19,6 +19,11 @@ class CustomerSubscription extends Model
         "quantity_coupons",
     ];
 
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
     protected static function boot()
     {
         parent::boot();

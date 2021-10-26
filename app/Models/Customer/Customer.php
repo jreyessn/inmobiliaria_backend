@@ -5,10 +5,10 @@ namespace App\Models\Customer;
 use App\Models\Coupons\CouponsMovements;
 use App\Models\Visit\Visit;
 use Illuminate\Database\Eloquent\Model;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * Class Customer.
@@ -40,7 +40,13 @@ class Customer extends Model implements Transformable
         "coupons_used",
         "coupons_bought",
         "coupons_returned",
+        "encrypt_id"
     ];
+
+    public function getEncryptIdAttribute()
+    {
+        return Crypt::encrypt($this->id);
+    }
 
     public function subscriptions()
     {

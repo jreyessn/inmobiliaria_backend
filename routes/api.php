@@ -32,11 +32,6 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
     Route::post('reset', 'ResetPasswordController@reset');
 });
 
-Route::group(['prefix' => "customers"], function(){
-    Route::get('qr/{id}', 'Customer\CustomerController@qr');
-});
-
-
 Route::group(['middleware' => ['auth:api']], function(){
 
     /**
@@ -53,6 +48,12 @@ Route::group(['middleware' => ['auth:api']], function(){
      */
     Route::put("user/profile", 'UserController@updateProfile');
     Route::put("coupons_request/approver/{coupon_request}", 'Coupons\CouponsRequestController@approver');
+
+    /**
+     * Posts
+     */
+    Route::post("customers/sendLinkProfile/{id}", 'Customer\CustomerController@sendLinkProfile');
+
 
     /**
      * Reports
@@ -73,3 +74,9 @@ Route::group(['middleware' => ['auth:api']], function(){
     
 });
 
+// public endpoints
+Route::post('coupons_request/guest', 'Coupons\CouponsRequestController@storeEncrypted');
+Route::get('customers/guest/{id}', 'Customer\CustomerController@showEncrypted');
+Route::get('customers/qr/{id}', 'Customer\CustomerController@qr');
+Route::get('coupons_movements', 'Coupons\CouponsMovementsController@index');
+Route::get('coupons_request', 'Coupons\CouponsRequestController@index');

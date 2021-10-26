@@ -149,4 +149,15 @@ if(!function_exists("period_months")){
     }
 }
 
+function descryptId($str){
+    if(strlen($str) > 100){
+        try {
+            return Crypt::decrypt($str);
+        } catch (\Throwable $th) {
+            return $str;
+        }
+    }
+
+    return $str;
+}
 

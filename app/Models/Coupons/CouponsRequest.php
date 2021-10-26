@@ -41,6 +41,10 @@ class CouponsRequest extends Model implements Transformable
         "user_request"
     ];
 
+    protected $appends = [
+        "folio"
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class)->withTrashed();
@@ -56,5 +60,8 @@ class CouponsRequest extends Model implements Transformable
         return $this->belongsTo(User::class, "user_request_id")->withTrashed();
     }
 
-
+    public function getFolioAttribute()
+    {
+        return format_ceros($this->id, 5);
+    }
 }

@@ -8,7 +8,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\HtmlString;
 
-class CustomerPurchaseCoupon extends Notification
+class AutomaticPurchaseCoupon extends Notification
 {
     use Queueable;
 
@@ -23,7 +23,6 @@ class CustomerPurchaseCoupon extends Notification
     {
         $this->data = $data;
     }
-
     /**
      * Get the notification's delivery channels.
      *
@@ -43,10 +42,13 @@ class CustomerPurchaseCoupon extends Notification
      */
     public function toMail($notifiable)
     {
+
+        $next_pay_date = $this->data["next_pay_date"]->format("d/m/Y"); 
+
         return (new MailMessage)
-                    ->subject("Compra de Cupones #{$this->data["folio"]} - " . getenv("APP_NAME"))
+                    ->subject("[Suscripción] Compra de Cupones #{$this->data["folio"]} - " . getenv("APP_NAME"))
                     ->line('Estimado cliente,')
-                    ->line(new HtmlString("Se ha procesado una compra de cupones a las <strong>" . date('d/m/Y h:i A') . "</strong>."))
+                    ->line(new HtmlString("Se ha registrado una compra de cupones hoy según los críterios de su suscripción. La próxima fecha de compra está pautada para el {$next_pay_date}"))
                     ->line(new HtmlString("Resumen:"))
                     ->line(new HtmlString("- <strong>Cantidad adquirida:</strong> {$this->data["quantity"]}"))
                     ->line(new HtmlString("- <strong>Costo:</strong> ".currency()." {$this->data["total"]}"))

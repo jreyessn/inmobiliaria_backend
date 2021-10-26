@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{ public_path('css/pdf-reports.css') }}">
 
-    <title>Clientes por Renovar</title>
+    <title>Visitas</title>
 
 </head>
 
@@ -23,7 +23,7 @@
             </tr>
             <tr>
                 <td colspan="3">
-                    <h2 class="fcb align-center">Clientes por Renovar</h2>
+                    <h2 class="fcb align-center">Visitas</h2>
                 </td>
             </tr>
         </tbody>
@@ -36,33 +36,26 @@
                     <p><b>Fecha:</b> {{ now()->format("d/m/Y h:i A") }}</p>
                 </td>
             </tr>
-            <tr>
-                <td class="pl10 width-50">
-                    <p>Menores a <b> {{ $less_than_coupons }} cupones </b></p>
-                </td>
-            </tr>
+
         </tbody>
     </table>
 
     <table cellspacing="0" class="col-10 mt10 border-2">
         <thead>            
-            <tr>
-
+            <tr> 
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Nombre Comercial:</b>
-
+                    <b>Fecha y Hora:</b>
                 </td>
 
+                <td class="align-center fcw bg-blue">
+                    <b>Nombre Comercial:</b>
+                </td>
                 <td class="align-center fcw bg-blue">
                     <b>Razón Social:</b>
                 </td>
                 <td class="align-center fcw bg-blue">
-                    <b>Cupones:</b>
-                </td>
-                
-                <td class="align-center fcw bg-blue">
-                    <b>Cupones Utilizados:</b>
+                    <b>Visitado por:</b>
                 </td>
 
             </tr>
@@ -72,16 +65,19 @@
             @foreach ($data as $item)
                 <tr>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->tradename }}
+                        {{ $item->created_at->format("d/m/Y h:i A") }}
                     </td>
+
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->business_name }}
+                        {{ $item->customer->tradename }}
                     </td>
+
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->coupons }}
+                        {{ $item->customer->business_name }}
                     </td>
+   
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->coupons_used }}
+                        {{ $item->user_created->name }}
                     </td>
  
                 </tr>

@@ -46,7 +46,8 @@ class AutomaticFailedPurchaseCoupon extends Notification
     {
         return (new MailMessage)
                     ->subject("[Suscripción] Compra de Cupones Fallida - " . getenv("APP_NAME"))
-                    ->line(new HtmlString("Ha ocurrido un error al realizar la compra de los cupones del cliente {$this->data['tradename']}. Notificar a sistemas de este problema."))
+                    ->line(new HtmlString("Ha ocurrido un error al realizar la compra de los cupones del cliente {$this->data['tradename']}. Notificar a sistemas si esto ocurrió debido a un problema."))
+                    ->line(new HtmlString("<strong>Motivo del Error:</strong> {$this->data["reason"]}"))
                     ->line(new HtmlString("Resumen de Suscripción:"))
                     ->line(new HtmlString("- <strong>Cantidad:</strong> {$this->data["quantity"]}"));
     }

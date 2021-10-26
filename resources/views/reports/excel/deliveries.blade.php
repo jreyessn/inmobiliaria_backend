@@ -52,7 +52,11 @@
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Cliente:</b>
+                    <b>Nombre Comercial:</b>
+
+                </td>
+                <td class="align-center fcw bg-blue">
+                    <b>Razón Social:</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
@@ -86,6 +90,9 @@
                         {{ $item->folio }}
                     </td>
                     <td class="align-center">
+                        {{ $item->customer->tradename }}
+                    </td>
+                    <td class="align-center">
                         {{ $item->customer->business_name }}
                     </td>
                     <td class="align-center">
@@ -106,7 +113,7 @@
                 </tr>
             @endforeach
             <tr>
-                <td colspan="6"></td>
+                <td colspan="7"></td>
                 <td class="align-center"> 
                     <b> Total </b> 
                 </td>

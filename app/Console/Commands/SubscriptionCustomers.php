@@ -54,14 +54,15 @@ class SubscriptionCustomers extends Command
         foreach ($subscriptions as $subscription) {
             $dayPay    = new Carbon($subscription->next_pay_date);
             $current  = Carbon::now()->today();
-
+            
             if($current->gte($dayPay)){
+
                 $subscription->last_pay_date = Carbon::now();
-                $subscription->next_pay_date = $dayPay->addDays($subscription->every_day);
+                $subscription->next_pay_date = $current->addDays($subscription->every_day);
 
                 // validar
                 $validator = Validator::make(["id" => $subscription->customer_id], [
-                    "id" => [ new CustomerCouponsAvailables($subscription->customer_id, NULL) ]
+                    "id" => [ new CustomerCouponsAvailables($subscription->customer_id, getMovement(1)) ]
                 ]);
         
                 if($validator->fails()){
@@ -70,6 +71,7 @@ class SubscriptionCustomers extends Command
                         new AutomaticFailedPurchaseCoupon([
                             "tradename"      => $subscription->customer->tradename,
                             "quantity"       => $subscription->quantity_coupons,
+                            "reason"         => reset($validator->getMessageBag()->getMessages()["id"])
                         ])
                     );
 

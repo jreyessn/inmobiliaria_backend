@@ -48,7 +48,7 @@ class AutomaticPurchaseCoupon extends Notification
         return (new MailMessage)
                     ->subject("[Suscripción] Compra de Cupones #{$this->data["folio"]} - " . getenv("APP_NAME"))
                     ->line('Estimado cliente,')
-                    ->line(new HtmlString("Se ha registrado una compra de cupones hoy según los críterios de su suscripción. La próxima fecha de compra está pautada para el {$next_pay_date}"))
+                    ->line(new HtmlString("Se ha registrado una compra de cupones hoy según los críterios de su suscripción. La próxima fecha de compra está pautada para el <strong>{$next_pay_date}</strong>."))
                     ->line(new HtmlString("Resumen:"))
                     ->line(new HtmlString("- <strong>Cantidad adquirida:</strong> {$this->data["quantity"]}"))
                     ->line(new HtmlString("- <strong>Costo:</strong> ".currency()." {$this->data["total"]}"))

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Clientes por Renovar</title>
+    <title>Visitas</title>
 </head>
 <body>
     <table>
@@ -17,18 +17,12 @@
     <table>
         <tr>
             <td>
-                <b>Clientes por Renovar</b>
+                <b>Visitas</b>
             </td>
         </tr>
 
         <tr>
             <td>Fecha: {{ now()->format('d/m/Y h:i A')}}</td>
-        </tr>
-    
-        <tr>
-            <td>
-                Menores a {{ $less_than_coupons }} cupones
-            </td>
         </tr>
 
         <tr></tr>
@@ -37,22 +31,20 @@
 
     <table cellspacing="0" class="col-10 mt10 border-2">
         <thead>            
-            <tr>
+            <tr> 
+                
+                <td class="align-center fcw bg-blue">
+                    <b>Fecha y Hora:</b>
+                </td>
 
                 <td class="align-center fcw bg-blue">
                     <b>Nombre Comercial:</b>
-
                 </td>
                 <td class="align-center fcw bg-blue">
                     <b>Razón Social:</b>
                 </td>
-
                 <td class="align-center fcw bg-blue">
-                    <b>Cupones:</b>
-                </td>
-                
-                <td class="align-center fcw bg-blue">
-                    <b>Cupones Utilizados:</b>
+                    <b>Visitado por:</b>
                 </td>
 
             </tr>
@@ -60,21 +52,24 @@
         </thead>
         <tbody>
             @foreach ($data as $item)
-                <tr>
-                    <td class="align-center">
-                        {{ $item->tradename }}
-                    </td>
-                    <td class="align-center">
-                        {{ $item->business_name }}
-                    </td>
-                    <td class="align-center">
-                        {{ $item->coupons }}
-                    </td>
-                    <td class="align-center">
-                        {{ $item->coupons_used }}
-                    </td>
- 
-                </tr>
+            <tr>
+                <td class="align-center">
+                    {{ $item->created_at->format("d/m/Y h:i A") }}
+                </td>
+
+                <td class="align-center">
+                    {{ $item->customer->tradename }}
+                </td>
+
+                <td class="align-center">
+                    {{ $item->customer->business_name }}
+                </td>
+
+                <td class="align-center">
+                    {{ $item->user_created->name }}
+                </td>
+
+            </tr>
             @endforeach
         </tbody>
     </table>

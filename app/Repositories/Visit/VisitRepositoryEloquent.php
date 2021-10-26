@@ -15,6 +15,14 @@ use App\Validators\Visit\VisitValidator;
  */
 class VisitRepositoryEloquent extends BaseRepository implements VisitRepository
 {
+
+    protected $fieldSearchable = [
+        'id' => 'like',
+        'customer.tradename' => 'like',
+        'customer.business_name' => 'like',
+        'user_created.name' => 'like',
+    ];
+    
     /**
      * Specify Model class name
      *

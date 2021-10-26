@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Visits;
 
+use App\Criteria\SinceUntilCreatedAtCriteria;
+use App\Criteria\UserAuditCriteria;
+use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Repositories\Visit\VisitRepositoryEloquent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class VisitsController extends Controller
 {
@@ -32,11 +37,52 @@ class VisitsController extends Controller
             'search'        =>  'nullable|string',
             'orderBy'       =>  'nullable|string',
             'sortBy'        =>  'nullable|in:desc,asc',
+            "format"        =>  "in:pdf,excel,json",
+            "user_id"       =>  "nullable|string",
+            "since"         =>  "nullable|date",
+            "until"         =>  "nullable|date",
         ]);
 
-        $perPage = $request->get('perPage', config('repository.pagination.limit'));
+        $this->visitRepository->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->visitRepository->pushCriteria(UserAuditCriteria::class);
 
-        return $this->visitRepository->paginate($perPage);
+        switch ($request->format) {
+            case 'json':
+
+                $perPage    = $request->get('perPage', config('repository.pagination.limit'));
+                $data       = $this->visitRepository->with(["customer", "user_created"])->paginate($perPage);
+
+                return $data;
+            break;
+            case 'pdf':
+                $data = $this->visitRepository->get();
+
+                return PDF::loadView('reports/pdf/visits', [
+                    
+                    "data"  => $data,
+                    "since" => $request->since? Carbon::parse($request->since) : null,
+                    "until" => $request->until? Carbon::parse($request->until) : null,
+
+                ])->download('visits.pdf');
+            break;
+            case 'excel':
+                $data = $this->visitRepository->get();
+
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                            "since" => $request->since? Carbon::parse($request->since) : null,
+                            "until" => $request->until? Carbon::parse($request->until) : null,
+                        ],
+                        'view' => 'reports.excel.visits'
+                    ]),
+                    'visits.xlsx'
+                );
+            break;
+
+        }
+
     }
 
     /**

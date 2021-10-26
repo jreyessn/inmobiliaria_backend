@@ -63,8 +63,13 @@
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Cliente:</b>
+                    <b>Nombre Comercial:</b>
+
                 </td>
+                <td class="align-center fcw bg-blue">
+                    <b>Razón Social:</b>
+                </td>
+
                 <td class="align-center fcw bg-blue">
                     <b>Cupones:</b>
                 </td>
@@ -90,6 +95,9 @@
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->folio }}
+                    </td>
+                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
+                        {{ $item->customer->tradename }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->customer->business_name }}

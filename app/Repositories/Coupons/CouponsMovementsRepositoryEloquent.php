@@ -7,6 +7,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Coupons\CouponsMovementsRepository;
 use App\Models\Coupons\CouponsMovements;
 use App\Validators\Coupons\CouponsMovementsValidator;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class CouponsMovementsRepositoryEloquent.
@@ -50,12 +51,26 @@ class CouponsMovementsRepositoryEloquent extends BaseRepository implements Coupo
         if($data["type_movement"] != getMovement(4)){
             $data["io"] = getIo($data["type_movement"]);
         }
+    
+        if(array_key_exists("sign_customer", $data) && $data["sign_customer"]){
+            $data["sign_customer"] = $this->saveSignCustomerBase64($data["sign_customer"]);
+        }
 
         $store = $this->create($data);
         $store->price = $store->customer->price_coupon;
         $store->save();
         
         return $store;
+    }
+
+    public function saveSignCustomerBase64($image64){
+
+        $file_name = 'sign_' . rand(0,100000) . '.png';
+        $image = preg_replace('/data:image\/(.*?);base64,/','',$image64);
+
+        Storage::disk('local')->put("customers_sign/".$file_name, base64_decode($image));
+        
+        return $file_name;
     }
     
 }

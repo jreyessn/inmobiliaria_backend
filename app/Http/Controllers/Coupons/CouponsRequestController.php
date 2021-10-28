@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Coupons;
 use App\Criteria\CustomerCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptIsValid;
+use App\Notifications\Coupons\AdminRequestedCoupon;
 use App\Notifications\Coupons\ApprovedRequestCoupon;
 use App\Notifications\Coupons\CustomerDeliveryCoupon;
 use App\Notifications\Coupons\CustomerRequestedCoupon;
 use App\Notifications\Coupons\RejectRequestCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
 use App\Repositories\Coupons\CouponsRequestRepositoryEloquent;
+use App\Repositories\Users\UserRepositoryEloquent;
 use App\Rules\IsApprovedRequestCoupon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,14 +24,17 @@ class CouponsRequestController extends Controller
 
     private $couposRepository;
     private $couponsMovementsRepository;
+    private $userRepository;
 
     public function __construct(
         CouponsRequestRepositoryEloquent $couposRepository,
-        CouponsMovementsRepositoryEloquent $couponsMovementsRepository
+        CouponsMovementsRepositoryEloquent $couponsMovementsRepository,
+        UserRepositoryEloquent $userRepository
     )
     {
         $this->couposRepository = $couposRepository;    
         $this->couponsMovementsRepository = $couponsMovementsRepository;   
+        $this->userRepository = $userRepository;   
         
         $this->middleware(EncryptIsValid::class, [
             "only" => ["storeEncrypted"]
@@ -85,6 +90,21 @@ class CouponsRequestController extends Controller
                         "folio"          => $data->folio,
                         "quantity"       => $data->quantity_coupons,
                         "encrypt_id"     => $data->customer->encrypt_id
+                    ])
+                );
+            }
+
+            // Notificar Admins
+            
+            $adminUsers = $this->userRepository->getAdminUsers();
+
+            foreach ($adminUsers as $user) {
+                $user->notify(
+                    new AdminRequestedCoupon([
+                        "folio"     => $data->folio,        
+                        "tradename" => $data->customer->tradename,        
+                        "quantity"  => $data->quantity_coupons,        
+                        "username"  => $data->user_request->name ?? "Cliente",        
                     ])
                 );
             }

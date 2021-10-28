@@ -38,7 +38,8 @@ class CouponsMovements extends Model implements Transformable
         "is_automatic",
         "comment",
         "num_invoice",
-        "payment_method_id"
+        "payment_method_id",
+        "sign_customer"
     ];
 
     protected $casts = [

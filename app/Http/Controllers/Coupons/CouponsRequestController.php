@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Coupons;
 
+use App\Criteria\CustomerCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptIsValid;
 use App\Notifications\Coupons\ApprovedRequestCoupon;
@@ -48,6 +49,8 @@ class CouponsRequestController extends Controller
             'orderBy'       =>  'nullable|string',
             'sortBy'        =>  'nullable|in:desc,asc',
         ]);
+
+        $this->couposRepository->pushCriteria(CustomerCriteria::class);
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 

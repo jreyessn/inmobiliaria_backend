@@ -7,11 +7,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptIsValid;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Imports\CustomersImport;
 use App\Notifications\Customers\SendLinkProfile;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException as ValidationValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -195,4 +200,41 @@ class CustomerController extends Controller
             "message" => "Correo enviado con éxito",
         ], 201);
     }
+
+    /**
+     * Descarga la plantilla guardada en el storage
+     */
+    public function downloadExcelCustomer(){
+        return Storage::download("plantillas/plantilla-clientes-premier.xlsx");
+    }
+
+    /**
+     * Descarga la plantilla guardada en el storage
+     */
+    public function uploadExcelCustomer(Request $request)
+    {
+        
+        DB::beginTransaction();
+
+        try {
+            
+            Excel::import(new CustomersImport, $request->file("file"));
+
+            DB::commit();
+
+            return response()->json([
+                "message" => "Clientes importados correctamente"
+            ], 200);
+
+        } catch (ValidationValidationException $th) {
+            DB::rollBack();
+            
+            return response()->json([
+                'message' => $th->getMessage(),
+                'errors'  => $th->errors()
+            ], 422);
+        }
+    
+    }
+
 }

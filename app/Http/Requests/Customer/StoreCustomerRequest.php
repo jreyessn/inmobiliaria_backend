@@ -30,7 +30,7 @@ class StoreCustomerRequest extends FormRequest
             'street'         => 'required|string',
             'street_number'  => 'required|string',
             'colony'         => 'required|string',
-            'phone'          => 'required|string',
+            'phone'          => 'nullable|string',
             'email'          => 'required|email',
             'subscriptions'  => 'array',
             'subscriptions.*.start_date'       => 'required|date',

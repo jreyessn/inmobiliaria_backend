@@ -33,6 +33,14 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 });
 
 Route::group(['middleware' => ['auth:api']], function(){
+        
+    Route::apiResources([
+        'customers' => 'Customer\CustomerController',
+        'users' => 'UserController',
+        'coupons_request' => 'Coupons\CouponsRequestController',
+        'coupons_movements' => 'Coupons\CouponsMovementsController',
+        'visits' => 'Visits\VisitsController',
+    ]);
 
     /**
      * gets simples
@@ -42,17 +50,19 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('type_movements', 'controller@typeMovements');
     Route::get('payment_methods', 'controller@paymentMethods');
     Route::get('visits/is_visited_customer', 'Visits\VisitsController@hasVisitedToday');
-
+    Route::get('customers/downloadExcelCustomer', 'Customer\CustomerController@downloadExcelCustomer');
+    
     /**
      * puts
      */
     Route::put("user/profile", 'UserController@updateProfile');
     Route::put("coupons_request/approver/{coupon_request}", 'Coupons\CouponsRequestController@approver');
-
+    
     /**
      * Posts
      */
     Route::post("customers/sendLinkProfile/{id}", 'Customer\CustomerController@sendLinkProfile');
+    Route::post('customers/uploadExcelCustomer', 'Customer\CustomerController@uploadExcelCustomer');
 
 
     /**
@@ -63,15 +73,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get("reports/sales_monthly", 'Reports\ReportsSalesController@salesMonthly');
     Route::get("statistics", 'Reports\StatisticsController@graphics');
     
-    
-    Route::apiResources([
-        'customers' => 'Customer\CustomerController',
-        'users' => 'UserController',
-        'coupons_request' => 'Coupons\CouponsRequestController',
-        'coupons_movements' => 'Coupons\CouponsMovementsController',
-        'visits' => 'Visits\VisitsController',
-    ]);
-    
+
 });
 
 // public endpoints

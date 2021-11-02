@@ -69,9 +69,11 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Reports
      */
     Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
+    Route::get("reports/detail_delivery/{id}", 'Reports\ReportsSalesController@detailDeliveryDownload');
     Route::get("reports/renewal_customers", 'Reports\ReportsSalesController@renewalCustomerCoupons');
     Route::get("reports/sales_monthly", 'Reports\ReportsSalesController@salesMonthly');
     Route::get("statistics", 'Reports\StatisticsController@graphics');
+    Route::post("reports/send_email_delivery", 'Reports\ReportsSalesController@sendEmailDelivery');
     
 
 });

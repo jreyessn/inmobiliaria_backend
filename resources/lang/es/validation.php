@@ -162,6 +162,8 @@ return [
         "quantity"          => "Cantidad",
         "type_movement"     => "Tipo de Movimiento",
         "format"            => "Formato de Descarga",
+        "coupon_movement_id" => "Movimiento de Cupón",
+        "emails" => "Correos",
     ],
 
 ];

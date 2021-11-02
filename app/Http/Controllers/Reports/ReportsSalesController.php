@@ -7,11 +7,14 @@ use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Criteria\UserAuditCriteria;
 use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
+use App\Notifications\Coupons\CustomerDeliveryCoupon;
 use App\Repositories\Coupons\CouponsMovementsRepositoryEloquent;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsSalesController extends Controller
@@ -86,6 +89,57 @@ class ReportsSalesController extends Controller
             break;
 
         }
+
+    }
+
+    /**
+     * Detalle de la entrega
+     */
+    public function detailDeliveryDownload($id)
+    {
+
+        $movement = $this->couponsMovementRepositoryEloquent->find($id);
+        
+        $sign = base64_encode(Storage::get('customers_sign/' . $movement->sign_customer));
+
+        return PDF::loadView('reports/pdf/delivery_detail', [
+              "movement" => $movement,
+              "sign"     => $sign      
+        ])->download('deliveries.pdf');
+    }
+
+    public function sendEmailDelivery(Request $request)
+    {
+        $request->validate([
+            "emails" => "array|min:1",
+            "coupon_movement_id" => "numeric|exists:coupons_movements,id"
+        ]);
+
+        $movement = $this->couponsMovementRepositoryEloquent->find($request->coupon_movement_id);
+        $sign = base64_encode(Storage::get('customers_sign/' . $movement->sign_customer));
+
+        foreach ($request->emails as $email) {
+            Notification::route("mail", $email)->notify(
+                new CustomerDeliveryCoupon(
+                    [
+                        "folio"          => $movement->folio,
+                        "quantity"       => $movement->quantity,
+                        "total"          => $movement->total,
+                        "quantity_total" => $movement->quantity_total,
+                        "encrypt_id"     => $movement->customer->encrypt_id,
+                        "profile_link"   => false,
+                        "attach"         => PDF::loadView('reports/pdf/delivery_detail', [
+                                                    "movement" => $movement,
+                                                    "sign"     => $sign      
+                                            ])->output()
+                    ]
+                )
+            );
+        }
+
+        return response()->json([
+            "message" => "Correos enviados correctamente"
+        ], 200);
 
     }
 

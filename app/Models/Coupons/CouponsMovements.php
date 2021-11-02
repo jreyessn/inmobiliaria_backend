@@ -82,7 +82,7 @@ class CouponsMovements extends Model implements Transformable
 
     public function getFolioAttribute()
     {
-        return format_ceros($this->id, 5);
+        return format_ceros($this->id, 4);
     }
 
     /**

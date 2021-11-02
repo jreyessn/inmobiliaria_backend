@@ -33,14 +33,6 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 });
 
 Route::group(['middleware' => ['auth:api']], function(){
-        
-    Route::apiResources([
-        'customers' => 'Customer\CustomerController',
-        'users' => 'UserController',
-        'coupons_request' => 'Coupons\CouponsRequestController',
-        'coupons_movements' => 'Coupons\CouponsMovementsController',
-        'visits' => 'Visits\VisitsController',
-    ]);
 
     /**
      * gets simples
@@ -75,6 +67,14 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get("statistics", 'Reports\StatisticsController@graphics');
     Route::post("reports/send_email_delivery", 'Reports\ReportsSalesController@sendEmailDelivery');
     
+            
+    Route::apiResources([
+        'customers' => 'Customer\CustomerController',
+        'users' => 'UserController',
+        'coupons_request' => 'Coupons\CouponsRequestController',
+        'coupons_movements' => 'Coupons\CouponsMovementsController',
+        'visits' => 'Visits\VisitsController',
+    ]);
 
 });
 

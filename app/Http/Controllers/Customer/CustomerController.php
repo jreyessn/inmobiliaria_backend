@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Criteria\RoleCriteria;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptIsValid;
@@ -48,6 +49,8 @@ class CustomerController extends Controller
             'sortBy'        =>  'nullable|in:desc,asc',
         ]);
 
+        $this->customerRepository->pushCriteria(RoleCriteria::class);
+        
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
         return $this->customerRepository->paginate($perPage);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Visits;
 
 use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Criteria\UserAuditCriteria;
+use App\Criteria\UserCriteria;
 use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Repositories\Visit\VisitRepositoryEloquent;
@@ -45,6 +46,7 @@ class VisitsController extends Controller
 
         $this->visitRepository->pushCriteria(SinceUntilCreatedAtCriteria::class);
         $this->visitRepository->pushCriteria(UserAuditCriteria::class);
+        $this->visitRepository->pushCriteria(UserCriteria::class);
 
         switch ($request->format) {
             case 'json':

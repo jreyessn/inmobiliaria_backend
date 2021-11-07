@@ -48,7 +48,7 @@ class UserController extends Controller
 
         $this->repository->pushCriteria(RoleCriteria::class);
 
-        return $this->repository->paginate($perPage);
+        return $this->repository->with(["roles"])->paginate($perPage);
 
     }
 

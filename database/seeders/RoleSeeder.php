@@ -20,6 +20,8 @@ class RoleSeeder extends Seeder
         
         Role::create(['name' => 'Repartidor']);
        
-        Role::create(['name' => 'Cliente']);
+        Role::create(['name' => 'Corte']);
+
+        Role::create(['name' => 'Asignacion']);
     }
 }

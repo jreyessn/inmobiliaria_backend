@@ -18,12 +18,13 @@ class PermissionsTableSeeder extends Seeder
 
         Role::where(['name' => 'Administrador'])->first()->syncPermissions([]);
         Role::where(['name' => 'Promotor de Ventas'])->first()->syncPermissions([]);
-        Role::where(['name' => 'Chofer'])->first()->syncPermissions([]);
+        Role::where(['name' => 'Repartidor'])->first()->syncPermissions([]);
         Role::where(['name' => 'Cliente'])->first()->syncPermissions([]);
+        Role::where(['name' => 'Corte'])->first()->syncPermissions([]);
+        Role::where(['name' => 'Asignacion'])->first()->syncPermissions([]);
 
         Permission::query()->delete();
 
-        Permission::create(['name' => 'dashboard']);
         Permission::create(['name' => 'reports']);
         Permission::create(['name' => 'stadistics']);
         
@@ -52,25 +53,69 @@ class PermissionsTableSeeder extends Seeder
         Permission::create(['name' => 'update coupons request']);
         Permission::create(['name' => 'approve coupons request']);
 
+        Permission::create(['name' => 'redirect to scanner']);
+
+        Permission::create(['name' => 'scanner feature']);
+        Permission::create(['name' => 'scanner info customer']);
+        Permission::create(['name' => 'scanner use coupons']);
+        Permission::create(['name' => 'scanner request coupon']);
+        Permission::create(['name' => 'scanner visit register']);
+
         $role = Role::where(['name' => 'Administrador'])->first();
-        $role->givePermissionTo(Permission::all())->get();
+        $role->givePermissionTo( 
+            Permission::whereNotIn("name", [
+                "redirect to scanner"
+            ])->get() 
+        );
         
         $role = Role::where(['name' => 'Promotor de Ventas'])->first();
-        $role->givePermissionTo(Permission::all())->get();
-
-        $role = Role::where(['name' => 'Chofer'])->first();
         $role->givePermissionTo([
-            'dashboard',
+            'redirect to scanner',
+            'scanner feature',
+            'scanner info customer',
+            'scanner request coupon',
+            'scanner visit register',
+        ])->get();
+
+        $role = Role::where(['name' => 'Repartidor'])->first();
+        $role->givePermissionTo([
+            'redirect to scanner',
+            'scanner feature',
+            'scanner info customer',
+            'scanner use coupons',
+        ]);
+        
+        $role = Role::where(['name' => 'Corte'])->first();
+        $role->givePermissionTo([
+            'reports',
+            'stadistics',
+            'list users',
+            'show users',
+            'list coupons',
+            'show coupons',
             'list customers',
             'show customers',
-            "list coupons",
-            'show coupons',
-            'store coupons request',
+            'list coupons request',
             'show coupons request',
+            'scanner feature',
+            'scanner info customer',
         ]);
+
+        $role = Role::where(['name' => 'Asignacion'])->first();
+        $role->givePermissionTo(
+            Permission::whereNotIn("name", [
+                "redirect to scanner",
+                "list users",
+                "show users",
+                "store users",
+                "update users",
+                "destroy users",
+            ])->get() 
+        );
         
         $role = Role::where(['name' => 'Cliente'])->first();
         $role->givePermissionTo([
+            'list coupons',
             'show coupons',
         ]);
     }

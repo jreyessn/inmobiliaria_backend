@@ -118,5 +118,7 @@ class PermissionsTableSeeder extends Seeder
             'list coupons',
             'show coupons',
         ]);
+
+        
     }
 }

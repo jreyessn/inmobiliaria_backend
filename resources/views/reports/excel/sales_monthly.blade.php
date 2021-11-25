@@ -51,13 +51,13 @@
                 </td>
                 
                 <td class="align-center fcw bg-blue">
+                    <b>Razón Social:</b>
+                </td>
+                <td class="align-center fcw bg-blue">
                     <b>Nombre Comercial:</b>
 
                 </td>
 
-                <td class="align-center fcw bg-blue">
-                    <b>Razón Social:</b>
-                </td>
 
                 <td class="align-center fcw bg-blue">
                     <b>Cupones:</b>
@@ -86,10 +86,10 @@
                         {{ $item->folio }}
                     </td>
                     <td class="align-center">
-                        {{ $item->customer->tradename }}
+                        {{ $item->customer->business_name_street }}
                     </td>
                     <td class="align-center">
-                        {{ $item->customer->business_name }}
+                        {{ $item->customer->tradename }}
                     </td>
 
                     <td class="align-center">

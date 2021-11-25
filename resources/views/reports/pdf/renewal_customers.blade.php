@@ -50,13 +50,13 @@
 
                 
                 <td class="align-center fcw bg-blue">
+                    <b>Razón Social:</b>
+                </td>
+                <td class="align-center fcw bg-blue">
                     <b>Nombre Comercial:</b>
 
                 </td>
 
-                <td class="align-center fcw bg-blue">
-                    <b>Razón Social:</b>
-                </td>
                 <td class="align-center fcw bg-blue">
                     <b>Cupones:</b>
                 </td>
@@ -72,10 +72,10 @@
             @foreach ($data as $item)
                 <tr>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->tradename }}
+                        {{ $item->business_name_street }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->business_name }}
+                        {{ $item->tradename }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->coupons }}

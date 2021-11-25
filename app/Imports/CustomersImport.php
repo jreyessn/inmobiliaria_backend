@@ -18,7 +18,7 @@ class CustomersImport implements ToCollection
     {
         
         $rows = $this->filterEmptyRows($collection);
-        
+
         Validator::make(["data" => $rows->toArray()], [
             'data' => 'required',
         ],
@@ -29,18 +29,17 @@ class CustomersImport implements ToCollection
 
         foreach ($rows as $key => $row) {
             
-            $numberRow = $key + 1;
-
+            $numberRow = $key + 3;
             Validator::make($row, 
                 [
-                    'tradename'      => "required|max:100|unique:customers,tradename,NULL,id,deleted_at,NULL",
-                    'business_name'  => "required|max:200|unique:customers,business_name,NULL,id,deleted_at,NULL",
+                    'tradename'      => "sometimes|max:100",
+                    'business_name'  => "required|max:200",
                     'price_coupon'   => 'required|numeric',
                     'street'         => 'required',
-                    'street_number'  => 'required',
-                    'colony'         => 'required',
+                    'street_number'  => 'nullable',
+                    'colony'         => 'nullable',
                     'phone'          => 'nullable',
-                    'email'          => 'required|email',
+                    'email'          => 'nullable',
                 ],
                 [],
                 [

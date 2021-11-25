@@ -47,7 +47,7 @@ class AdminRequestedCoupon extends Notification
                     ->subject("Solicitud en Proceso #{$this->data["folio"]} - " . getenv("APP_NAME"))
                     ->line(new HtmlString("Se ha procesado una nueva solicitud de cupones:"))
                     ->line(new HtmlString("- <strong>Folio:</strong> {$this->data['folio']}"))
-                    ->line(new HtmlString("- <strong>Nombre Comercial:</strong> {$this->data['tradename']}"))
+                    ->line(new HtmlString("- <strong>Razón Social:</strong> {$this->data['business_name_street']}"))
                     ->line(new HtmlString("- <strong>Cantidad:</strong> {$this->data['quantity']}"))
                     ->line(new HtmlString("- <strong>Solicitante:</strong> {$this->data['username']}"))
                     ->line(new HtmlString("Puede verificar la lista de solicitudes mediante el siguiente enlace:"))

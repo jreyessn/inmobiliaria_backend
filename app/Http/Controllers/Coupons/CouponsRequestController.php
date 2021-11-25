@@ -102,7 +102,7 @@ class CouponsRequestController extends Controller
                 $user->notify(
                     new AdminRequestedCoupon([
                         "folio"     => $data->folio,        
-                        "tradename" => $data->customer->tradename,        
+                        "business_name_street" => $data->customer->business_name_street,        
                         "quantity"  => $data->quantity_coupons,        
                         "username"  => $data->user_request->name ?? "Cliente",        
                     ])

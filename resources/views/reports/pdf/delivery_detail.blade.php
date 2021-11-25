@@ -57,12 +57,12 @@
         <tbody>
             <tr>
                 <td class="pl10 border-1">
-                    <P><b>Nombre Comercial:</b> {{ $movement->customer->tradename ?? '' }}</P>
+                    <P><b>Razón Social:</b> {{ $movement->customer->business_name_street ?? '' }}</P>
                 </td>
             </tr>
             <tr>
                 <td class="pl10 border-1">
-                    <P><b>Razón Social:</b> {{ $movement->customer->business_name ?? '' }}</P>
+                    <P><b>Nombre Comercial:</b> {{ $movement->customer->tradename ?? '' }}</P>
                 </td>
             </tr>
             <tr>

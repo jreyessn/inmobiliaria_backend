@@ -69,9 +69,9 @@ class SubscriptionCustomers extends Command
 
                     Notification::route("mail", $subscription->customer->email)->notify(
                         new AutomaticFailedPurchaseCoupon([
-                            "tradename"      => $subscription->customer->tradename,
-                            "quantity"       => $subscription->quantity_coupons,
-                            "reason"         => reset($validator->getMessageBag()->getMessages()["id"])
+                            "business_name_street"  => $subscription->customer->business_name_street,
+                            "quantity"              => $subscription->quantity_coupons,
+                            "reason"                => reset($validator->getMessageBag()->getMessages()["id"])
                         ])
                     );
 

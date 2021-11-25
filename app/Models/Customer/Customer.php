@@ -40,8 +40,14 @@ class Customer extends Model implements Transformable
         "coupons_used",
         "coupons_bought",
         "coupons_returned",
-        "encrypt_id"
+        "encrypt_id",
+        "business_name_street"
     ];
+
+    public function getBusinessNameStreetAttribute()
+    {
+        return "{$this->business_name} | {$this->street}";
+    }
 
     public function getEncryptIdAttribute()
     {

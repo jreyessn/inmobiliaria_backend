@@ -193,15 +193,26 @@ class CustomerController extends Controller
             return response()->json(null, 404);
         }
 
-        FacadesNotification::route("mail", $customer->email)->notify(
+        if($customer->email){
+
+           FacadesNotification::route("mail", $customer->email)->notify(
             new SendLinkProfile([
                 "encrypt_id"     => $customer->encrypt_id,
-            ])
-        );
+                ])
+            );
+
+            return response()->json([
+                "message" => "Correo enviado con éxito",
+            ], 201);
+        }
 
         return response()->json([
-            "message" => "Correo enviado con éxito",
-        ], 201);
+            'message' => "Correo invalido",
+            'errors'  => [
+                "email" => ["El actual registro no dispone de un correo registrado"]
+            ]
+        ], 422);
+
     }
 
     /**

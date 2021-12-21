@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Configuration;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
  
@@ -123,6 +124,13 @@ if(!function_exists("currency")){
 
     function currency(){
       return "$";
+    }
+}
+
+if(!function_exists("correo_premier")){
+
+    function correo_premier(){
+      return Configuration::where("key", "correo_premier")->first()->value ?? '';
     }
 }
 

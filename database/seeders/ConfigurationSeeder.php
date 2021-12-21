@@ -14,6 +14,9 @@ class ConfigurationSeeder extends Seeder
      */
     public function run()
     {
-
+        Configuration::create([
+            "key" => "correo_premier",
+            "value" => "premier_del_noroeste@hotmail.com"
+        ]);
     }
 }

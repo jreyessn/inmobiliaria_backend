@@ -95,11 +95,8 @@ class CouponsRequestController extends Controller
             }
 
             // Notificar Admins
-            
-            $adminUsers = $this->userRepository->getAdminUsers();
-
-            foreach ($adminUsers as $user) {
-                $user->notify(
+            if(correo_premier()){
+                Notification::route("mail", correo_premier())->notify(
                     new AdminRequestedCoupon([
                         "folio"     => $data->folio,        
                         "business_name_street" => $data->customer->business_name_street,        
@@ -108,7 +105,7 @@ class CouponsRequestController extends Controller
                     ])
                 );
             }
-            
+        
             DB::commit();
 
             return response()->json([

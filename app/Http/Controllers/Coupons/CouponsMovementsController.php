@@ -83,6 +83,18 @@ class CouponsMovementsController extends Controller
             }
 
             if($data->customer->email && $data->type_movement == getMovement(3)){
+                if(correo_premier()){
+                    FacadesNotification::route("mail", correo_premier())->notify(
+                        new CustomerDeliveryCoupon([
+                            "folio"          => $data->folio,
+                            "quantity"       => $data->quantity,
+                            "total"          => $data->total,
+                            "quantity_total" => $data->customer->coupons,
+                            "encrypt_id"     => $data->customer->encrypt_id
+                        ])
+                    );
+                }
+
                 FacadesNotification::route("mail", $data->customer->email)->notify(
                     new CustomerDeliveryCoupon([
                         "folio"          => $data->folio,

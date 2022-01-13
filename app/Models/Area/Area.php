@@ -1,21 +1,20 @@
 <?php
 
-namespace App\Models\Categories;
+namespace App\Models\Area;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class CategoriesServices.
+ * Class Area.
  *
- * @package namespace App\Models\Categories;
+ * @package namespace App\Models\Area;
  */
-class CategoriesServices extends Model implements Transformable
+class Area extends Model implements Transformable
 {
-    use TransformableTrait;
-
-    protected $table = "categories_services";
+    use TransformableTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +24,5 @@ class CategoriesServices extends Model implements Transformable
     protected $fillable = [
         "name"
     ];
-
-    public $timestamps = false;
 
 }

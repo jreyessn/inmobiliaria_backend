@@ -25,8 +25,8 @@ class CreateEquipmentsTable extends Migration
             $table->float("cost")->default(0);
             $table->boolean("maintenance_required")->default(0);
             $table->boolean("no_serie_visible")->default(0);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

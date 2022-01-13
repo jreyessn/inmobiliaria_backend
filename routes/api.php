@@ -35,52 +35,14 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
 Route::group(['middleware' => ['auth:api']], function(){
 
     /**
-     * gets simples
+     * Gets
      */
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
-    Route::get('type_movements', 'controller@typeMovements');
-    Route::get('payment_methods', 'controller@paymentMethods');
-    Route::get('visits/is_visited_customer', 'Visits\VisitsController@hasVisitedToday');
-    Route::get('customers/downloadExcelCustomer', 'Customer\CustomerController@downloadExcelCustomer');
-    
-    /**
-     * puts
-     */
-    Route::put("user/profile", 'UserController@updateProfile');
-    Route::put("coupons_request/approver/{coupon_request}", 'Coupons\CouponsRequestController@approver');
-    
-    /**
-     * Posts
-     */
-    Route::post("customers/sendLinkProfile/{id}", 'Customer\CustomerController@sendLinkProfile');
-    Route::post('customers/uploadExcelCustomer', 'Customer\CustomerController@uploadExcelCustomer');
-
-
-    /**
-     * Reports
-     */
-    Route::get("reports/deliveries", 'Reports\ReportsSalesController@dailyDeliveries');
-    Route::get("reports/detail_delivery/{id}", 'Reports\ReportsSalesController@detailDeliveryDownload');
-    Route::get("reports/renewal_customers", 'Reports\ReportsSalesController@renewalCustomerCoupons');
-    Route::get("reports/sales_monthly", 'Reports\ReportsSalesController@salesMonthly');
-    Route::get("statistics", 'Reports\StatisticsController@graphics');
-    Route::post("reports/send_email_delivery", 'Reports\ReportsSalesController@sendEmailDelivery');
-    
             
     Route::apiResources([
-        'customers' => 'Customer\CustomerController',
         'users' => 'UserController',
-        'coupons_request' => 'Coupons\CouponsRequestController',
-        'coupons_movements' => 'Coupons\CouponsMovementsController',
-        'visits' => 'Visits\VisitsController',
+        'areas' => 'Areas\AreasController',
     ]);
 
 });
-
-// public endpoints
-Route::post('coupons_request/guest', 'Coupons\CouponsRequestController@storeEncrypted');
-Route::get('customers/guest/{id}', 'Customer\CustomerController@showEncrypted');
-Route::get('customers/qr/{id}', 'Customer\CustomerController@qr');
-Route::get('coupons_movements', 'Coupons\CouponsMovementsController@index');
-Route::get('coupons_request', 'Coupons\CouponsRequestController@index');

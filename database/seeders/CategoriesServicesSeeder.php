@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Categories\CategoriesServices;
+use App\Models\Services\CategoriesService;
 use Illuminate\Database\Seeder;
 
 class CategoriesServicesSeeder extends Seeder
@@ -14,7 +15,7 @@ class CategoriesServicesSeeder extends Seeder
      */
     public function run()
     {
-        CategoriesServices::insert([
+        CategoriesService::insert([
             [
                 "name" => "Matenimiento Preventivo",
             ],

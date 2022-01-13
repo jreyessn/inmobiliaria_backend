@@ -23,8 +23,8 @@ class CreateEquipmentsPartsTable extends Migration
                   ->constrained()
                   ->onDelete('cascade');
 
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

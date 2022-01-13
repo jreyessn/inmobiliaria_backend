@@ -29,8 +29,8 @@ class CreateServicesTable extends Migration
             $table->text("observation")->nullable();
             $table->timestamp("completed_at")->nullable();
             $table->boolean("status")->default(0)->comment("0 pendiente, 1 completado, 2 cancelado");
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

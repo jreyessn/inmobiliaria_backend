@@ -16,8 +16,8 @@ class CreateBrandsEquipmentsTable extends Migration
         Schema::create('brands_equipments', function (Blueprint $table) {
             $table->id();
             $table->string("name", 200);
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

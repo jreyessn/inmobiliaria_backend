@@ -34,5 +34,30 @@ class TypesServiceRepositoryEloquent extends BaseRepository implements TypesServ
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    /**
+     * Guardar tipos de servicios
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+        $store->spare_parts()->sync($data["spare_parts"] ?? []);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar tipos de servicios
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->spare_parts()->sync($data["spare_parts"] ?? []);
+        $store->save();
+
+        return $store;
+    }
     
 }

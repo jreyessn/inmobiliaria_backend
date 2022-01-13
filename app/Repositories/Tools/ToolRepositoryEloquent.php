@@ -35,4 +35,26 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Guardar herramientas
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar herramientas
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
+    
 }

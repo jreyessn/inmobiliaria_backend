@@ -3,6 +3,7 @@
 namespace App\Models\Farm;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -13,13 +14,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Farm extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        "name"
+    ];
 
 }

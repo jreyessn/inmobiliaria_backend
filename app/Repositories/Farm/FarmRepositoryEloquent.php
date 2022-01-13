@@ -34,5 +34,29 @@ class FarmRepositoryEloquent extends BaseRepository implements FarmRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+
+    /**
+     * Guardar granjas
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar granjas
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
     
 }

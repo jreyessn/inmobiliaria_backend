@@ -34,5 +34,28 @@ class BrandsEquipmentRepositoryEloquent extends BaseRepository implements Brands
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    /**
+     * Guardar marcas
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar marcas
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
     
 }

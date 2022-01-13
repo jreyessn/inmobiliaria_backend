@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class AreasController extends Controller
 {
-    private $areaRepository;
+    private $AreaRepositoryEloquent;
 
     function __construct(
-        AreaRepositoryEloquent $areaRepository
+        AreaRepositoryEloquent $AreaRepositoryEloquent
     )
     {
-        $this->areaRepository = $areaRepository;
+        $this->AreaRepositoryEloquent = $AreaRepositoryEloquent;
     }
 
     /**
@@ -35,7 +35,7 @@ class AreasController extends Controller
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->areaRepository->paginate($perPage);
+        return $this->AreaRepositoryEloquent->paginate($perPage);
     }
 
     /**
@@ -46,11 +46,16 @@ class AreasController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            "name" => "required|string|max:200|unique:areas,name,NULL,id,deleted_at,NULL"
+        ]);
+
         DB::beginTransaction();
 
         try{
             
-            $data = $this->areaRepository->save($request->all());
+            $data = $this->AreaRepositoryEloquent->save($request->all());
             
             DB::commit();
 
@@ -74,7 +79,7 @@ class AreasController extends Controller
      */
     public function show($id)
     {
-        $data = $this->areaRepository->find($id);
+        $data = $this->AreaRepositoryEloquent->find($id);
 
         return ["data" => $data];
     }
@@ -88,10 +93,14 @@ class AreasController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $request->validate([
+            "name" => "required|string|max:200|unique:areas,name,{$id},id,deleted_at,NULL"
+        ]);
+        
         DB::beginTransaction();
 
         try{
-            $this->areaRepository->saveUpdate($request->all(), $id);
+            $this->AreaRepositoryEloquent->saveUpdate($request->all(), $id);
             
             DB::commit();
 
@@ -116,7 +125,7 @@ class AreasController extends Controller
     {
         try{
 
-            $this->areaRepository->delete($id);
+            $this->AreaRepositoryEloquent->delete($id);
 
             return response()->json(null, 204);
 

@@ -2,7 +2,9 @@
 
 namespace App\Models\Tools;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -13,13 +15,22 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Tool extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        "name",
+        "quantity",
+        "user_id"
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

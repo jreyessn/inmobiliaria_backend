@@ -16,6 +16,7 @@ class CreateTypeServicesSparePartsTable extends Migration
         Schema::create('type_services_spare_parts', function (Blueprint $table) {
             $table->foreignId("type_service_id")->constrained()->onDelete("cascade");
             $table->foreignId("spare_part_id")->constrained();
+            $table->primary(['type_service_id', 'spare_part_id']);
         });
     }
 

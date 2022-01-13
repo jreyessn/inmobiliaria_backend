@@ -39,10 +39,17 @@ Route::group(['middleware' => ['auth:api']], function(){
      */
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
+    Route::get('categories_services', 'Services\CategoriesServicesController');
             
     Route::apiResources([
-        'users' => 'UserController',
-        'areas' => 'Areas\AreasController',
+        'users'                 => 'UserController',
+        'areas'                 => 'Areas\AreasController',
+        'brands_equipments'     => 'Equipments\BrandsEquipmentsController',
+        'categories_equipments' => 'Equipments\CategoriesEquipmentsController',
+        'farms'                 => 'Farms\FarmsController',
+        'spare_parts'           => 'Services\SparePartsController',
+        'types_services'        => 'Services\TypesServicesController',
+        'tools'                 => 'Tools\ToolsController',
     ]);
 
 });

@@ -25,7 +25,6 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text("firm")->nullable();
-            $table->boolean("tickets_assigned")->default(0)->comment("Solo ve sus tickets");
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

@@ -149,21 +149,11 @@ return [
     */
 
     'attributes' => [
-        "tradename"         => "Nombre Comercial",
-        "business_name"     => "Razón Social",
-        "price_coupon"      => "Precio de Cupón",
-        "from_at"           => "Fecha de Inicio",
-        "every_day"         => "Frecuencia de Días",
-        "quantity_coupons"  => "Cantidad de Cupones",
-        "customer_id"       => "Cliente",
-        "user_id"           => "Cliente",
-        "approved"          => "Aprobación",
-        "observation"       => "Observación",
-        "quantity"          => "Cantidad",
-        "type_movement"     => "Tipo de Movimiento",
-        "format"            => "Formato de Descarga",
-        "coupon_movement_id" => "Movimiento de Cupón",
-        "emails" => "Correos",
+        "name"                  => "Nombre",
+        "description"           => "Descripción",
+        "quantity"              => "Cantidad",
+        "user_id"               => "Usuario",
+        "spare_parts"           => "Refacciones",
     ],
 
 ];

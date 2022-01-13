@@ -3,6 +3,7 @@
 namespace App\Models\Services;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -13,13 +14,22 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class TypesService extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, SoftDeletes;
+
+    protected $table = "type_services";
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        "name",
+        "description"
+    ];
+
+    public function spare_parts(){
+        return $this->belongsToMany(SparePart::class, 'type_services_spare_parts', 'type_service_id' ,'spare_part_id');
+    }
 
 }

@@ -34,5 +34,29 @@ class CategoriesEquipmentRepositoryEloquent extends BaseRepository implements Ca
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+
+    /**
+     * Guardar categorias
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar categorias
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
     
 }

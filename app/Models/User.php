@@ -29,10 +29,8 @@ class User extends Authenticatable
         'password',
         'username',
         'avatar',
-        "notification_all_tickets",
         'password_changed_at',
         'phone',
-        'slack_player'
     ];
 
     /**

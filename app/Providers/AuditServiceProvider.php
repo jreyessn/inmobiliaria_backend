@@ -35,10 +35,6 @@ class AuditServiceProvider extends ServiceProvider
     {
         DB::enableQueryLog();
 
-        CouponsRequest::observe(AuditObserver::class);
-        CouponsMovements::observe(AuditObserver::class);
-        Customer::observe(AuditObserver::class);
         User::observe(AuditObserver::class);
-        Visit::observe(AuditObserver::class);
     }
 }

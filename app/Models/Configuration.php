@@ -16,4 +16,6 @@ class Configuration extends Model
         'key',
         'value'
     ];
+
+    public $timestamps = false;
 }

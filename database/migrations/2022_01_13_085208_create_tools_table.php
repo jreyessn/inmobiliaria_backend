@@ -17,7 +17,7 @@ class CreateToolsTable extends Migration
             $table->id();
             $table->string("name", 200);
             $table->integer("quantity")->default(0);
-            $table->foreignId("user_id")->constrained()->nullable();
+            $table->foreignId("user_id")->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

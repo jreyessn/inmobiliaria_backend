@@ -49,7 +49,7 @@ class TypesServicesController extends Controller
     {
         $validationMessages = [];
         
-        foreach ($request->get('spare_parts') as $key => $val) {
+        foreach ($request->get('spare_parts') ?? [] as $key => $val) {
             $validationMessages["spare_parts.*.exists"] = "La refacción N° ".($key + 1)." no existe";
         }
         
@@ -103,7 +103,7 @@ class TypesServicesController extends Controller
     {
         $validationMessages = [];
         
-        foreach ($request->get('spare_parts') as $key => $val) {
+        foreach ($request->get('spare_parts') ?? [] as $key => $val) {
             $validationMessages["spare_parts.*.exists"] = "La refacción N° ".($key + 1)." no existe";
         }
         

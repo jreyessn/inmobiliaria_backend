@@ -40,7 +40,13 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
     Route::get('categories_services', 'Services\CategoriesServicesController');
-            
+    Route::get('images/{any}', 'Images\ImagesController@image')->where("any", ".*");
+
+    /**
+     * Puts
+     */
+    Route::put("services/comply/{id}", "Services\ServicesController@comply");
+
     Route::apiResources([
         'users'                 => 'UserController',
         'areas'                 => 'Areas\AreasController',
@@ -50,6 +56,8 @@ Route::group(['middleware' => ['auth:api']], function(){
         'spare_parts'           => 'Services\SparePartsController',
         'types_services'        => 'Services\TypesServicesController',
         'tools'                 => 'Tools\ToolsController',
+        'equipments'            => 'Equipments\EquipmentsController',
+        'services'              => 'Services\ServicesController',
     ]);
 
 });

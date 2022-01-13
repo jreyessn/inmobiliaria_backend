@@ -22,7 +22,7 @@ class CreateServicesTable extends Migration
             $table->bigInteger("user_assigned_id")->unsigned();
             $table->foreign("user_assigned_id")->on("users")->references("id")->constrained();
             
-            $table->foreignId("farm_id")->constrained()->nullable();
+            $table->foreignId("farm_id")->nullable()->constrained();
             $table->timestamp("event_date")->nullable();
             $table->text("note")->nullable();
             $table->string("received_by", 200)->nullable();

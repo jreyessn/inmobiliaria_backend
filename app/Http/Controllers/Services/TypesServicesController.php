@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Services;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Services\StoreTypesServicesRequest;
 use App\Repositories\Services\TypesServiceRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
 
@@ -45,19 +46,8 @@ class TypesServicesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTypesServicesRequest $request)
     {
-        $validationMessages = [];
-        
-        foreach ($request->get('spare_parts') ?? [] as $key => $val) {
-            $validationMessages["spare_parts.*.exists"] = "La refacción N° ".($key + 1)." no existe";
-        }
-        
-        $request->validate([
-            "name"          => "required|string|max:200|unique:type_services,name,NULL,id,deleted_at,NULL",
-            "description"   => "string|nullable",
-            "spare_parts.*" => "exists:spare_parts,id",
-        ], $validationMessages);
 
         DB::beginTransaction();
 
@@ -99,20 +89,9 @@ class TypesServicesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTypesServicesRequest $request, $id)
     {
-        $validationMessages = [];
-        
-        foreach ($request->get('spare_parts') ?? [] as $key => $val) {
-            $validationMessages["spare_parts.*.exists"] = "La refacción N° ".($key + 1)." no existe";
-        }
-        
-        $request->validate([
-            "name"          => "required|string|max:200|unique:type_services,name,{$id},id,deleted_at,NULL",
-            "description"   => "string|nullable",
-            "spare_parts.*" => "exists:spare_parts,id",
-        ], $validationMessages);
-        
+
         DB::beginTransaction();
 
         try{

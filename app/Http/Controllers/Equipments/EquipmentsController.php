@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Equipments;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Equipments\StoreEquipmentsRequest;
 use App\Repositories\Equipment\EquipmentRepositoryEloquent;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -50,28 +51,8 @@ class EquipmentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreEquipmentsRequest $request)
     {
-        $validationMessages = [];
-
-        foreach ($request->file('images') ?? [] as $key => $val) {
-            $validationMessages["images.*.mimes"] = "El archivo °N ".($key + 1)." debe ser un archivo de tipo: jpg, jpeg, png.";
-            $validationMessages["images.*.file"]  = "El archivo °N ".($key + 1)." debe ser un archivo.";
-        }
-
-        $request->validate([
-            "name"                    => "required|string|max:200|unique:equipments,name,NULL,id,deleted_at,NULL",
-            "categories_equipment_id" => "required|exists:categories_equipments,id",
-            "brands_equipment_id"     => "nullable|exists:brands_equipments,id",
-            "no_serie"                => "required|string|max:200",
-            "area_id"                 => "nullable|exists:areas,id",
-            "between_days_service"    => "required|numeric|min:1",
-            "cost"                    => "required|numeric",
-            "maintenance_required"    => "nullable|numeric|in:1,0",
-            "no_serie_visible"        => "nullable|numeric|in:1,0",
-            "parts"                   => "array",
-            "images.*"                => "file|mimes:jpg,jpeg,png"
-        ], $validationMessages);
 
         DB::beginTransaction();
 
@@ -123,30 +104,8 @@ class EquipmentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreEquipmentsRequest $request, $id)
     {
-
-        $validationMessages = [];
-
-        foreach ($request->file('images') ?? [] as $key => $val) {
-            $validationMessages["images.*.mimes"] = "El archivo °N ".($key + 1)." debe ser un archivo de tipo: jpg, jpeg, png.";
-            $validationMessages["images.*.file"]  = "El archivo °N ".($key + 1)." debe ser un archivo.";
-        }
-
-        $request->validate([
-            "name"                    => "required|string|max:200|unique:equipments,name,{$id},id,deleted_at,NULL",
-            "categories_equipment_id" => "required|exists:categories_equipments,id",
-            "brands_equipment_id"     => "nullable|exists:brands_equipments,id",
-            "no_serie"                => "required|string|max:200",
-            "area_id"                 => "nullable|exists:areas,id",
-            "between_days_service"    => "required|numeric|min:1",
-            "cost"                    => "required|numeric",
-            "maintenance_required"    => "nullable|numeric|in:1,0",
-            "no_serie_visible"        => "nullable|numeric|in:1,0",
-            "parts"                   => "array",
-            "images.*"                => "file|mimes:jpg,jpeg,png"
-        ], $validationMessages);
-        
         DB::beginTransaction();
 
         try{

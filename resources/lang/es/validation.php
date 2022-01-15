@@ -172,6 +172,9 @@ return [
         "received_by"             => "Cliente",
         "signature"               => "Firma",
         "observation"             => "Observación",
+        "format"                  => "Formato",
+        "since"                   => "Fecha Desde",
+        "until"                   => "Fecha Hasta",
     ],
 
 ];

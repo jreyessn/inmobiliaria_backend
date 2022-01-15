@@ -4,6 +4,7 @@ namespace App\Models\Equipment;
 
 use App\Models\Area\Area;
 use App\Models\Images\Image;
+use App\Models\Services\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -40,8 +41,8 @@ class Equipment extends Model implements Transformable
 
     protected $appends = [
         "last_service",
-        "last_service_at",
         "next_service_at",
+        "total_services",
     ];
 
     public function parts()
@@ -69,19 +70,30 @@ class Equipment extends Model implements Transformable
         return $this->morphMany(Image::class, "model");
     }
 
+    public function services()
+    {
+        return $this->hasManyThrough(Service::class, EquipmentPart::class, "equipment_id", "equipments_part_id", "id", "id");
+    }
+
     public function getLastServiceAttribute()
     {
-        return null;
+        return $this->services()->where("status", 1)->latest('completed_at')->first();
     }
-
-    public function getLastServiceAtAttribute()
-    {
-        return null;
-    }
-
+    
     public function getNextServiceAtAttribute()
     {
-        return null;
+        $lastAt = $this->last_service->completed_at ?? $this->created_at ?? null;
+        
+        if(is_null($lastAt)){
+            return null;
+        }
+        
+        return $lastAt->add($this->between_days_service, "day");
+    }
+
+    public function getTotalServicesAttribute()
+    {
+        return $this->services()->where("status", 1)->count();
     }
 
 }

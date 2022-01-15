@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Services;
 
+use App\Criteria\CategoriesServicesCriteria;
+use App\Criteria\EquipmentCriteria;
+use App\Criteria\EquipmentPartAvailableCriteria;
+use App\Criteria\SinceUntilCreatedAtCriteria;
+use App\Criteria\UserAssignedCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\StoreServicesRequest;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Services\ServiceRepositoryEloquent;
-use App\Rules\ServiceCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,6 +46,12 @@ class ServicesController extends Controller
         ]);
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+
+        $this->ServiceRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(UserAssignedCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(EquipmentCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(CategoriesServicesCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(EquipmentPartAvailableCriteria::class);
 
         return $this->ServiceRepositoryEloquent->paginate($perPage);
     }

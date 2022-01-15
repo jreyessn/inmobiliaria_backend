@@ -2,6 +2,7 @@
 
 namespace App\Models\Equipment;
 
+use App\Models\Services\Service;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -28,9 +29,23 @@ class EquipmentPart extends Model implements Transformable
         "equipment_id"
     ];
 
+    protected $appends = [
+        "total_services",
+    ];
+
     public function equipment()
     {
         return $this->belongsTo(Equipment::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class, "equipments_part_id");
+    }
+
+    public function getTotalServicesAttribute()
+    {
+        return $this->services()->where("status", 1)->count();
     }
 
 }

@@ -46,6 +46,11 @@ class Service extends Model implements Transformable
         "status_text",
     ];
 
+    protected $casts = [
+        "event_date"   => "datetime",
+        "completed_at" => "datetime",
+    ];
+
     public function category()
     {
         return $this->belongsTo(CategoriesService::class);

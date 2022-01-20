@@ -32,16 +32,22 @@ Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'passwor
     Route::post('reset', 'ResetPasswordController@reset');
 });
 
-Route::get('reports/services', 'Reports\ReportsServicesController@services');
-Route::group(['middleware' => ['auth:api']], function(){
+Route::get('images/{any}', 'Images\ImagesController@image')->where("any", ".*");
 
+Route::group(['middleware' => ['auth:api']], function(){
+    
     /**
      * Gets
      */
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
     Route::get('categories_services', 'Services\CategoriesServicesController');
-    Route::get('images/{any}', 'Images\ImagesController@image')->where("any", ".*");
+    Route::get('reports/services', 'Reports\ReportsServicesController@services');
+
+    /**
+     * Deletes
+     */
+    Route::delete('images/{any}', 'Images\ImagesController@destroy')->where("any", ".*");
 
     /**
      * Puts

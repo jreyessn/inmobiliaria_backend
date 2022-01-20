@@ -12,10 +12,31 @@ use Illuminate\Support\Facades\Storage;
 class ImagesController extends Controller
 {
 
+    private $ImageRepositoryEloquent;
+
+    function __construct(
+        ImageRepositoryEloquent $ImageRepositoryEloquent 
+    )
+    {
+        $this->ImageRepositoryEloquent = $ImageRepositoryEloquent;
+    }
+
     public function image($name){
 
-        if (Storage::disk('local')->exists($name)) {
+        if (Storage::disk('local')->exists($name) && $this->ImageRepositoryEloquent->existsWithName($name)) {
             return Storage::response($name);
+        }
+
+        abort(404);
+    }
+
+    public function destroy($name){
+
+        if (Storage::disk('local')->exists($name) && $this->ImageRepositoryEloquent->existsWithName($name)) {
+
+            $this->ImageRepositoryEloquent->destroyWithName($name);
+            
+            return response()->json(null, 204); 
         }
 
         abort(404);

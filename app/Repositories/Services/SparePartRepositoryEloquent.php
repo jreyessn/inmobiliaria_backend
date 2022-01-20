@@ -15,6 +15,10 @@ use App\Validators\Services\SparePartValidator;
  */
 class SparePartRepositoryEloquent extends BaseRepository implements SparePartRepository
 {
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

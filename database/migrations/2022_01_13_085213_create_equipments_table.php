@@ -20,11 +20,12 @@ class CreateEquipmentsTable extends Migration
             $table->foreignId("brands_equipment_id")->nullable()->constrained();
             $table->foreignId("area_id")->nullable()->constrained();
             $table->string("no_serie", 200)->nullable();
-            $table->timestamp("obtained_at")->nullable();
             $table->integer("between_days_service")->default(3);
             $table->float("cost")->default(0);
             $table->boolean("maintenance_required")->default(0);
             $table->boolean("no_serie_visible")->default(0);
+            $table->timestamp("obtained_at")->nullable();
+            $table->timestamp("last_service_at")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -57,7 +57,7 @@ class EquipmentsController extends Controller
         DB::beginTransaction();
 
         try{
-            
+
             $data = $this->EquipmentRepositoryEloquent->save($request->all());
 
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $data, [
@@ -87,9 +87,6 @@ class EquipmentsController extends Controller
     public function show($id)
     {
         $data = $this->EquipmentRepositoryEloquent->find($id)->load([
-            "brand",
-            "category",
-            "area",
             "parts",
             "images"
         ]);

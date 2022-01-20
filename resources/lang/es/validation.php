@@ -175,6 +175,8 @@ return [
         "format"                  => "Formato",
         "since"                   => "Fecha Desde",
         "until"                   => "Fecha Hasta",
+        "last_service_at"         => "Fecha ultimo servicio",
+        "obtained_at"             => "Fecha de obtención",
     ],
 
 ];

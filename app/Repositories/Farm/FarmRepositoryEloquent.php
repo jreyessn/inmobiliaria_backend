@@ -15,6 +15,11 @@ use App\Validators\Farm\FarmValidator;
  */
 class FarmRepositoryEloquent extends BaseRepository implements FarmRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

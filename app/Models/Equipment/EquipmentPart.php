@@ -26,7 +26,9 @@ class EquipmentPart extends Model implements Transformable
      */
     protected $fillable = [
         "name",
-        "equipment_id"
+        "equipment_id",
+        "between_days_service",
+        "last_service_at",
     ];
 
     protected $appends = [

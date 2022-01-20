@@ -136,5 +136,26 @@ class ImageRepositoryEloquent extends BaseRepository implements ImageRepository
         }
 
     }
+
+    /**
+     * Verifica si existe el nombre de la imagen en la bd 
+     * 
+     * @param object $name Nombre de la imagen (campo name de la tabla images)
+     */
+    public function existsWithName($name)
+    {
+        return $this->where([ "name" => $name ])->first()? true : false;
+    }
+    
+
+    /**
+     * Elimina las imagenes en base al nombre 
+     * 
+     * @param object $name Nombre de la imagen (campo name de la tabla images)
+     */
+    public function destroyWithName($name)
+    {
+        $this->where([ "name" => $name ])->delete();
+    }
     
 }

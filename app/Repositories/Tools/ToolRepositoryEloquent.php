@@ -15,6 +15,12 @@ use App\Validators\Tools\ToolValidator;
  */
 class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
 {
+
+    protected $fieldSearchable = [
+        "name"      => "like",
+        "user.name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

@@ -27,16 +27,20 @@ class StoreEquipmentsRequest extends FormRequest
 
         return [
             "name"                    => "required|string|max:200|unique:equipments,name,{$id},id,deleted_at,NULL",
+            "no_serie"                => "required|string|max:200",
             "categories_equipment_id" => "required|exists:categories_equipments,id",
             "brands_equipment_id"     => "nullable|exists:brands_equipments,id",
-            "no_serie"                => "required|string|max:200",
             "area_id"                 => "nullable|exists:areas,id",
-            "between_days_service"    => "required|numeric|min:1",
+            "between_days_service"    => "nullable|numeric|min:1",
             "cost"                    => "required|numeric",
             "maintenance_required"    => "nullable|numeric|in:1,0",
             "no_serie_visible"        => "nullable|numeric|in:1,0",
-            "parts"                   => "array",
-            "images.*"                => "file|mimes:jpg,jpeg,png"
+            "obtained_at"             => "nullable|date",
+            "last_service_at"         => "nullable|date",
+            "parts.*.name"            => "required|string",
+            "parts.*.between_days_service" => "required|numeric|min:1",
+            "parts.*.last_service_at"      => "nullable|date",
+            "images.*"                     => "file|mimes:jpg,jpeg,png"
         ];
     }
 
@@ -46,6 +50,10 @@ class StoreEquipmentsRequest extends FormRequest
 
         foreach ($this->file('images') ?? [] as $key => $val) {
             $validationMessages["images." . $key] = "archivo °N ".($key + 1);
+        }
+
+        foreach ($this->file('parts') ?? [] as $key => $val) {
+            $validationMessages["parts." . $key] = "pieza de equipo °N ".($key + 1);
         }
 
         return $validationMessages;

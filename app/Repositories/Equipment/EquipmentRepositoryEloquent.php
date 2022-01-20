@@ -40,6 +40,8 @@ class EquipmentRepositoryEloquent extends BaseRepository implements EquipmentRep
      */
     public function save(array $data)
     {
+        $data = sanitize_null($data);
+
         $store = $this->create($data);
         
         $this->saveParts($store, $data["parts"] ?? []);

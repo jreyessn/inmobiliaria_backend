@@ -15,6 +15,11 @@ use App\Validators\Area\AreaValidator;
  */
 class AreaRepositoryEloquent extends BaseRepository implements AreaRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

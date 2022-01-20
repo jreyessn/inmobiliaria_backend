@@ -4,6 +4,7 @@ namespace App\Models\Images;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -31,7 +32,8 @@ class Image extends Model implements Transformable
     ];
 
     protected $appends = [
-        "link"
+        "link",
+        "mimes"
     ];
 
     public function model()
@@ -43,4 +45,10 @@ class Image extends Model implements Transformable
     {
         return url("/api/images/". $this->name);
     }
+    
+    public function getMimesAttribute()
+    {
+        return Storage::mimeType($this->name) ?? '';
+    }
+
 }

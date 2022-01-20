@@ -36,6 +36,7 @@ class Equipment extends Model implements Transformable
         "between_days_service",
         "cost",
         "maintenance_required",
+        "last_service_at",
         "no_serie_visible",
     ];
 
@@ -45,17 +46,23 @@ class Equipment extends Model implements Transformable
         "total_services",
     ];
 
+    protected $with = [
+        "categories_equipment",
+        "brands_equipment",
+        "area",
+    ];
+
     public function parts()
     {
         return $this->hasMany(EquipmentPart::class);
     }
 
-    public function category()
+    public function categories_equipment()
     {
         return $this->belongsTo(CategoriesEquipment::class);
     }
 
-    public function brand()
+    public function brands_equipment()
     {
         return $this->belongsTo(BrandsEquipment::class);
     }

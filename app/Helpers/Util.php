@@ -42,14 +42,12 @@ if (! function_exists('month_en')) {
 }
 
 if(!function_exists("decimal")){
-
     function decimal($num, $points = 2){
         return (float) number_format($num, $points, '.', '');
     }
 }
 
 if(!function_exists("last_query")){
-
     function last_query(){
         $queries = DB::getQueryLog();
 
@@ -69,68 +67,15 @@ if(!function_exists("last_query")){
 }
 
 if(!function_exists("format_ceros")){
-
     function format_ceros($value = 0, $zeros = 4){
         return str_pad($value, $zeros, "0", STR_PAD_LEFT);
     }
 }
 
-if(!function_exists("getMovement")){
-
-    function getMovement($value = 1){
-
-       if($value == 1){
-           return "Venta";
-       }
-       
-       if($value == 2){
-           return "Devolución";
-       }
-
-       if($value == 3){
-           return "Entrega";
-       }
-       
-       if($value == 4){
-           return "Ajuste";
-       }
-
-
-    }
-}
-
-if(!function_exists("getIo")){
-
-    function getIo($type_movement){
-
-       if($type_movement == "Venta"){
-           return 1;
-       }
-
-       if($type_movement == "Devolución"){
-           return 1;
-       }
-
-       if($type_movement == "Entrega"){
-           return 2;
-       }
-
-       return 1;
-       
-    }
-}
 
 if(!function_exists("currency")){
-
     function currency(){
       return "$";
-    }
-}
-
-if(!function_exists("correo_premier")){
-
-    function correo_premier(){
-      return Configuration::where("key", "correo_premier")->first()->value ?? '';
     }
 }
 
@@ -154,6 +99,14 @@ if(!function_exists("period_months")){
        }
 
        return $months;
+    }
+}
+
+if(!function_exists("sanitize_null")){
+    function sanitize_null(array $array): array {
+       return collect($array)->filter(function($value){
+           return $value !== null;
+       })->toArray();
     }
 }
 

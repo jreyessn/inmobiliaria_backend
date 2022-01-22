@@ -54,6 +54,11 @@ Route::group(['middleware' => ['auth:api']], function(){
      */
     Route::put("services/comply/{id}", "Services\ServicesController@comply");
 
+    /**
+     * Patchs
+     */
+    Route::patch("services/{id}", "Services\ServicesController@patchUpdate");
+
     Route::apiResources([
         'users'                 => 'UserController',
         'areas'                 => 'Areas\AreasController',

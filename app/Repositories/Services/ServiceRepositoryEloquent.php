@@ -49,7 +49,6 @@ class ServiceRepositoryEloquent extends BaseRepository implements ServiceReposit
      */
     public function saveUpdate(array $data, int $id)
     {
-
         $store = $this->find($id);
         $store->fill($data);
 

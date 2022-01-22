@@ -23,7 +23,7 @@ class EquipmentPartAvailableCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
 
-        $model = $model->has("equipment_part");
+        $model = $model->has("equipments_part");
         
         return $model;
     }

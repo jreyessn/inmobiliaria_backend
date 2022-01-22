@@ -38,11 +38,16 @@ class ServicesController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'perPage'       =>  'nullable|integer',
-            'page'          =>  'nullable|integer',
-            'search'        =>  'nullable|string',
-            'orderBy'       =>  'nullable|string',
-            'sortBy'        =>  'nullable|in:desc,asc',
+            'perPage'                =>  'nullable|integer',
+            'page'                   =>  'nullable|integer',
+            'search'                 =>  'nullable|string',
+            'orderBy'                =>  'nullable|string',
+            'sortBy'                 =>  'nullable|in:desc,asc',
+            'since'                  =>  'nullable|date',
+            'until'                  =>  'nullable|date',
+            'user_assigned_id'       =>  'nullable|string',
+            'equipment_id'           =>  'nullable|string',
+            'categories_service_id'  =>  'nullable|numeric',
         ]);
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
@@ -104,12 +109,8 @@ class ServicesController extends Controller
     public function show($id)
     {
         $data = $this->ServiceRepositoryEloquent->find($id)->load([
-            "type_service",
-            "category",
-            "equipment_part",
-            "equipment",
-            "farm",
-            "user_assigned",
+            "equipments_part",
+            "equipment.parts",
         ]);
 
         return ["data" => $data];
@@ -142,6 +143,39 @@ class ServicesController extends Controller
                     "type" => "Signature"
                 ]);
             }
+
+            DB::commit();
+
+            return response()->json([
+                "message" => "Actualización éxitosa",
+            ], 200);
+
+        }catch(\Exception $e){
+            DB::rollback();
+
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Patch update records
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function patchUpdate(Request $request, $id)
+    {
+        $request->validate([
+            "event_date" => "required_unless:event_date,null|date"
+        ]);
+
+        DB::beginTransaction();
+
+        try{
+            $body = sanitize_null($request->all());
+
+            $this->ServiceRepositoryEloquent->saveUpdate($body, $id);
 
             DB::commit();
 

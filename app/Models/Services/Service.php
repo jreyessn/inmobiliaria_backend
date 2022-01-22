@@ -40,7 +40,13 @@ class Service extends Model implements Transformable
         "status",
     ];
 
-    protected $with = ["signature"];
+    protected $with = [
+        "signature",
+        "categories_service",
+        "type_service",
+        "farm",
+        "user_assigned",
+    ];
 
     protected $appends = [
         "status_text",
@@ -51,7 +57,7 @@ class Service extends Model implements Transformable
         "completed_at" => "datetime",
     ];
 
-    public function category()
+    public function categories_service()
     {
         return $this->belongsTo(CategoriesService::class);
     }
@@ -61,7 +67,7 @@ class Service extends Model implements Transformable
         return $this->belongsTo(TypesService::class);
     }
 
-    public function equipment_part()
+    public function equipments_part()
     {
         return $this->belongsTo(EquipmentPart::class, "equipments_part_id");
     }

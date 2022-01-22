@@ -55,7 +55,7 @@
             
             <tr>
                 <td class="align-center fcw bg-blue">
-                    <b>Fecha:</b>
+                    <b>Fecha/Hora Completado:</b>
                 </td>
                 
                 <td class="align-center fcw bg-blue">
@@ -63,7 +63,7 @@
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Parte del Equipo:</b>
+                    <b>Pieza:</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
@@ -86,7 +86,7 @@
                         {{ $item->equipment->name }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->equipment_part->name }}
+                        {{ $item->equipments_part->name }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->user_assigned->name ?? '-' }}

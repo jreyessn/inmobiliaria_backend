@@ -20,10 +20,18 @@
                 <b>Reporte de Servicios Realizados</b>
             </td>
         </tr>
+        
+        @if ($since)
+            <tr>
+                <td>Desde: {{ $since->format('d/m/Y')}}</td>
+            </tr>
+        @endif
 
-        <tr>
-            <td>Fecha: {{ now()->format('d/m/Y h:i A')}}</td>
-        </tr>
+        @if ($until)
+            <tr>
+                <td>Hasta: {{ $until->format('d/m/Y')}}</td>
+            </tr>
+        @endif
 
         <tr></tr>
     </table>
@@ -33,7 +41,7 @@
         <thead>
             <tr>
                 <td class="align-center fcw bg-blue">
-                    <b>Fecha:</b>
+                    <b>Fecha/Hora Completado:</b>
                 </td>
                 
                 <td class="align-center fcw bg-blue">
@@ -41,7 +49,7 @@
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Parte del Equipo:</b>
+                    <b>Pieza:</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
@@ -64,7 +72,7 @@
                         {{ $item->equipment->name }}
                     </td>
                     <td class="align-center">
-                        {{ $item->equipment_part->name }}
+                        {{ $item->equipments_part->name }}
                     </td>
                     <td class="align-center">
                         {{ $item->user_assigned->name ?? '-' }}

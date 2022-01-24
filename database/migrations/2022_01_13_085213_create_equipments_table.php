@@ -17,8 +17,8 @@ class CreateEquipmentsTable extends Migration
             $table->id();
             $table->string("name", 200);
             $table->foreignId("categories_equipment_id")->nullable()->constrained();
-            $table->foreignId("brands_equipment_id")->nullable()->constrained();
             $table->foreignId("area_id")->nullable()->constrained();
+            $table->string("brand")->nullable();
             $table->string("no_serie", 200)->nullable();
             $table->integer("between_days_service")->default(3);
             $table->float("cost")->default(0);

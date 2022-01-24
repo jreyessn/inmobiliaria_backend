@@ -42,6 +42,7 @@ class Service extends Model implements Transformable
 
     protected $with = [
         "signature",
+        "evidences",
         "categories_service",
         "type_service",
         "farm",
@@ -90,6 +91,11 @@ class Service extends Model implements Transformable
     public function signature()
     {
         return $this->morphOne(Image::class, "model")->where("type", "Signature");
+    }
+
+    public function evidences()
+    {
+        return $this->morphOne(Image::class, "model")->where("type", "Evidences");
     }
 
     public function getStatusTextAttribute()

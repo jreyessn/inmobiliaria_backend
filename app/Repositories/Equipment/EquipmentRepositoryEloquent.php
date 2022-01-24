@@ -15,6 +15,10 @@ use App\Validators\Equipment\EquipmentValidator;
  */
 class EquipmentRepositoryEloquent extends BaseRepository implements EquipmentRepository
 {
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+
     /**
      * Specify Model class name
      *

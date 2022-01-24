@@ -106,7 +106,10 @@ class EquipmentsController extends Controller
         DB::beginTransaction();
 
         try{
-            $data = $this->EquipmentRepositoryEloquent->saveUpdate($request->all(), $id);
+            
+            $values = $request->except(["last_service_at"]); // no se necesita actualizar este campo
+            
+            $data = $this->EquipmentRepositoryEloquent->saveUpdate($values, $id);
             
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $data, [
                 "path" => "equipments"

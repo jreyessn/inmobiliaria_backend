@@ -111,6 +111,8 @@ class ServicesController extends Controller
         $data = $this->ServiceRepositoryEloquent->find($id)->load([
             "equipments_part",
             "equipment.parts",
+            "equipment.images",
+            "evidences"
         ]);
 
         return ["data" => $data];

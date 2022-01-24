@@ -55,7 +55,7 @@ class StoreServicesRequest extends FormRequest
             "equipments_part_id"    => "required_without:save_from|exists:equipments_parts,id",
             "user_assigned_id"      => "required_without:save_from|exists:users,id",
             "farm_id"               => "required_without:save_from|exists:farms,id",
-            "event_date"            => "required_without:save_from|date",
+            "event_date"            => "required_without:save_from|date|after_or_equal:today",
             "note"                  => "nullable|string|max:300",
 
             "received_by"           => "required_if:save_from,pwa|string|max:200",
@@ -78,9 +78,12 @@ class StoreServicesRequest extends FormRequest
 
     public function messages()
     {
-        return [
+        $validationMessages = [
             "required_without" => "El campo :attribute es obligatorio",
-            "required_if"      => "El campo :attribute es obligatorio"
+            "required_if"      => "El campo :attribute es obligatorio",
+            "event_date.after_or_equal" => "El campo :attribute debe ser una fecha posterior o igual a hoy."
         ];
+
+        return $validationMessages;
     }
 }

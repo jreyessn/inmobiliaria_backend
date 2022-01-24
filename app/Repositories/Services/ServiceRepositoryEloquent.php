@@ -15,6 +15,15 @@ use App\Validators\Services\ServiceValidator;
  */
 class ServiceRepositoryEloquent extends BaseRepository implements ServiceRepository
 {
+    protected $fieldSearchable = [
+        "type_service.name" => "like",
+        "categories_service.name" => "like",
+        "equipments_part.name" => "like",
+        // "equipment.name" => "like",
+        "farm.name" => "like",
+        "user_assigned.name" => "like"
+    ];
+
     /**
      * Specify Model class name
      *

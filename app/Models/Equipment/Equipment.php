@@ -30,6 +30,7 @@ class Equipment extends Model implements Transformable
         "name",
         "categories_equipment_id",
         "brands_equipment_id",
+        "brand",
         "no_serie",
         "area_id",
         "obtained_at",
@@ -48,7 +49,6 @@ class Equipment extends Model implements Transformable
 
     protected $with = [
         "categories_equipment",
-        "brands_equipment",
         "area",
     ];
 
@@ -60,11 +60,6 @@ class Equipment extends Model implements Transformable
     public function categories_equipment()
     {
         return $this->belongsTo(CategoriesEquipment::class);
-    }
-
-    public function brands_equipment()
-    {
-        return $this->belongsTo(BrandsEquipment::class);
     }
 
     public function area()
@@ -85,6 +80,15 @@ class Equipment extends Model implements Transformable
     public function getLastServiceAttribute()
     {
         return $this->services()->where("status", 1)->latest('completed_at')->first();
+    }
+    
+    public function getLastServiceAtAttribute($value)
+    {
+        $service = $this->services()->where("status", 1)->latest('completed_at')->first();
+
+        if($service)
+            return $service->created_at;
+        return $value;
     }
     
     public function getNextServiceAtAttribute()

@@ -42,6 +42,22 @@ class ServiceRepositoryEloquent extends BaseRepository implements ServiceReposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * Paginación personalizada. Se agregan propiedades para que sean posteriormente
+     * utilizadas en ordenación, transformación, criterios, etc.
+     */
+    public function customPaginate()
+    {
+        $perPage = request()->get('perPage', config('repository.pagination.limit'));
+
+        return $this->scopeQuery(function($query){
+            $query->selectRaw("
+                *, 
+                (if(now() > date_format(event_date, '%Y-%m-%d 23:59:59') and status = 0, 2, status)) as status
+            ");
+            return $query;
+        })->paginate($perPage);
+    }
 
     /**
      * Guardar servicios

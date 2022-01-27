@@ -107,8 +107,8 @@ class EquipmentsController extends Controller
 
         try{
             
-            $values = $request->except(["last_service_at"]); // no se necesita actualizar este campo
-            
+            $values = $request->all();
+
             $data = $this->EquipmentRepositoryEloquent->saveUpdate($values, $id);
             
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $data, [

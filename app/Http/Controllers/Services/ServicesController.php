@@ -6,6 +6,7 @@ use App\Criteria\CategoriesServicesCriteria;
 use App\Criteria\EquipmentCriteria;
 use App\Criteria\EquipmentPartAvailableCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
+use App\Criteria\StatusServiceCriteria;
 use App\Criteria\UserAssignedCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\StoreServicesRequest;
@@ -50,15 +51,14 @@ class ServicesController extends Controller
             'categories_service_id'  =>  'nullable|numeric',
         ]);
         
-        $perPage = $request->get('perPage', config('repository.pagination.limit'));
-
         $this->ServiceRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(UserAssignedCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(CategoriesServicesCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentPartAvailableCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(StatusServiceCriteria::class);
 
-        return $this->ServiceRepositoryEloquent->paginate($perPage);
+        return $this->ServiceRepositoryEloquent->customPaginate();
     }
 
     /**
@@ -83,7 +83,6 @@ class ServicesController extends Controller
         DB::beginTransaction();
 
         try{
-            
             $data = $this->ServiceRepositoryEloquent->save($request->all());
             
             DB::commit();

@@ -16,7 +16,7 @@ class CreateEquipmentsPartsTable extends Migration
         Schema::create('equipments_parts', function (Blueprint $table) {
             $table->id();
             $table->string("name", 200);
-            $table->integer("between_days_service")->default(3);
+            $table->integer("between_days_service")->default(0);
             $table->unsignedBigInteger('equipment_id');
             $table->foreign('equipment_id', 'equipment_id_foreign_key')
                   ->references('id')

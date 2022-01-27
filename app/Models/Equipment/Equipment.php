@@ -86,8 +86,8 @@ class Equipment extends Model implements Transformable
     {
         $service = $this->services()->where("status", 1)->latest('completed_at')->first();
 
-        if($service)
-            return $service->created_at;
+        if($service && $service->completed_at)
+            return $service->completed_at;
         return $value;
     }
     

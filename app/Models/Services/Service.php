@@ -95,7 +95,19 @@ class Service extends Model implements Transformable
 
     public function evidences()
     {
-        return $this->morphOne(Image::class, "model")->where("type", "Evidences");
+        return $this->morphMany(Image::class, "model")->where("type", "Evidences");
+    }
+
+    public function getStatusAttribute($status)
+    {
+        $this->event_date = $this->event_date->setHour(23);
+        $this->event_date = $this->event_date->setMinute(59);
+        $this->event_date = $this->event_date->setSecond(59);
+
+        if($status == 0 && $this->event_date && now()->gt("{$this->event_date}")){
+            return 2;
+        }
+        return $status;
     }
 
     public function getStatusTextAttribute()
@@ -106,7 +118,7 @@ class Service extends Model implements Transformable
             break;
             
             case '2':
-                return "Cancelado";
+                return "Vencido";
             break;
             
             default:

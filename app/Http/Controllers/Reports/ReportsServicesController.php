@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Reports;
 
 use App\Criteria\AreaCriteria;
 use App\Criteria\EquipmentCriteria;
+use App\Criteria\HasTechnicalCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Criteria\UserAssignedCriteria;
 use App\Exports\ViewExport;
@@ -49,6 +50,7 @@ class ReportsServicesController extends Controller
         $this->ServiceRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(UserAssignedCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(HasTechnicalCriteria::class);
 
         switch ($request->format) {
             case 'excel':

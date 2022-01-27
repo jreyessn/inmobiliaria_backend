@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Services;
 use App\Criteria\CategoriesServicesCriteria;
 use App\Criteria\EquipmentCriteria;
 use App\Criteria\EquipmentPartAvailableCriteria;
+use App\Criteria\HasTechnicalCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Criteria\StatusServiceCriteria;
 use App\Criteria\UserAssignedCriteria;
@@ -57,6 +58,7 @@ class ServicesController extends Controller
         $this->ServiceRepositoryEloquent->pushCriteria(CategoriesServicesCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentPartAvailableCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(StatusServiceCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(HasTechnicalCriteria::class);
 
         return $this->ServiceRepositoryEloquent->customPaginate();
     }

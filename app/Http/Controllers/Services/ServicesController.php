@@ -7,12 +7,14 @@ use App\Criteria\EquipmentCriteria;
 use App\Criteria\EquipmentPartAvailableCriteria;
 use App\Criteria\HasTechnicalCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
+use App\Criteria\SinceUntilEventAtCriteria;
 use App\Criteria\StatusServiceCriteria;
 use App\Criteria\UserAssignedCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\StoreServicesRequest;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Services\ServiceRepositoryEloquent;
+use App\Rules\ServiceAutomatic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -52,7 +54,7 @@ class ServicesController extends Controller
             'categories_service_id'  =>  'nullable|numeric',
         ]);
         
-        $this->ServiceRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->ServiceRepositoryEloquent->pushCriteria(SinceUntilEventAtCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(UserAssignedCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(CategoriesServicesCriteria::class);
@@ -79,8 +81,10 @@ class ServicesController extends Controller
             "user_assigned_id"      => "required|exists:users,id",
             "farm_id"               => "required|exists:farms,id",
             "priorities_service_id" => "required|exists:priorities_services,id",
-            "event_date"            => "required|date",
+            "event_date"            => "required|date|after_or_equal:today",
             "note"                  => "nullable|string",
+        ], [
+            "event_date.after_or_equal" => "El campo :attribute debe ser una fecha posterior o igual a hoy."
         ]);
 
         DB::beginTransaction();
@@ -202,8 +206,12 @@ class ServicesController extends Controller
      */
     public function destroy($id)
     {
-        try{
+        $request = new Request(["id" => $id]);
+        $request->validate([
+            "id" => new ServiceAutomatic
+        ]);
 
+        try{
             $this->ServiceRepositoryEloquent->delete($id);
 
             return response()->json(null, 204);
@@ -222,6 +230,19 @@ class ServicesController extends Controller
      */
     public function comply(StoreServicesRequest $request, $id)
     {
+        $service = $this->ServiceRepositoryEloquent->find($id);
+        $request = new Request([
+            "user_assigned_id" => $service->user_assigned_id,
+            "type_service_id"  => $service->type_service_id,
+        ]);
+        $request->validate([
+            "user_assigned_id" => "required|exists:users,id",
+            "type_service_id"  => "required|exists:type_services,id",
+        ], [
+            "user_assigned_id.required" => "El servicio debe tener un técnico asignado",
+            "type_service_id.required"  => "El servicio debe tener un tipo de servicio asignado",
+        ]);
+
         return $this->update($request, $id);
     }
 

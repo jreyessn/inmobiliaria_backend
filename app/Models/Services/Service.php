@@ -41,7 +41,8 @@ class Service extends Model implements Transformable
         "observation",
         "completed_at",
         "status",
-        "priorities_service_id"
+        "priorities_service_id",
+        "is_automatic"
     ];
 
     protected $with = [

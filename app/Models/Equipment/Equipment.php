@@ -5,6 +5,7 @@ namespace App\Models\Equipment;
 use App\Models\Area\Area;
 use App\Models\Images\Image;
 use App\Models\Services\Service;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -39,6 +40,7 @@ class Equipment extends Model implements Transformable
         "maintenance_required",
         "last_service_at",
         "no_serie_visible",
+        "create_services_automatic"
     ];
 
     protected $appends = [
@@ -74,7 +76,7 @@ class Equipment extends Model implements Transformable
 
     public function services()
     {
-        return $this->hasManyThrough(Service::class, EquipmentPart::class, "equipment_id", "equipments_part_id", "id", "id");
+        return $this->hasMany(Service::class);
     }
 
     public function getLastServiceAttribute()
@@ -93,13 +95,13 @@ class Equipment extends Model implements Transformable
     
     public function getNextServiceAtAttribute()
     {
-        $lastAt = $this->last_service->completed_at ?? $this->created_at ?? null;
+        $lastAt = $this->last_service->completed_at ?? $this->last_service_at ?? $this->created_at ?? null;
         
         if(is_null($lastAt)){
             return null;
         }
         
-        return $lastAt->add($this->between_days_service, "day");
+        return Carbon::parse($lastAt)->add($this->between_days_service, "day");
     }
 
     public function getTotalServicesAttribute()

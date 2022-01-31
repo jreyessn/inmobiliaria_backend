@@ -31,14 +31,14 @@ class StoreEquipmentsRequest extends FormRequest
             "categories_equipment_id" => "required|exists:categories_equipments,id",
             "brand"                   => "nullable|string|max:200",
             "area_id"                 => "nullable|exists:areas,id",
-            "between_days_service"    => "nullable|numeric|min:1",
+            "between_days_service"    => "nullable|numeric|min:0",
             "cost"                    => "required|numeric",
             "maintenance_required"    => "nullable|numeric|in:1,0",
             "no_serie_visible"        => "nullable|numeric|in:1,0",
             "obtained_at"             => "nullable|date|before_or_equal:today",
             "last_service_at"         => "nullable|date|before_or_equal:today",
             "parts.*.name"            => "required|string",
-            "parts.*.between_days_service" => "required|numeric|min:1",
+            "parts.*.between_days_service" => "nullable|numeric|min:0",
             "parts.*.last_service_at"      => "nullable|date|before_or_equal:today",
             "images.*"                     => "file|mimes:jpg,jpeg,png"
         ];

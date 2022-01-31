@@ -24,6 +24,7 @@ class CreateEquipmentsTable extends Migration
             $table->float("cost")->default(0);
             $table->boolean("maintenance_required")->default(0);
             $table->boolean("no_serie_visible")->default(0);
+            $table->boolean("create_services_automatic")->default(0)->comment("Si genera servicios automaticamente");
             $table->timestamp("obtained_at")->nullable();
             $table->timestamp("last_service_at")->nullable();
             $table->timestamps();

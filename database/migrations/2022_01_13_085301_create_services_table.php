@@ -16,12 +16,17 @@ class CreateServicesTable extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->foreignId("categories_service_id")->constrained();
-            $table->foreignId("type_service_id")->constrained();
+            $table->foreignId("type_service_id")->nullable()->constrained();
+
+            $table->bigInteger("equipment_id")->unsigned();
+            $table->foreign("equipment_id")->on("equipments")->references("id")->constrained();
+
             $table->foreignId("equipments_part_id")->nullable()->constrained();
             
-            $table->bigInteger("user_assigned_id")->unsigned();
+            $table->bigInteger("user_assigned_id")->unsigned()->nullable();
             $table->foreign("user_assigned_id")->on("users")->references("id")->constrained();
             
+            $table->foreignId("priorities_service_id")->constrained();
             $table->foreignId("farm_id")->nullable()->constrained();
             $table->timestamp("event_date")->nullable();
             $table->text("note")->nullable();
@@ -29,6 +34,7 @@ class CreateServicesTable extends Migration
             $table->text("observation")->nullable();
             $table->timestamp("completed_at")->nullable();
             $table->boolean("status")->default(0)->comment("0 pendiente, 1 completado, 2 cancelado");
+            $table->boolean("is_automatic")->default(0)->comment("Servicio generado automaticamente");
             $table->timestamps();
             $table->softDeletes();
         });

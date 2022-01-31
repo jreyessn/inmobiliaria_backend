@@ -24,6 +24,7 @@ class CreateEquipmentsPartsTable extends Migration
                   ->constrained()
                   ->onDelete('cascade');
                   
+            $table->boolean("create_services_automatic")->default(0)->comment("Si genera servicios automaticamente");
             $table->timestamp("last_service_at")->nullable();
             $table->timestamps();
             $table->softDeletes();

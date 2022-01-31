@@ -86,7 +86,8 @@ class EquipmentRepositoryEloquent extends BaseRepository implements EquipmentRep
             $part = $model->parts()->find($item["id"] ?? 0);
 
             $item["equipment_id"] = $model->id;
-
+            $item = sanitize_null($item);
+            
             if($part){
                 $part->fill($item);
                 $part->save();

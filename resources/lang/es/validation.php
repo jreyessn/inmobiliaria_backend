@@ -176,6 +176,7 @@ return [
         "since"                   => "Fecha Desde",
         "until"                   => "Fecha Hasta",
         "last_service_at"         => "Fecha ultimo servicio",
+        "priorities_service_id"   => "Prioridad",
         "obtained_at"             => "Fecha de obtención",
     ],
 

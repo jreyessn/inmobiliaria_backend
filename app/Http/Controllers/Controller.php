@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PaymentMethod;
+use App\Models\PrioritiesService;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -12,31 +12,9 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    function typeMovements(){
+    function priorities(){
         return [
-            'data' => [
-                [
-                    'id' => 1,
-                    'description' => getMovement(1),
-                    'use_payment_method' => true 
-                ],
-                [
-                    'id' => 2,
-                    'description' => getMovement(2),
-                    'use_payment_method' => false 
-                ],
-                [
-                    'id' => 3,
-                    'description' => getMovement(4),
-                    'use_payment_method' => false 
-                ],
-            ]
-        ];
-    }
-
-    function paymentMethods(){
-        return [
-            'data' => PaymentMethod::all()
+            "data" => PrioritiesService::orderBy("orden", "asc")->get()
         ];
     }
 

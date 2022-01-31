@@ -17,7 +17,7 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->foreignId("categories_service_id")->constrained();
             $table->foreignId("type_service_id")->constrained();
-            $table->foreignId("equipments_part_id")->constrained();
+            $table->foreignId("equipments_part_id")->nullable()->constrained();
             
             $table->bigInteger("user_assigned_id")->unsigned();
             $table->foreign("user_assigned_id")->on("users")->references("id")->constrained();

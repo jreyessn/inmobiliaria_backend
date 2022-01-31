@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('dashboard', 'DashboardController');
     Route::get('roles', 'RoleController@index');
     Route::get('categories_services', 'Services\CategoriesServicesController');
+    Route::get('priorities_services', 'Controller@priorities');
     Route::get('reports/services', 'Reports\ReportsServicesController@services');
 
     /**

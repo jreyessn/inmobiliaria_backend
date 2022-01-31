@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             PermissionsTableSeeder::class,
             UserSeeder::class,
             ConfigurationSeeder::class,
-            CategoriesServicesSeeder::class
+            CategoriesServicesSeeder::class,
+            PrioritiesServices::class,
         ]);
 
     }

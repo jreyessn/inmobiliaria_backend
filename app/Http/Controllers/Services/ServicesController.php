@@ -56,7 +56,6 @@ class ServicesController extends Controller
         $this->ServiceRepositoryEloquent->pushCriteria(UserAssignedCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(EquipmentCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(CategoriesServicesCriteria::class);
-        $this->ServiceRepositoryEloquent->pushCriteria(EquipmentPartAvailableCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(StatusServiceCriteria::class);
         $this->ServiceRepositoryEloquent->pushCriteria(HasTechnicalCriteria::class);
 
@@ -75,9 +74,11 @@ class ServicesController extends Controller
         $request->validate([
             "categories_service_id" => "required|exists:categories_services,id",
             "type_service_id"       => "required|exists:type_services,id",  
-            "equipments_part_id"    => "required|exists:equipments_parts,id",
+            "equipment_id"          => "required|exists:equipments,id",
+            "equipments_part_id"    => "nullable|exists:equipments_parts,id",
             "user_assigned_id"      => "required|exists:users,id",
             "farm_id"               => "required|exists:farms,id",
+            "priorities_service_id" => "required|exists:priorities_services,id",
             "event_date"            => "required|date",
             "note"                  => "nullable|string",
         ]);

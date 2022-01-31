@@ -6,7 +6,9 @@ use App\Models\Equipment\Equipment;
 use App\Models\Equipment\EquipmentPart;
 use App\Models\Farm\Farm;
 use App\Models\Images\Image;
+use App\Models\PrioritiesService;
 use App\Models\User;
+use Database\Seeders\PrioritiesServices;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -29,6 +31,7 @@ class Service extends Model implements Transformable
     protected $fillable = [
         "categories_service_id",
         "type_service_id",
+        "equipment_id",
         "equipments_part_id",
         "user_assigned_id",
         "farm_id",
@@ -38,6 +41,7 @@ class Service extends Model implements Transformable
         "observation",
         "completed_at",
         "status",
+        "priorities_service_id"
     ];
 
     protected $with = [
@@ -47,6 +51,7 @@ class Service extends Model implements Transformable
         "type_service",
         "farm",
         "user_assigned",
+        "priorities_service",
     ];
 
     protected $appends = [
@@ -70,12 +75,17 @@ class Service extends Model implements Transformable
 
     public function equipments_part()
     {
-        return $this->belongsTo(EquipmentPart::class, "equipments_part_id");
+        return $this->belongsTo(EquipmentPart::class, "equipments_part_id")->withTrashed();
+    }
+
+    public function priorities_service()
+    {
+        return $this->belongsTo(PrioritiesService::class);
     }
 
     public function equipment()
     {
-        return $this->hasOneThrough(Equipment::class, EquipmentPart::class, "id", "id", "equipments_part_id", "equipment_id");
+        return $this->belongsTo(Equipment::class)->withTrashed();
     }
 
     public function farm()
@@ -85,7 +95,7 @@ class Service extends Model implements Transformable
 
     public function user_assigned()
     {
-        return $this->belongsTo(User::class, "user_assigned_id");
+        return $this->belongsTo(User::class, "user_assigned_id")->withTrashed();
     }
 
     public function signature()

@@ -47,14 +47,15 @@ class StoreServicesRequest extends FormRequest
      */
     public function rules()
     {
-
         return [
             "id"                    => new ServiceCompleted,
             "categories_service_id" => "required_without:save_from|exists:categories_services,id",
             "type_service_id"       => "required_without:save_from|exists:type_services,id",  
-            "equipments_part_id"    => "required_without:save_from|exists:equipments_parts,id",
+            "equipment_id"          => "required_without:save_from|exists:equipments,id",
+            "equipments_part_id"    => "nullable|exists:equipments_parts,id",
             "user_assigned_id"      => "required_without:save_from|exists:users,id",
             "farm_id"               => "required_without:save_from|exists:farms,id",
+            "priorities_service_id" => "required_without:save_from|exists:priorities_services,id",
             "event_date"            => "required_without:save_from|date|after_or_equal:today",
             "note"                  => "nullable|string|max:300",
 

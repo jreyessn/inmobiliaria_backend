@@ -21,10 +21,7 @@ class EquipmentPartAvailableCriteria implements CriteriaInterface
      * @return mixed
      */
     public function apply($model, RepositoryInterface $repository)
-    {
-
-        $model = $model->has("equipments_part");
-        
+    {        
         return $model;
     }
 }

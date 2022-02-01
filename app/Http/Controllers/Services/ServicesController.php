@@ -231,11 +231,11 @@ class ServicesController extends Controller
     public function comply(StoreServicesRequest $request, $id)
     {
         $service = $this->ServiceRepositoryEloquent->find($id);
-        $request = new Request([
+        $requestComply = new Request([
             "user_assigned_id" => $service->user_assigned_id,
             "type_service_id"  => $service->type_service_id,
         ]);
-        $request->validate([
+        $requestComply->validate([
             "user_assigned_id" => "required|exists:users,id",
             "type_service_id"  => "required|exists:type_services,id",
         ], [

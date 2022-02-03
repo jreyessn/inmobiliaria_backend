@@ -3,7 +3,8 @@
 use App\Models\Configuration;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
- 
+use Illuminate\Support\Facades\Storage;
+
 if (! function_exists('current_role')) {
     function current_role($attribute = '')
     {
@@ -110,15 +111,28 @@ if(!function_exists("sanitize_null")){
     }
 }
 
-function descryptId($str){
-    if(strlen($str) > 100){
-        try {
-            return Crypt::decrypt($str);
-        } catch (\Throwable $th) {
-            return $str;
+if(!function_exists("descryptId")){
+    function descryptId($str){
+        if(strlen($str) > 100){
+            try {
+                return Crypt::decrypt($str);
+            } catch (\Throwable $th) {
+                return $str;
+            }
         }
+    
+        return $str;
     }
+}
 
-    return $str;
+if(!function_exists("convertTobase64")){
+    function convertTobase64($path){
+        $exist = Storage::disk('local')->exists($path);
+        if ($exist) {
+            $content = Storage::disk('local')->get($path);
+            return base64_encode($content);
+        }
+        return '';
+    }
 }
 

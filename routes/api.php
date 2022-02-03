@@ -44,6 +44,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('categories_services', 'Services\CategoriesServicesController');
     Route::get('priorities_services', 'Controller@priorities');
     Route::get('reports/services', 'Reports\ReportsServicesController@services');
+    Route::get('services/pdf/{id}', 'Services\ServicesController@pdfDetail');
 
     /**
      * Deletes

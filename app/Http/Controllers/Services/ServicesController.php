@@ -15,6 +15,7 @@ use App\Http\Requests\Services\StoreServicesRequest;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Services\ServiceRepositoryEloquent;
 use App\Rules\ServiceAutomatic;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -244,6 +245,20 @@ class ServicesController extends Controller
         ]);
 
         return $this->update($request, $id);
+    }
+
+    /**
+     * PDF de los detalles del servicio
+     * 
+     * @param int $id ID de servicio
+     */
+    public function pdfDetail($id){
+
+        $data["service"] = $this->ServiceRepositoryEloquent->find($id);
+        // dd($data);
+        $pdf = PDF::loadView('reports/pdf/detail_service', $data);
+        
+        return $pdf->download('detail.pdf');
     }
 
 }

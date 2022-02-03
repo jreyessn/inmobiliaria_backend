@@ -177,16 +177,17 @@ class EquipmentsController extends Controller
     private function scheduleService($equipment){
         $hasParts = $equipment->parts()->count() > 0? true : false;
         
-        if($equipment->create_services_automatic && $equipment->last_service_at && $equipment->between_days_service > 0){
+        if($equipment->create_services_automatic && $equipment->last_service_at && $equipment->between_days_service > 0 && $equipment->days_before_create){
             $this->newService($equipment->services(), [
                 "between_days_service" => $equipment->between_days_service,
                 "last_service_at"      => $equipment->last_service_at,
                 "equipment_id"         => $equipment->id,
                 "equipments_part_id"   => null,
+                "days_before_create"   => $equipment->days_before_create
             ]);
         }
 
-        if($hasParts){
+        if($hasParts && $equipment->days_before_create){
             foreach ($equipment->parts as $part) {
                 if($part->create_services_automatic && $part->last_service_at && $part->between_days_service > 0){
                     $this->newService($part->services(), [
@@ -194,6 +195,7 @@ class EquipmentsController extends Controller
                         "last_service_at"      => $part->last_service_at,
                         "equipment_id"         => $equipment->id,
                         "equipments_part_id"   => $part->id,
+                        "days_before_create"   => $equipment->days_before_create
                     ]);
                 }
             }
@@ -247,14 +249,21 @@ class EquipmentsController extends Controller
             }
         }
         
-        $this->ServiceRepositoryEloquent->save([
-            "categories_service_id"   => 1,
-            "equipment_id"            => $values["equipment_id"],
-            "equipments_part_id"      => $values["equipments_part_id"],
-            "event_date"              => $next_service_at,
-            "priorities_service_id"   => 1,
-            "is_automatic"            => 1
-        ]);
+        // Crear el servicio la cantidad de días antes definidas en el equipo...
+
+        $compareNewDate = Carbon::parse($next_service_at)->addDay(-$values["days_before_create"]); 
+
+        if(now()->gte($compareNewDate)){
+            $this->ServiceRepositoryEloquent->save([
+                "categories_service_id"   => 1,
+                "equipment_id"            => $values["equipment_id"],
+                "equipments_part_id"      => $values["equipments_part_id"],
+                "event_date"              => $next_service_at,
+                "priorities_service_id"   => 1,
+                "is_automatic"            => 1
+            ]);
+        }
+        
     }
 
 }

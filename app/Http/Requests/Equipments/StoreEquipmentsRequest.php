@@ -33,6 +33,7 @@ class StoreEquipmentsRequest extends FormRequest
             "area_id"                 => "nullable|exists:areas,id",
             "between_days_service"    => "nullable|numeric|min:0",
             "cost"                    => "required|numeric",
+            "days_before_create"      => "required|numeric|min:1",
             "maintenance_required"    => "nullable|numeric|in:1,0",
             "no_serie_visible"        => "nullable|numeric|in:1,0",
             "obtained_at"             => "nullable|date|before_or_equal:today",

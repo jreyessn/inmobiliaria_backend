@@ -178,6 +178,7 @@ return [
         "last_service_at"         => "Fecha ultimo servicio",
         "priorities_service_id"   => "Prioridad",
         "obtained_at"             => "Fecha de obtención",
+        "days_before_create"      => "Días de anticipación",
     ],
 
 ];

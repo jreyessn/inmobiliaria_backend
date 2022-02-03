@@ -40,7 +40,8 @@ class Equipment extends Model implements Transformable
         "maintenance_required",
         "last_service_at",
         "no_serie_visible",
-        "create_services_automatic"
+        "create_services_automatic",
+        "days_before_create",
     ];
 
     protected $appends = [

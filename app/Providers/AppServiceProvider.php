@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Routing\UrlGenerator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,7 +26,9 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(
+        UrlGenerator $url
+    )
     {
         Schema::defaultStringLength(191);
 
@@ -36,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
 
                 Config::set('configuration.'.$setting->key, $setting->value);
             }
+        }
+
+        if (env('APP_ENV') === 'production') {
+            $url->forceScheme('https');
         }
     }
 }

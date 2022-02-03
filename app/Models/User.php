@@ -72,14 +72,13 @@ class User extends Authenticatable
         ]);
     }
 
-    // public function routeNotificationForSlack($notification)
-    // {
-    //     return env('SLACK_NOTIFICATION_WEBHOOK');
-    // }
+    public function players(){
+        return $this->hasMany(UserPlayer::class);
+    }
 
-    // public function routeNotificationForOneSignal()
-    // {
-    //     return $this->players()->pluck("player_id");
-    // }
+    public function routeNotificationForOneSignal()
+    {
+        return $this->players()->pluck("player_id");
+    }
 
 }

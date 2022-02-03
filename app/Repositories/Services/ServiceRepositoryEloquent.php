@@ -6,6 +6,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Services\ServiceRepository;
 use App\Models\Services\Service;
+use App\Notifications\Services\AssignedService;
 use App\Validators\Services\ServiceValidator;
 
 /**
@@ -66,6 +67,15 @@ class ServiceRepositoryEloquent extends BaseRepository implements ServiceReposit
     {
         $store = $this->create($data);
         
+        $userSession = request()->user();
+
+        // existe el usuario asignado
+        // existe el usuario en sesion (ya que al menos una vez se ejecuta por cronjob)
+        // el usuario asignado es diferente al de la sesion
+        if($store->user_assigned && $userSession && $store->user_assigned_id != $userSession->id){
+           $this->notifyTechnical($store);
+        }
+
         return $store;
     }
 
@@ -75,6 +85,9 @@ class ServiceRepositoryEloquent extends BaseRepository implements ServiceReposit
     public function saveUpdate(array $data, int $id)
     {
         $store = $this->find($id);
+        $userOrigianlId = $store->user_assigned->id ?? null;
+        $userSession = request()->user();
+
         $store->fill($data);
 
         if(($data["status"] ?? 0) == 1){
@@ -83,7 +96,38 @@ class ServiceRepositoryEloquent extends BaseRepository implements ServiceReposit
 
         $store->save();
 
-        return $store;
+        $service = $this->find($id);
+
+
+        // existe el usuario asignado
+        // el usuario asignado es diferente al de la sesion
+        // el usuario asignado es diferente al que habia anteriormente
+        if(
+            $service->user_assigned && 
+            $service->user_assigned_id != $userSession->id && 
+            $service->user_assigned_id != $userOrigianlId){
+            $this->notifyTechnical($service);
+         }
+
+        return $service;
+    }
+
+    /**
+     * Notificar al técnico asignado
+     * 
+     * @param $service Servicio
+     */
+    private function notifyTechnical($service){
+        $values = [
+            "id"                    => $service->id,
+            "service_category"      => $service->categories_service->name,
+            "event_date"            => $service->event_date->format("d/m/Y"),
+            "equipment_name"        => $service->equipment->name,
+            "equipment_part_name"   => $service->equipments_part->name ?? 'No aplica',
+            "type_service_name"     => $service->type_service->name ?? '',
+        ];
+
+        $service->user_assigned->notify(new AssignedService($values));
     }
     
     

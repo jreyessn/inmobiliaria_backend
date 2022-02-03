@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Puts
      */
     Route::put("services/comply/{id}", "Services\ServicesController@comply");
+    Route::put('notifications/push', 'NotificationController@savePlayerSignal');
 
     /**
      * Patchs

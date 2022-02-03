@@ -47,5 +47,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         })->get();
     }
 
-    
+
+
 }

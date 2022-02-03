@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Equipments;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Equipments\StoreEquipmentsRequest;
+use App\Notifications\Services\NewService;
 use App\Repositories\Equipment\EquipmentRepositoryEloquent;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Services\ServiceRepositoryEloquent;
+use App\Repositories\Users\UserRepositoryEloquent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,15 +22,19 @@ class EquipmentsController extends Controller
 
     private $ServiceRepositoryEloquent;
 
+    private $UserRepositoryEloquent;
+
     function __construct(
         EquipmentRepositoryEloquent $EquipmentRepositoryEloquent,
         ImageRepositoryEloquent $ImageRepositoryEloquent,
-        ServiceRepositoryEloquent $ServiceRepositoryEloquent
+        ServiceRepositoryEloquent $ServiceRepositoryEloquent,
+        UserRepositoryEloquent $UserRepositoryEloquent
     )
     {
         $this->EquipmentRepositoryEloquent = $EquipmentRepositoryEloquent;
         $this->ImageRepositoryEloquent     = $ImageRepositoryEloquent;
         $this->ServiceRepositoryEloquent   = $ServiceRepositoryEloquent;
+        $this->UserRepositoryEloquent      = $UserRepositoryEloquent;
     }
 
     /**
@@ -213,6 +219,7 @@ class EquipmentsController extends Controller
         $lastServiceAutomatic = $services->where("is_automatic", 1)->latest('created_at')->first();
         $afterToday = false; // Asegurar que la fecha agendada sea después de hoy para que no sea vencida
         $eventDateAutomatic = $lastServiceAutomatic->event_date ?? null;
+        $notificar = true;
 
         while ($afterToday == false) {
             $next_service_at = null;
@@ -221,6 +228,7 @@ class EquipmentsController extends Controller
             // entonces se elimina para crear el nuevo según la ultima fecha de servicio
             if($lastServiceAutomatic && is_null($lastServiceAutomatic->completed_at) && $lastServiceAutomatic->created_at->eq($lastServiceAutomatic->updated_at)){
                 $lastServiceAutomatic->forceDelete();
+                $notificar = false;
 
                 $beforeLastServiceAutomatic = $services->where("is_automatic", 1)->latest('created_at')->first();
 
@@ -254,7 +262,7 @@ class EquipmentsController extends Controller
         $compareNewDate = Carbon::parse($next_service_at)->addDay(-$values["days_before_create"]); 
 
         if(now()->gte($compareNewDate)){
-            $this->ServiceRepositoryEloquent->save([
+            $service = $this->ServiceRepositoryEloquent->save([
                 "categories_service_id"   => 1,
                 "equipment_id"            => $values["equipment_id"],
                 "equipments_part_id"      => $values["equipments_part_id"],
@@ -262,8 +270,32 @@ class EquipmentsController extends Controller
                 "priorities_service_id"   => 1,
                 "is_automatic"            => 1
             ]);
+
+            if($notificar){
+                $this->notifyAdmins($service);
+            }
         }
         
+    }
+
+    /**
+     * Notificar a los administradores
+     * 
+     * @param collection $service Instancia de servicio
+     */
+    private function notifyAdmins($service){
+        $admins = $this->UserRepositoryEloquent->getAdminUsers();
+        $values = [
+            "service_category"    => $service->categories_service->name,
+            "equipment_name"      => $service->equipment->name,
+            "equipment_part_name" => $service->equipments_part->name ?? "No aplica",
+            "event_date"          => $service->event_date->format("d/m/Y"),
+            "id"                  => $service->id,
+        ];
+
+        foreach ($admins as $admin) {
+            $admin->notify(new NewService($values));
+        }
     }
 
 }

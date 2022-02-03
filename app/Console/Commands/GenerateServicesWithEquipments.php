@@ -40,8 +40,9 @@ class GenerateServicesWithEquipments extends Command
     {
 
         $controller = app()->make(EquipmentsController::class);
-        $data = app()->call([$controller, 'scheduleServices']);
-        dd($data);
+        
+        app()->call([$controller, 'scheduleServices']);
+        
         return 0;
     }
 }

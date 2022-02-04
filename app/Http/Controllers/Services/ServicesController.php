@@ -33,6 +33,10 @@ class ServicesController extends Controller
     {
         $this->ServiceRepositoryEloquent = $ServiceRepositoryEloquent;
         $this->ImageRepositoryEloquent   = $ImageRepositoryEloquent;
+
+        $this->middleware('optimizeImages', [
+            'only' => ['update', 'comply']
+        ]);
     }
 
     /**

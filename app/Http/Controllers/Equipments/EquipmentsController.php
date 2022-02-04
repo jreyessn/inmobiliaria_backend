@@ -35,6 +35,10 @@ class EquipmentsController extends Controller
         $this->ImageRepositoryEloquent     = $ImageRepositoryEloquent;
         $this->ServiceRepositoryEloquent   = $ServiceRepositoryEloquent;
         $this->UserRepositoryEloquent      = $UserRepositoryEloquent;
+
+        $this->middleware('optimizeImages', [
+            'only' => ['store', 'update']
+        ]);
     }
 
     /**

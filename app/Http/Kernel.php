@@ -69,8 +69,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        'isValidEncrypt' => EncryptIsValid::class,
-        'fileBelongsTicket' => FileBelongsTicket::class,
-        'CanCloseTicket' => CanCloseTicket::class
+        'optimizeImages' => \Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages::class,
     ];
 }

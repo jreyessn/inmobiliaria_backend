@@ -27,7 +27,7 @@ class StoreEquipmentsRequest extends FormRequest
 
         return [
             "name"                    => "required|string|max:200|unique:equipments,name,{$id},id,deleted_at,NULL",
-            "no_serie"                => "required|string|max:200",
+            "no_serie"                => "nullable|string|max:200",
             "categories_equipment_id" => "required|exists:categories_equipments,id",
             "brand"                   => "nullable|string|max:200",
             "area_id"                 => "nullable|exists:areas,id",

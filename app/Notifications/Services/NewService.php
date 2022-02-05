@@ -87,7 +87,7 @@ class NewService extends Notification
         }
 
         return OneSignalMessage::create()
-            ->setSubject("Se ha agendado un nuevo servicio")
+            ->setSubject("Se ha agendado un nuevo servicio - Mayocabo")
             ->setBody($body)
             ->setUrl($url)
             ->setIcon(public_path('logo.png'));

@@ -85,7 +85,7 @@ class AssignedService extends Notification
         }
 
         return OneSignalMessage::create()
-            ->setSubject("Nuevo servicio pendiente")
+            ->setSubject("Nuevo servicio pendiente - Mayocabo")
             ->setBody($body)
             ->setUrl($url)
             ->setIcon(public_path('logo.png'));

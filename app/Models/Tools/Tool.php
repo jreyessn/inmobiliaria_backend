@@ -25,16 +25,11 @@ class Tool extends Model implements Transformable
     protected $fillable = [
         "name",
         "quantity",
-        "user_id"
     ];
 
-    protected $with = [
-        "user"
-    ];
-
-    public function user()
+    public function tools_users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(ToolsUser::class);
     }
 
 }

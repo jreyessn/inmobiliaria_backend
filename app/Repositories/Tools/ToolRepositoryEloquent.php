@@ -6,6 +6,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Tools\ToolRepository;
 use App\Models\Tools\Tool;
+use App\Models\Tools\ToolsUser;
 use App\Validators\Tools\ToolValidator;
 
 /**
@@ -48,7 +49,27 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
     {
         $store = $this->create($data);
 
+        if(array_key_exists("tools_users", $data)){
+            $this->saveToolsUsers($data["tools_users"], $store->id);
+        }
+
         return $store;
+    }
+
+    /**
+     * Guardar las herramientas de usuarios
+     * 
+     * @param array $tools_users Herramientas de usuarios
+     * @param int $tool_id ID de herramienta 
+     */
+    public function saveToolsUsers(array $tools_users = [], $tool_id){
+        
+        ToolsUser::where("tool_id", $tool_id)->forceDelete();
+
+        foreach ($tools_users as $tool_user) {
+            $tool_user["tool_id"] = $tool_id;
+            ToolsUser::create($tool_user);
+        }
     }
 
     /**
@@ -59,6 +80,10 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
         $store = $this->find($id);
         $store->fill($data);
         $store->save();
+
+        if(array_key_exists("tools_users", $data)){
+            $this->saveToolsUsers($data["tools_users"], $store->id);
+        }
 
         return $store;
     }

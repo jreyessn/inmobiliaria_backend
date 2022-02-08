@@ -25,7 +25,12 @@ class TypesService extends Model implements Transformable
      */
     protected $fillable = [
         "name",
-        "description"
+        "description",
+        "cost"
+    ];
+
+    protected $casts = [
+        "cost" => "float"
     ];
 
     public function spare_parts(){

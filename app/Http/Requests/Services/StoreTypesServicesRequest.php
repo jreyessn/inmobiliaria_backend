@@ -28,6 +28,7 @@ class StoreTypesServicesRequest extends FormRequest
         return [
             "name"          => "required|string|max:200|unique:type_services,name,{$id},id,deleted_at,NULL",
             "description"   => "string|nullable",
+            "cost"          => "nullable|numeric",
             "spare_parts.*" => "exists:spare_parts,id",
         ];
     }

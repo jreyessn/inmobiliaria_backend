@@ -16,7 +16,8 @@ class CreateFuels extends Migration
         Schema::create('fuels', function (Blueprint $table) {
             $table->id();
             $table->foreignId("vehicle_id")->constrained();
-            $table->float("lts")->default(0);
+            $table->float("lts_current")->default(0);
+            $table->float("lts_loaded")->default(0);
             $table->float("amount")->default(0);
             $table->float("km_current")->default(0);
             $table->float("efficiency")->default(0);

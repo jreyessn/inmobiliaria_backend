@@ -23,7 +23,9 @@ class CreateVehicles extends Migration
             $table->foreignId("user_id")->nullable()->constrained()->comment("Chofer");
             $table->string("insurance_policy")->nullable();
             $table->float("km_start")->default(0);
+            $table->float("km_limit")->default(0);
             $table->text("comments")->nullable();
+            $table->timestamp("maintenance_limit_at")->nullable();
             $table->timestamp("expiration_license_at")->nullable();
             $table->timestamp("expiration_policy_at")->nullable();
             $table->timestamps();

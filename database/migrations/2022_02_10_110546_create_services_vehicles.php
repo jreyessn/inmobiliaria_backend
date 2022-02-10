@@ -20,8 +20,10 @@ class CreateServicesVehicles extends Migration
             $table->foreignId("type_service_vehicle_id")->constrained();
             $table->timestamp("event_date")->nullable();
             $table->float("amount")->default(0);
-            $table->tinyInteger("status")->default(0)->comment("0 pediente, 1 cumplido, 2 vencida");
+            $table->tinyInteger("status")->default(0)->comment("0 pendiente, 1 cumplido, 2 vencido");
             $table->text("note")->nullable();
+            $table->text("observation")->nullable();
+            $table->timestamp("completed_at")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

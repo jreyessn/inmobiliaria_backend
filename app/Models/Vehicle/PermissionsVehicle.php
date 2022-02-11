@@ -28,8 +28,25 @@ class PermissionsVehicle extends Model implements Transformable
         "expiration_at",
     ];
 
+    protected $casts = [
+        "expiration_at" => "date"
+    ];
+
+    protected $appends = [
+        "status_expiration"
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+
+    public function getStatusExpirationAttribute()
+    {
+        if($this->expiration_at && $this->expiration_at->gt(now())){
+            return "Vigente";
+        }
+
+        return "Vencido";
     }
 
 }

@@ -34,5 +34,28 @@ class ServiceVehicleRepositoryEloquent extends BaseRepository implements Service
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+        
+    /**
+     * Guardar permisos de vehiculos
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+        
+        return $store;
+    }
+
+    /**
+     * Actualizar permisos de vehiculos
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
     
 }

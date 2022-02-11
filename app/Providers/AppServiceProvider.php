@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Configuration;
+use App\Models\Vehicle\Fuel;
+use App\Models\Vehicle\Payment;
+use App\Models\Vehicle\ServiceVehicle;
+use App\Observers\KmTrackerObserver;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\UrlGenerator;
 
@@ -30,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         UrlGenerator $url
     )
     {
+        // configurations
         Schema::defaultStringLength(191);
 
         if (Schema::hasTable('configurations')) {
@@ -44,5 +48,12 @@ class AppServiceProvider extends ServiceProvider
         if (env('APP_ENV') === 'production') {
             $url->forceScheme('https');
         }
+
+        // observers
+        ServiceVehicle::observe(KmTrackerObserver::class);
+        Fuel::observe(KmTrackerObserver::class);
+        Payment::observe(KmTrackerObserver::class);
+
+
     }
 }

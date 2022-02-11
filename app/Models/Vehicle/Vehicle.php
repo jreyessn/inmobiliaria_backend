@@ -5,6 +5,7 @@ namespace App\Models\Vehicle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -36,6 +37,10 @@ class Vehicle extends Model implements Transformable
         "maintenance_limit_at",
         "expiration_license_at",
         "expiration_policy_at",
+    ];
+
+    protected $appends = [
+        "km_traveled"
     ];
 
     protected $with = [
@@ -70,6 +75,17 @@ class Vehicle extends Model implements Transformable
     public function permissions()
     {
         return $this->hasMany(PermissionsVehicle::class);
+    }
+
+    public function getKmTraveledAttribute()
+    {
+        $total_tracker = DB::table("vehicles_km_tracker")
+                        ->select(DB::raw("sum((km_current - km_previous)) as km_traveled"))
+                        ->where("vehicle_id", $this->id)
+                        ->first();
+
+
+        return $total_tracker->km_traveled ?? 0;
     }
 
 }

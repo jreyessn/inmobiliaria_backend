@@ -74,6 +74,12 @@ Route::group(['middleware' => ['auth:api']], function(){
         'equipments'            => 'Equipments\EquipmentsController',
         'services'              => 'Services\ServicesController',
         'vehicles'              => 'Vehicle\VehicleController',
+        'fuels'                 => 'Vehicle\FuelsController',
+        'license_plate'         => 'Vehicle\LicensePlateController',
+        'payments'              => 'Vehicle\PaymentController',
+        'permissions_vehicle'   => 'Vehicle\PermissionsVehicleController',
+        'types_services_vehicles' => 'Vehicle\TypeServiceVehicleController',
+        'services_vehicles'       => 'Vehicle\ServiceVehicleController',
     ]);
 
 });

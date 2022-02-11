@@ -45,7 +45,7 @@ class ServiceVehicle extends Model implements Transformable
         "event_date"   => "datetime",
         "completed_at" => "datetime",
         "km_current"   => "float",
-        "amount"        => "float"
+        "amount"       => "float"
     ];
 
     public function vehicle(){
@@ -58,12 +58,19 @@ class ServiceVehicle extends Model implements Transformable
     
     public function getKmLastServiceAttribute()
     {
-        return 0;
+
+        $prev = ServiceVehicle::where('id', '<', $this->id)->orderBy('id', 'desc')->first();
+
+        if($prev){
+            return $prev->km_current;
+        }
+
+        return $this->vehicle()->first()->km_start;
     }
     
     public function getKmTraveledAttribute()
     {
-        return 0;
+        return $this->km_current - $this->km_last_service;
     }
 
     public function getStatusAttribute($status)

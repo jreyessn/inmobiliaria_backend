@@ -25,8 +25,6 @@ class FuelRepositoryEloquent extends BaseRepository implements FuelRepository
         return Fuel::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -35,4 +33,25 @@ class FuelRepositoryEloquent extends BaseRepository implements FuelRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Guardar combustible
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+        
+        return $store;
+    }
+
+    /**
+     * Actualizar combustible
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
 }

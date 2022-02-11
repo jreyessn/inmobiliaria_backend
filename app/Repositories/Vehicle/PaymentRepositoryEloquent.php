@@ -25,7 +25,6 @@ class PaymentRepositoryEloquent extends BaseRepository implements PaymentReposit
         return Payment::class;
     }
 
-    
 
     /**
      * Boot up the repository, pushing criteria
@@ -33,6 +32,29 @@ class PaymentRepositoryEloquent extends BaseRepository implements PaymentReposit
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    
+    /**
+     * Guardar pagos
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+        
+        return $store;
+    }
+
+    /**
+     * Actualizar pagos
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
     }
     
 }

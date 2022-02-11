@@ -189,6 +189,14 @@ return [
         "km_start"                => "Kilometraje Inicial",
         "km_limit"                => "Kilometraje Limite",
         "maintenance_limit_at"    => "Mantenimiento Limite",
+        "vehicle_id"              => "Vehículo",
+        "lts_loaded"              => "Litros",
+        "amount"                  => "Monto",
+        "km_current"              => "Kilometraje Actual",
+        "expiration_at"           => "Fecha de Vencimiento",
+        "concept"                 => "Concepto",
+        "date"                    => "Fecha",
+        "note"                    => "Nota",
     ],
 
 ];

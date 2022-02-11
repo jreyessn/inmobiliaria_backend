@@ -30,6 +30,11 @@ class Payment extends Model implements Transformable
         "note",
     ];
 
+    protected $casts = [
+        "km_current"  => "float",
+        "amount"      => "float",
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
     }

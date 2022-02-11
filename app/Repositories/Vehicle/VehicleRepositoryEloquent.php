@@ -35,4 +35,25 @@ class VehicleRepositoryEloquent extends BaseRepository implements VehicleReposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Guardar vehiculos
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+        
+        return $store;
+    }
+
+    /**
+     * Actualizar vehiculos
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
 }

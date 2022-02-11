@@ -16,6 +16,8 @@ class ServiceVehicle extends Model implements Transformable
 {
     use TransformableTrait, SoftDeletes;
 
+    protected $table = "services_vehicles";
+
     /**
      * The attributes that are mass assignable.
      *

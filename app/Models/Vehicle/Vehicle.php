@@ -38,9 +38,38 @@ class Vehicle extends Model implements Transformable
         "expiration_policy_at",
     ];
 
+    protected $with = [
+        "user"
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(ServiceVehicle::class);
+    }
+    
+    public function fuels()
+    {
+        return $this->hasMany(Fuel::class);
+    }
+
+    public function license_plates()
+    {
+        return $this->hasMany(LicensePlate::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function permissions()
+    {
+        return $this->hasMany(PermissionsVehicle::class);
     }
 
 }

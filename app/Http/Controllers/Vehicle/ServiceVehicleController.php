@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Vehicle;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\ServiceVehicleRepositoryEloquent;
+use App\Rules\KmLessThat;
+use App\Rules\ServiceVehicleCompleted;
+use App\Rules\VehicleLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,7 +51,12 @@ class ServiceVehicleController extends Controller
     {
 
         $request->validate([
-            "vehicle_id"                => "required|exists:vehicles,id",
+            "vehicle_id"                => [
+                "required", 
+                "exists:vehicles,id", 
+                new KmLessThat($request->km_current),
+                new VehicleLimitService($request->km_current)
+            ],
             "km_current"                => "required|numeric|min:0",
             "type_service_vehicle_id"   => "required|exists:type_service_vehicles,id",
             "event_date"                => "required|date|after_or_equal:today",
@@ -105,7 +113,13 @@ class ServiceVehicleController extends Controller
     {
         
         $request->validate([
-            "vehicle_id"                => "required|exists:vehicles,id",
+            "id"                        => [ new ServiceVehicleCompleted ],
+            "vehicle_id"                => [
+                "required", 
+                "exists:vehicles,id", 
+                new KmLessThat($request->km_current),
+                new VehicleLimitService($request->km_current),
+            ],
             "km_current"                => "required|numeric|min:0",
             "type_service_vehicle_id"   => "required|exists:type_service_vehicles,id",
             "event_date"                => "required|date|after_or_equal:today",

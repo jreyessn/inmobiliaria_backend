@@ -39,6 +39,10 @@ class Vehicle extends Model implements Transformable
         "expiration_policy_at",
     ];
 
+    protected $casts = [
+        "maintenance_limit_at" => "date"
+    ];
+
     protected $appends = [
         "km_traveled"
     ];
@@ -82,6 +86,7 @@ class Vehicle extends Model implements Transformable
         $total_tracker = DB::table("vehicles_km_tracker")
                         ->select(DB::raw("sum((km_current - km_previous)) as km_traveled"))
                         ->where("vehicle_id", $this->id)
+                        ->where("deleted_at", null)
                         ->first();
 
 

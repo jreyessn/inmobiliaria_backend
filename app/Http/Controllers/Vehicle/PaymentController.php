@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vehicle;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\PaymentRepositoryEloquent;
+use App\Rules\KmLessThat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,7 +49,7 @@ class PaymentController extends Controller
     {
 
         $request->validate([
-            "vehicle_id"    => "required|exists:vehicles,id",
+            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
             "concept"       => "required|string|max:200",
             "km_current"    => "required|numeric|min:0",
             "date"          => "required|date",
@@ -102,7 +103,7 @@ class PaymentController extends Controller
     {
         
         $request->validate([
-            "vehicle_id"    => "required|exists:vehicles,id",
+            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
             "concept"       => "required|string|max:200",
             "km_current"    => "required|numeric|min:0",
             "date"          => "required|date",
@@ -113,7 +114,11 @@ class PaymentController extends Controller
         DB::beginTransaction();
 
         try{
-            $this->PaymentRepositoryEloquent->saveUpdate($request->all(), $id);
+
+            $paymentCurrent = $this->PaymentRepositoryEloquent->find($id);
+            $data           = $paymentCurrent->is_last_payment? $request->all() : $request->except(["km_current"]);
+
+            $this->PaymentRepositoryEloquent->saveUpdate($data, $id);
             
             DB::commit();
 

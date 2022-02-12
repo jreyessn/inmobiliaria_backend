@@ -35,8 +35,26 @@ class Payment extends Model implements Transformable
         "amount"      => "float",
     ];
 
+    protected $appends = [
+        "is_last_payment"
+    ];
+
     public function vehicle(){
         return $this->belongsTo(Vehicle::class);
+    }
+    
+    public function km_tracker()
+    {
+        return $this->morphOne(VehiclesKmTracker::class, "model");
+    }
+
+    public function getIsLastPaymentAttribute()
+    {
+        $prev = Payment::where('id', '>', $this->id)->orderBy('id', 'desc')->first();
+        if($prev){
+            return false;
+        }
+        return true;
     }
 
 }

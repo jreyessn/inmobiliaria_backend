@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Vehicle;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\FuelRepositoryEloquent;
+use App\Rules\IsLastFuel;
+use App\Rules\KmLessThat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -48,7 +50,7 @@ class FuelsController extends Controller
     {
 
         $request->validate([
-            "vehicle_id"    => "required|exists:vehicles,id",
+            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
             "lts_loaded"    => "required|numeric|min:0",
             "amount"        => "required|numeric|min:0",
             "km_current"    => "required|numeric|min:0",
@@ -99,7 +101,12 @@ class FuelsController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            "vehicle_id"    => "required|exists:vehicles,id",
+            "id"            => [ new IsLastFuel ],
+            "vehicle_id"    => [
+                "required", 
+                "exists:vehicles,id", 
+                new KmLessThat($request->km_current),
+            ],
             "lts_loaded"    => "required|numeric|min:0",
             "amount"        => "required|numeric|min:0",
             "km_current"    => "required|numeric|min:0",

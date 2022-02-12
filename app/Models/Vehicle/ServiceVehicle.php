@@ -52,6 +52,11 @@ class ServiceVehicle extends Model implements Transformable
         return $this->belongsTo(Vehicle::class);
     }
 
+    public function km_tracker()
+    {
+        return $this->morphOne(VehiclesKmTracker::class, "model");
+    }
+
     public function type_service_vehicle(){
         return $this->belongsTo(TypeServiceVehicle::class);
     }

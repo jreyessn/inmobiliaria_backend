@@ -23,6 +23,8 @@ class PermissionsTableSeeder extends Seeder
 
         // ACTIONS GENERAL
         Permission::create(['name' => 'home pwa']);
+        Permission::create(['name' => 'system equipments']);
+        Permission::create(['name' => 'system vehicles']);
         
         // FILTERS SELECT
         Permission::create(['name' => 'filter technicians']);
@@ -65,6 +67,7 @@ class PermissionsTableSeeder extends Seeder
         $role = Role::where(['name' => 'Técnico'])->first();
         $role->givePermissionTo( 
             Permission::whereIn("name", [
+               'system equipments',
                'reports service',
                'list services',
                'calendary services',

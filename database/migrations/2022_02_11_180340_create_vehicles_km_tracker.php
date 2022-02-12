@@ -20,6 +20,7 @@ class CreateVehiclesKmTracker extends Migration
             $table->float("km_current")->comment("Km registrado por el usuario");
             $table->morphs("model");
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

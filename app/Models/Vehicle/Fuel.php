@@ -39,7 +39,8 @@ class Fuel extends Model implements Transformable
 
     protected $appends = [
         "km_last_fuel",
-        "km_traveled" // km_current - km_last_service
+        "km_traveled", // km_current - km_last_service
+        "is_last_loaded"
     ];
 
     public function vehicle(){
@@ -61,6 +62,15 @@ class Fuel extends Model implements Transformable
         }
 
         return $this->km_tracker()->first()->km_previous;
+    }
+
+    public function getisLastLoadedAttribute()
+    {
+        $prev = Fuel::where('id', '>', $this->id)->orderBy('id', 'desc')->first();
+        if($prev){
+            return false;
+        }
+        return true;
     }
     
     public function getKmTraveledAttribute()

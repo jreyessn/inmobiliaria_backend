@@ -15,6 +15,17 @@ use App\Validators\Vehicle\VehicleValidator;
  */
 class VehicleRepositoryEloquent extends BaseRepository implements VehicleRepository
 {
+    protected $fieldSearchable = [
+        "name"             => "like",
+        "user.name"        => "like",
+        "name"             => "like",
+        "brand"            => "like",
+        "model"            => "like",
+        "license_plate"    => "like",
+        "no_serie"         => "like",
+        "insurance_policy" => "like",
+    ];
+    
     /**
      * Specify Model class name
      *

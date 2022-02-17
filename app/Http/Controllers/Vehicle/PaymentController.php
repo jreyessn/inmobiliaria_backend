@@ -93,7 +93,8 @@ class PaymentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Los pagos se actualizan. Cuándo es un pago anterior al ultimo (del vehiculo), no se validará los kilometros
+     * puesto que el usuario no puede actualizarlos
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -101,9 +102,15 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $paymentCurrent = $this->PaymentRepositoryEloquent->find($id);
+        $rulesVehicle   = ["required", "exists:vehicles,id", ];
+
+        if($paymentCurrent && $paymentCurrent->is_last_payment){
+            array_push($rulesVehicle, new KmLessThat($request->km_current));
+        }
+
         $request->validate([
-            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
+            "vehicle_id"    => $rulesVehicle,
             "concept"       => "required|string|max:200",
             "km_current"    => "required|numeric|min:0",
             "date"          => "required|date",
@@ -115,7 +122,6 @@ class PaymentController extends Controller
 
         try{
 
-            $paymentCurrent = $this->PaymentRepositoryEloquent->find($id);
             $data           = $paymentCurrent->is_last_payment? $request->all() : $request->except(["km_current"]);
 
             $this->PaymentRepositoryEloquent->saveUpdate($data, $id);

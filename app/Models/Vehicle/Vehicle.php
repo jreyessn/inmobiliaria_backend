@@ -44,7 +44,8 @@ class Vehicle extends Model implements Transformable
     ];
 
     protected $appends = [
-        "km_traveled"
+        "km_traveled",
+        "label"
     ];
 
     protected $with = [
@@ -91,6 +92,13 @@ class Vehicle extends Model implements Transformable
 
 
         return $total_tracker->km_traveled ?? 0;
+    }
+
+    public function getLabelAttribute()
+    {
+        $label = $this->name . " | " . $this->brand . " " . $this->model;
+
+        return $label;
     }
 
 }

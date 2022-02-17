@@ -23,6 +23,7 @@ class PermissionsTableSeeder extends Seeder
 
         // ACTIONS GENERAL
         Permission::create(['name' => 'home pwa']);
+        Permission::create(['name' => 'system switch']);
         Permission::create(['name' => 'system equipments']);
         Permission::create(['name' => 'system vehicles']);
         
@@ -60,7 +61,9 @@ class PermissionsTableSeeder extends Seeder
         $role = Role::where(['name' => 'Administrador'])->first();
         $role->givePermissionTo( 
             Permission::whereNotIn("name", [
-               'home pwa'
+               'home pwa',
+               'system equipments',
+               'system vehicles',
             ])->get() 
         );
         
@@ -73,6 +76,14 @@ class PermissionsTableSeeder extends Seeder
                'calendary services',
                'complete services',
                'home pwa',
+            ])->get() 
+        );
+        
+        
+        $role = Role::where(['name' => 'Chofer'])->first();
+        $role->givePermissionTo( 
+            Permission::whereIn("name", [
+               'system vehicles',
             ])->get() 
         );
         

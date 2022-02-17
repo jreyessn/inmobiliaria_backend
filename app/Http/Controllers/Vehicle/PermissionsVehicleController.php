@@ -50,7 +50,6 @@ class PermissionsVehicleController extends Controller
         $request->validate([
             "vehicle_id"    => "required|exists:vehicles,id",
             "concept"       => "required|string|max:200",
-            "date"          => "required|date",
             "expiration_at" => "required|date",
         ]);
 
@@ -102,7 +101,6 @@ class PermissionsVehicleController extends Controller
         $request->validate([
             "vehicle_id"    => "required|exists:vehicles,id",
             "concept"       => "required|string|max:200",
-            "date"          => "required|date",
             "expiration_at" => "required|date",
         ]);
 

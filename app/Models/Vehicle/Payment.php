@@ -50,7 +50,9 @@ class Payment extends Model implements Transformable
 
     public function getIsLastPaymentAttribute()
     {
-        $prev = Payment::where('id', '>', $this->id)->orderBy('id', 'desc')->first();
+        $prev = Payment::where('id', '>', $this->id)
+                        ->where("vehicle_id", $this->vehicle_id)
+                        ->orderBy('id', 'desc')->first();
         if($prev){
             return false;
         }

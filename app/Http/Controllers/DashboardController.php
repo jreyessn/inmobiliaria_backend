@@ -76,8 +76,10 @@ class DashboardController extends Controller
         });
 
         $chart["colors"] = [
-            '#7cdf46',
-            '#1cbcd8'
+            '#4d87ca',
+            '#41b788',
+            '#5b0d71',
+            '#ee2798',
         ];
 
         $chart["series"] = $data->map(function($item){

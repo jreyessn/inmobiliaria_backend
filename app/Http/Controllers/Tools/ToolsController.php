@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Tools;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Tools\ToolRepositoryEloquent;
-use App\Repositories\Tools\ToolsUserRepositoryEloquent;
+use App\Repositories\Tools\ToolsModelRepositoryEloquent;
 use Illuminate\Support\Facades\DB;
 
 class ToolsController extends Controller
@@ -13,15 +13,15 @@ class ToolsController extends Controller
 
     private $ToolRepositoryEloquent;
 
-    private $ToolsUserRepositoryEloquent;
+    private $ToolsModelRepositoryEloquent;
 
     function __construct(
         ToolRepositoryEloquent $ToolRepositoryEloquent,
-        ToolsUserRepositoryEloquent $ToolsUserRepositoryEloquent
+        ToolsModelRepositoryEloquent $ToolsModelRepositoryEloquent
     )
     {
         $this->ToolRepositoryEloquent      = $ToolRepositoryEloquent;
-        $this->ToolsUserRepositoryEloquent = $ToolsUserRepositoryEloquent;
+        $this->ToolsModelRepositoryEloquent = $ToolsModelRepositoryEloquent;
     }
 
     /**
@@ -41,7 +41,7 @@ class ToolsController extends Controller
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->ToolsUserRepositoryEloquent->with(["tool"])->paginate($perPage);
+        return $this->ToolsModelRepositoryEloquent->with(["relation", "tool"])->paginate($perPage);
     }
 
     /**
@@ -56,16 +56,14 @@ class ToolsController extends Controller
 
         foreach ($request->get('tools_users') ?? [] as $key => $val) {
             $num = $key + 1;
-            $validationMessages["tools_users." . $key . ".quantity.required"] = "El campo cantidad en la fila N° {$num} es obligatorio";
-            $validationMessages["tools_users." . $key . ".quantity.numeric"] = "El campo cantidad en la fila N° {$num} debe ser númerico";
-            $validationMessages["tools_users." . $key . ".quantity.min"]     = "El campo cantidad en la fila N° {$num} debe ser mínimo 0";
-            $validationMessages["tools_users." . $key . ".user_id.exists"]   = "El usuario seleccionado en la fila N° {$num} no existe";
+            $validationMessages["tools_models." . $key . ".quantity.required"] = "El campo cantidad en la fila N° {$num} es obligatorio";
+            $validationMessages["tools_models." . $key . ".quantity.numeric"] = "El campo cantidad en la fila N° {$num} debe ser númerico";
+            $validationMessages["tools_models." . $key . ".quantity.min"]     = "El campo cantidad en la fila N° {$num} debe ser mínimo 0";
         }
 
         $request->validate([
             "name"                   => "required|string|max:200|unique:tools,name,NULL,id,deleted_at,NULL",
-            "tools_users.*.quantity" => "required|numeric|min:0",
-            "tools_users.*.user_id"  => "nullable|exists:users,id"
+            "tools_models.*.quantity" => "required|numeric|min:0",
         ], $validationMessages);
         
         DB::beginTransaction();
@@ -96,7 +94,7 @@ class ToolsController extends Controller
      */
     public function show($id)
     {
-        $data = $this->ToolRepositoryEloquent->find($id)->load("tools_users");
+        $data = $this->ToolRepositoryEloquent->find($id)->load("tools_models.relation");
 
         return ["data" => $data];
     }
@@ -112,18 +110,18 @@ class ToolsController extends Controller
     {
         $validationMessages = [];
 
-        foreach ($request->get('tools_users') ?? [] as $key => $val) {
+        foreach ($request->get('tools_models') ?? [] as $key => $val) {
             $num = $key + 1;
-            $validationMessages["tools_users." . $key . ".quantity.required"] = "El campo cantidad en la fila N° {$num} es obligatorio";
-            $validationMessages["tools_users." . $key . ".quantity.numeric"] = "El campo cantidad en la fila N° {$num} debe ser númerico";
-            $validationMessages["tools_users." . $key . ".quantity.min"]     = "El campo cantidad en la fila N° {$num} debe ser mínimo 0";
-            $validationMessages["tools_users." . $key . ".user_id.exists"]   = "El usuario seleccionado en la fila N° {$num} no existe";
+            $validationMessages["tools_models." . $key . ".quantity.required"] = "El campo cantidad en la fila N° {$num} es obligatorio";
+            $validationMessages["tools_models." . $key . ".quantity.numeric"] = "El campo cantidad en la fila N° {$num} debe ser númerico";
+            $validationMessages["tools_models." . $key . ".quantity.min"]     = "El campo cantidad en la fila N° {$num} debe ser mínimo 0";
+            // $validationMessages["tools_users." . $key . ".user_id.exists"]   = "El usuario seleccionado en la fila N° {$num} no existe";
         }
 
         $request->validate([
             "name"     => "required|string|max:200|unique:tools,name,{$id},id,deleted_at,NULL",
-            "tools_users.*.quantity" => "required|numeric|min:0",
-            "tools_users.*.user_id"  => "nullable|exists:users,id"
+            "tools_models.*.quantity" => "required|numeric|min:0",
+            // "tools_users.*.user_id"  => "nullable|exists:users,id"
         ], $validationMessages);
         
         DB::beginTransaction();
@@ -154,7 +152,7 @@ class ToolsController extends Controller
     {
         try{
 
-            $toolUser = $this->ToolsUserRepositoryEloquent->find($id);
+            $toolUser = $this->ToolsModelRepositoryEloquent->find($id);
             $tool_id  = $toolUser->tool_id;
             $toolUser->delete();
 

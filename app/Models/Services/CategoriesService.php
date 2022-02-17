@@ -26,4 +26,8 @@ class CategoriesService extends Model implements Transformable
 
     public $timestamps = false;
 
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
 }

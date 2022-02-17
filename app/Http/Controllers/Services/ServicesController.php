@@ -12,8 +12,10 @@ use App\Criteria\StatusServiceCriteria;
 use App\Criteria\UserAssignedCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Services\StoreServicesRequest;
+use App\Notifications\Services\NewService;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Services\ServiceRepositoryEloquent;
+use App\Repositories\Users\UserRepositoryEloquent;
 use App\Rules\ServiceAutomatic;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Http\Request;
@@ -26,13 +28,17 @@ class ServicesController extends Controller
 
     private $ImageRepositoryEloquent;
 
+    private $UserRepositoryEloquent;
+
     function __construct(
         ServiceRepositoryEloquent $ServiceRepositoryEloquent,
-        ImageRepositoryEloquent $ImageRepositoryEloquent
+        ImageRepositoryEloquent $ImageRepositoryEloquent,
+        UserRepositoryEloquent $UserRepositoryEloquent
     )
     {
         $this->ServiceRepositoryEloquent = $ServiceRepositoryEloquent;
         $this->ImageRepositoryEloquent   = $ImageRepositoryEloquent;
+        $this->UserRepositoryEloquent     = $UserRepositoryEloquent;
     }
 
     /**
@@ -93,6 +99,8 @@ class ServicesController extends Controller
         try{
             $data = $this->ServiceRepositoryEloquent->save($request->all());
             
+            $this->notifyAdmins($data);
+
             DB::commit();
 
             return response()->json([
@@ -119,7 +127,6 @@ class ServicesController extends Controller
             "equipments_part",
             "equipment.parts",
             "equipment.images",
-            "evidences"
         ]);
 
         return ["data" => $data];
@@ -140,9 +147,14 @@ class ServicesController extends Controller
 
             $data = $this->ServiceRepositoryEloquent->saveUpdate($request->all(), $id);
             
-            $this->ImageRepositoryEloquent->saveMany($request->file("evidences") ?? [], $data, [
+            $this->ImageRepositoryEloquent->saveMany($request->file("evidences_after") ?? [], $data, [
                 "path" => "evidences_services",
-                "type" => "Evidences",
+                "type" => "Evidences_After",
+            ]);
+
+            $this->ImageRepositoryEloquent->saveMany($request->file("evidences_before") ?? [], $data, [
+                "path" => "evidences_services",
+                "type" => "Evidences_Before",
             ]);
 
             if($request->signature){
@@ -259,6 +271,28 @@ class ServicesController extends Controller
         $pdf = PDF::loadView('reports/pdf/detail_service', $data);
         
         return $pdf->download('detail.pdf');
+    }
+
+    /**
+     * Notificar a los administradores
+     * 
+     * @param collection $service Instancia de servicio
+     */
+    private function notifyAdmins($service){
+        $admins = $this->UserRepositoryEloquent->getAdminUsers();
+        $values = [
+            "service_category"    => $service->categories_service->name,
+            "equipment_name"      => $service->equipment->name,
+            "equipment_part_name" => $service->equipments_part->name ?? "No aplica",
+            "event_date"          => $service->event_date->format("d/m/Y"),
+            "id"                  => $service->id,
+        ];
+
+        foreach ($admins as $admin) {
+            if($admin->id != request()->user()->id){
+                $admin->notify(new NewService($values));
+            }
+        }
     }
 
 }

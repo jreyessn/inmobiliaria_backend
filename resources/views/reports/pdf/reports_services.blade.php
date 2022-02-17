@@ -73,6 +73,11 @@
                 <td class="align-center fcw bg-blue">
                     <b>Tipo de Servicio:</b>
                 </td>
+                
+                <td class="align-center fcw bg-blue">
+                    <b>Costo:</b>
+                </td>
+
             </tr>
 
         </thead>
@@ -86,13 +91,16 @@
                         {{ $item->equipment->name }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->equipments_part->name }}
+                        {{ $item->equipments_part->name ?? '' }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->user_assigned->name ?? '-' }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ $item->type_service->name }}
+                        {{ $item->type_service->name ?? '' }}
+                    </td>
+                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
+                        {{ currency() }} {{ $item->cost }}
                     </td>
                 </tr>
             @endforeach

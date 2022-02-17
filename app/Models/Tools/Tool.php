@@ -27,9 +27,9 @@ class Tool extends Model implements Transformable
         "quantity",
     ];
 
-    public function tools_users()
+    public function tools_models()
     {
-        return $this->hasMany(ToolsUser::class);
+        return $this->hasMany(ToolsModel::class);
     }
 
 }

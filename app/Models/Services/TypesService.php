@@ -37,4 +37,8 @@ class TypesService extends Model implements Transformable
         return $this->belongsToMany(SparePart::class, 'type_services_spare_parts', 'type_service_id' ,'spare_part_id');
     }
 
+    public function services(){
+        return $this->hasMany(Service::class, "type_service_id");
+    }
+
 }

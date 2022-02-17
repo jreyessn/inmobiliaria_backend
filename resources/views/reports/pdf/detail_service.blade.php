@@ -91,13 +91,36 @@
         <thead>
             <tr>
                 <td colspan="5" class="align-center fcw bg-brown">
-                    <b>Fotos de Evidencias:</b>
+                    <b>Fotos de Evidencias (Antes):</b>
                 </td>
             </tr>
         </thead>
         <tbody>
             <tr>
-                @foreach($service->evidences as $key => $evidence)
+                @foreach($service->evidences_before as $key => $evidence)
+                    <td>
+                        <img src="data:image/jpeg;base64,{{ convertTobase64($evidence->name) }}" alt="photo" class="photo-evidence">
+                    </td>
+                    <?php if (($key + 1) % 2 == 0): ?>
+                        </tr>
+                        <tr>
+                    <?php endif; ?>
+                @endforeach
+            </tr>
+        </tbody>
+    </table>
+
+    <table cellspacing="0" class="col-10 mt10">
+        <thead>
+            <tr>
+                <td colspan="5" class="align-center fcw bg-brown">
+                    <b>Fotos de Evidencias (Después):</b>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                @foreach($service->evidences_after as $key => $evidence)
                     <td>
                         <img src="data:image/jpeg;base64,{{ convertTobase64($evidence->name) }}" alt="photo" class="photo-evidence">
                     </td>

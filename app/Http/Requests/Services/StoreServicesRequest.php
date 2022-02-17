@@ -62,7 +62,8 @@ class StoreServicesRequest extends FormRequest
             "received_by"           => "required_if:save_from,pwa|string|max:200",
             "observation"           => "required_if:save_from,pwa|string|max:300",
             "signature"             => "required_if:save_from,pwa|string",
-            "evidences.*"           => "file|mimes:jpg,jpeg,png"
+            "evidences_after.*"     => "file|mimes:jpg,jpeg,png",
+            "evidences_before.*"    => "file|mimes:jpg,jpeg,png",
         ];
     }
 
@@ -70,8 +71,12 @@ class StoreServicesRequest extends FormRequest
     {
         $validationMessages = [];
 
-        foreach ($this->get('spare_parts') ?? [] as $key => $val) {
-            $validationMessages["evidences.{$key}"] = "Archivo °N ".($key + 1);
+        foreach ($this->file('evidences_after') ?? [] as $key => $val) {
+            $validationMessages["evidences_after.{$key}"] = "Archivo de Evidencia (Después) °N ".($key + 1);
+        }
+
+        foreach ($this->file('evidences_before') ?? [] as $key => $val) {
+            $validationMessages["evidences_before.{$key}"] = "Archivo de Evidencia (Antes) °N ".($key + 1);
         }
 
         return $validationMessages;
@@ -80,8 +85,8 @@ class StoreServicesRequest extends FormRequest
     public function messages()
     {
         $validationMessages = [
-            "required_without" => "El campo :attribute es obligatorio",
-            "required_if"      => "El campo :attribute es obligatorio",
+            "required_without"          => "El campo :attribute es obligatorio",
+            "required_if"               => "El campo :attribute es obligatorio",
             "event_date.after_or_equal" => "El campo :attribute debe ser una fecha posterior o igual a hoy."
         ];
 

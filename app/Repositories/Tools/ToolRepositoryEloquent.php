@@ -2,11 +2,14 @@
 
 namespace App\Repositories\Tools;
 
+use App\Models\Area\Area;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Tools\ToolRepository;
 use App\Models\Tools\Tool;
+use App\Models\Tools\ToolsModel;
 use App\Models\Tools\ToolsUser;
+use App\Models\User;
 use App\Validators\Tools\ToolValidator;
 
 /**
@@ -49,11 +52,46 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
     {
         $store = $this->create($data);
 
-        if(array_key_exists("tools_users", $data)){
-            $this->saveToolsUsers($data["tools_users"], $store->id);
+        if(array_key_exists("tools_models", $data)){
+            $this->saveToolsModels($data["tools_models"], $store->id);
+            // $this->saveToolsUsers($data["tools_users"], $store->id);
         }
 
         return $store;
+    }
+
+    /**
+     * Guarde varias relaciones con herramientas en tabla polimorfica
+     * 
+     * @param array $tools_users Herramientas de usuarios
+     * @param int $tool_id ID de herramienta 
+     */
+    public function saveToolsModels(array $tools_models = [], $tool_id){
+        
+        ToolsModel::where("tool_id", $tool_id)->forceDelete();
+
+        foreach ($tools_models as $tools_model) {
+            
+            $tools_model["tool_id"]    = $tool_id;
+            $tools_model["model_type"] = $this->findEntityModel($tools_model["entity"]);
+
+            ToolsModel::create($tools_model);
+        }
+    }
+
+    /**
+     * Busca la clase modelo con la entidad para relacionar
+     */
+    private function findEntityModel($entity){
+        switch ($entity) {
+            case 'area':
+                return Area::class;
+            break;
+            
+            default:
+                return User::class;
+            break;
+        }
     }
 
     /**
@@ -81,8 +119,9 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
         $store->fill($data);
         $store->save();
 
-        if(array_key_exists("tools_users", $data)){
-            $this->saveToolsUsers($data["tools_users"], $store->id);
+        if(array_key_exists("tools_models", $data)){
+            $this->saveToolsModels($data["tools_models"], $store->id);
+            // $this->saveToolsUsers($data["tools_users"], $store->id);
         }
 
         return $store;

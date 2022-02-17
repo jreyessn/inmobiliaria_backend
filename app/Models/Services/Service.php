@@ -42,12 +42,14 @@ class Service extends Model implements Transformable
         "completed_at",
         "status",
         "priorities_service_id",
-        "is_automatic"
+        "is_automatic",
+        "cost",
     ];
 
     protected $with = [
         "signature",
-        "evidences",
+        "evidences_after",
+        "evidences_before",
         "categories_service",
         "type_service",
         "farm",
@@ -62,6 +64,7 @@ class Service extends Model implements Transformable
     protected $casts = [
         "event_date"   => "datetime",
         "completed_at" => "datetime",
+        "cost"         => "float"
     ];
 
     public function categories_service()
@@ -104,9 +107,14 @@ class Service extends Model implements Transformable
         return $this->morphOne(Image::class, "model")->where("type", "Signature");
     }
 
-    public function evidences()
+    public function evidences_after()
     {
-        return $this->morphMany(Image::class, "model")->where("type", "Evidences");
+        return $this->morphMany(Image::class, "model")->where("type", "Evidences_After");
+    }
+
+    public function evidences_before()
+    {
+        return $this->morphMany(Image::class, "model")->where("type", "Evidences_Before");
     }
 
     public function getStatusAttribute($status)
@@ -136,6 +144,11 @@ class Service extends Model implements Transformable
                 return "Pendiente";
             break;
         }
+    }
+
+    public function getCostAttribute($value)
+    {
+        return $value? $value : 0;
     }
 
 }

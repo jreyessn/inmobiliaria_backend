@@ -15,6 +15,15 @@ use App\Validators\Vehicle\FuelValidator;
  */
 class FuelRepositoryEloquent extends BaseRepository implements FuelRepository
 {
+
+    protected $fieldSearchable = [
+        "lts_current" => "like",
+        "lts_loaded"  => "like",
+        "amount"      => "like",
+        "km_current"  => "like",
+        "vehicle.name"=> "like",
+    ];
+    
     /**
      * Specify Model class name
      *

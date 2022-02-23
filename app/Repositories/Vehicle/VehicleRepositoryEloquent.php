@@ -67,4 +67,23 @@ class VehicleRepositoryEloquent extends BaseRepository implements VehicleReposit
 
         return $store;
     }
+
+    /**
+     * Realiza calculo sumando todos los montos pagados por la unidad
+     * 
+     * @param Vehicle $vehicle Unidad
+     * @return float Monto total
+     */
+    public function transformToAccumulatedAmount(Vehicle $vehicle)
+    {
+        $closureSum = function($a, $b){
+            return $a + $b->amount;
+        };
+
+        $paymentsTotal = $vehicle->payments->reduce($closureSum, 0);
+        $servicesTotal = $vehicle->services->reduce($closureSum, 0);
+        $fuelsTotal    = $vehicle->services->reduce($closureSum, 0);
+
+        return $paymentsTotal + $servicesTotal + $fuelsTotal;
+    }
 }

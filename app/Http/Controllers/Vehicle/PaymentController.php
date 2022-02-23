@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vehicle;
 
+use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\PaymentRepositoryEloquent;
 use App\Rules\KmLessThat;
@@ -35,6 +36,8 @@ class PaymentController extends Controller
         ]);
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+
+        $this->PaymentRepositoryEloquent->pushCriteria(VehicleCriteria::class);
 
         return $this->PaymentRepositoryEloquent->paginate($perPage);
     }

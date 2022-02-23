@@ -105,6 +105,10 @@ class EquipmentsController extends Controller
             "images"
         ]);
 
+        $data->acumulated_amount = $data->services()->get()->reduce(function($a, $b){
+            return $a + ($b->cost ?? 0);
+        }, 0);
+
         return ["data" => $data];
     }
 

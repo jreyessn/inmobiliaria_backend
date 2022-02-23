@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vehicle;
 
+use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\VehicleRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -99,6 +100,8 @@ class VehicleController extends Controller
             "payments",
             "permissions",
         ]);
+
+        $data->acumulated_amount = $this->VehicleRepositoryEloquent->transformToAccumulatedAmount($data);
 
         return ["data" => $data];
     }

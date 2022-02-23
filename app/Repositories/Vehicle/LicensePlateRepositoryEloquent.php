@@ -15,6 +15,12 @@ use App\Validators\Vehicle\LicensePlateValidator;
  */
 class LicensePlateRepositoryEloquent extends BaseRepository implements LicensePlateRepository
 {
+
+    protected $fieldSearchable = [
+        "vehicle.name" => "like",
+        "user.name"    => "like",
+    ];
+
     /**
      * Specify Model class name
      *

@@ -15,6 +15,11 @@ use App\Validators\Vehicle\TypeServiceVehicleValidator;
  */
 class TypeServiceVehicleRepositoryEloquent extends BaseRepository implements TypeServiceVehicleRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like",
+    ];
+
     /**
      * Specify Model class name
      *

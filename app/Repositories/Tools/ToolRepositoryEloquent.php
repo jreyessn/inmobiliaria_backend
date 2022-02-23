@@ -22,6 +22,7 @@ class ToolRepositoryEloquent extends BaseRepository implements ToolRepository
 
     protected $fieldSearchable = [
         "name"      => "like",
+        "quantity"  => "like",
         "user.name" => "like"
     ];
     

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vehicle;
 
+use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\FuelRepositoryEloquent;
 use App\Rules\IsLastFuel;
@@ -36,6 +37,8 @@ class FuelsController extends Controller
         ]);
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+
+        $this->FuelRepositoryEloquent->pushCriteria(VehicleCriteria::class);
 
         return $this->FuelRepositoryEloquent->paginate($perPage);
     }

@@ -15,6 +15,14 @@ use App\Validators\Vehicle\ServiceVehicleValidator;
  */
 class ServiceVehicleRepositoryEloquent extends BaseRepository implements ServiceVehicleRepository
 {
+
+    protected $fieldSearchable = [
+        "vehicle.name" => "like",
+        "amount"       => "like",
+        "note"         => "like",
+        "type_service_vehicle.name"   => "like",
+    ];
+
     /**
      * Specify Model class name
      *
@@ -58,4 +66,5 @@ class ServiceVehicleRepositoryEloquent extends BaseRepository implements Service
         return $store;
     }
     
+
 }

@@ -15,6 +15,14 @@ use App\Validators\Vehicle\PaymentValidator;
  */
 class PaymentRepositoryEloquent extends BaseRepository implements PaymentRepository
 {
+
+    protected $fieldSearchable = [
+        "vehicle.name" => "like",
+        "concept"      => "like",
+        "km_current"   => "like",
+        "amount"       => "like",
+    ];
+
     /**
      * Specify Model class name
      *

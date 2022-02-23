@@ -17,7 +17,8 @@ class TypesServiceRepositoryEloquent extends BaseRepository implements TypesServ
 {
 
     protected $fieldSearchable = [
-        "name" => "like"
+        "name" => "like",
+        "cost" => "like"
     ];
     
     /**

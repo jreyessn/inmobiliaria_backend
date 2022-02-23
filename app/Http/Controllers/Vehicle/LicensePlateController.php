@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Vehicle;
 
+use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\LicensePlateRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ class LicensePlateController extends Controller
         ]);
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
+
+        $this->LicensePlateRepositoryEloquent->pushCriteria(VehicleCriteria::class);
 
         return $this->LicensePlateRepositoryEloquent->paginate($perPage);
     }

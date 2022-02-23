@@ -124,16 +124,19 @@ class DashboardController extends Controller
     function services(){
         $chart = [];
         
-        $chart["last_completed"] = Service::where("status", 1)->limit(7)
-                                            ->orderBy("completed_at", "desc")
-                                            ->with(["equipment"])
-                                            ->get();
+        $chart["last_pending_without_user"] = Service::where("status", 1)->limit(7)
+                                                    ->where("user_assigned_id", null)
+                                                    ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
+                                                    ->orderBy("event_date", "asc")
+                                                    ->with(["equipment"])
+                                                    ->get();
 
-        $chart["last_pending"]   = Service::where("status", 0)->limit(7)
-                                            ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
-                                            ->orderBy("event_date", "asc")
-                                            ->with(["equipment"])
-                                            ->get();
+        $chart["last_pending_with_user"]   = Service::where("status", 0)->limit(7)
+                                                    ->where("user_assigned_id", "!=",null)
+                                                    ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
+                                                    ->orderBy("event_date", "asc")
+                                                    ->with(["equipment"])
+                                                    ->get();
 
         $chart["last_expired"]   = Service::where("status", 0)->limit(7)
                                             ->where(DB::raw("date(event_date)"), "<" , now()->format("Y-m-d"))

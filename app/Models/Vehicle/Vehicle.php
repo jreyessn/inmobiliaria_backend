@@ -45,7 +45,9 @@ class Vehicle extends Model implements Transformable
 
     protected $appends = [
         "km_traveled",
-        "label"
+        "label",
+        "maintenance_limit_status",
+        "km_limit_status",
     ];
 
     protected $with = [
@@ -61,7 +63,12 @@ class Vehicle extends Model implements Transformable
     {
         return $this->hasMany(ServiceVehicle::class);
     }
-    
+
+    public function last_service()
+    {
+        return $this->hasOne(ServiceVehicle::class)->orderBy("created_at", "desc");
+    }
+
     public function fuels()
     {
         return $this->hasMany(Fuel::class);
@@ -99,6 +106,22 @@ class Vehicle extends Model implements Transformable
         $label = $this->name . " | " . $this->brand . " " . $this->model;
 
         return $label;
+    }
+
+    public function getMaintenanceLimitStatusAttribute()
+    {
+        if($this->maintenance_limit_at && now()->gt($this->maintenance_limit_at)){
+            return 0;
+        }
+        return 1;
+    }
+
+    public function getKmLimitStatusAttribute()
+    {
+        if($this->km_current > $this->km_limit){
+            return 0;
+        }
+        return 1;
     }
 
 }

@@ -15,6 +15,12 @@ use App\Validators\Vehicle\PermissionsVehicleValidator;
  */
 class PermissionsVehicleRepositoryEloquent extends BaseRepository implements PermissionsVehicleRepository
 {
+
+    protected $fieldSearchable = [
+        "vehicle.name" => "like",
+        "concept"      => "like",
+    ];
+
     /**
      * Specify Model class name
      *

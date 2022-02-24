@@ -42,6 +42,8 @@ class DashboardController extends Controller
      * Datos para tipos de mantenimientos
      */
     function type_maintenance(){
+        $since = request()->get("since");
+        $until = request()->get("until");
         $chart = [];
         $categories = CategoriesService::get();
 
@@ -54,10 +56,16 @@ class DashboardController extends Controller
             '#1cbcd8'
         ];
 
-        $chart["series"] = $categories->map(function($item){
+        $chart["series"] = $categories->map(function($item) use ($since, $until){
             return [
                 "name" => $item->name,
-                "data" => [ $item->services()->count() ]
+                "data" => [ 
+                    $item->services()
+                         ->when($since && $until, function($query) use ($since, $until){
+                            $query->whereBetween("event_date", [$since, $until]);
+                         })
+                         ->count() 
+                ]
             ];
         });
 
@@ -68,6 +76,8 @@ class DashboardController extends Controller
      * Datos para tipos de servicios
      */
     function type_services(){
+        $since = request()->get("since");
+        $until = request()->get("until");
         $chart = [];
         $data = TypesService::get();
 
@@ -82,8 +92,12 @@ class DashboardController extends Controller
             '#ee2798',
         ];
 
-        $chart["series"] = $data->map(function($item){
-            return $item->services()->count();
+        $chart["series"] = $data->map(function($item) use ($since, $until){
+            return $item->services()
+                        ->when($since && $until, function($query) use ($since, $until){
+                            $query->whereBetween("event_date", [$since, $until]);
+                        })
+                        ->count();
         });
 
         return $chart;
@@ -93,11 +107,16 @@ class DashboardController extends Controller
      * Información general
      */
     function information_general(){
+        $since = request()->get("since");
+        $until = request()->get("until");
         $chart = [];
         
         $chart["completed"] = DB::table("services")
                                  ->select(DB::raw("count(id) as quantity"))
                                  ->where("status", 1)
+                                 ->when($since && $until, function($query) use ($since, $until){
+                                    $query->whereBetween("event_date", [$since, $until]);
+                                 })
                                  ->where("deleted_at", null)
                                  ->first()->quantity;
 
@@ -105,6 +124,9 @@ class DashboardController extends Controller
                                   ->select(DB::raw("count(id) as quantity"))
                                   ->where("status", 0)
                                   ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
+                                  ->when($since && $until, function($query) use ($since, $until){
+                                      $query->whereBetween("event_date", [$since, $until]);
+                                  })
                                   ->where("deleted_at", null)
                                   ->first()->quantity;
 
@@ -112,6 +134,9 @@ class DashboardController extends Controller
                                   ->select(DB::raw("count(id) as quantity"))
                                   ->where("status", 0)
                                   ->where(DB::raw("date(event_date)"), "<" , now()->format("Y-m-d"))
+                                  ->when($since && $until, function($query) use ($since, $until){
+                                     $query->whereBetween("event_date", [$since, $until]);
+                                  })
                                   ->where("deleted_at", null)
                                   ->first()->quantity;
 
@@ -122,11 +147,16 @@ class DashboardController extends Controller
      * Ultimos servicios
      */
     function services(){
+        $since = request()->get("since");
+        $until = request()->get("until");
         $chart = [];
         
         $chart["last_pending_without_user"] = Service::where("status", 1)->limit(7)
                                                     ->where("user_assigned_id", null)
                                                     ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
+                                                    ->when($since && $until, function($query) use ($since, $until){
+                                                        $query->whereBetween("event_date", [$since, $until]);
+                                                    })
                                                     ->orderBy("event_date", "asc")
                                                     ->with(["equipment"])
                                                     ->get();
@@ -134,12 +164,18 @@ class DashboardController extends Controller
         $chart["last_pending_with_user"]   = Service::where("status", 0)->limit(7)
                                                     ->where("user_assigned_id", "!=",null)
                                                     ->where(DB::raw("date(event_date)"), ">=" , now()->format("Y-m-d"))
+                                                    ->when($since && $until, function($query) use ($since, $until){
+                                                        $query->whereBetween("event_date", [$since, $until]);
+                                                    })
                                                     ->orderBy("event_date", "asc")
                                                     ->with(["equipment"])
                                                     ->get();
 
         $chart["last_expired"]   = Service::where("status", 0)->limit(7)
                                             ->where(DB::raw("date(event_date)"), "<" , now()->format("Y-m-d"))
+                                            ->when($since && $until, function($query) use ($since, $until){
+                                                $query->whereBetween("event_date", [$since, $until]);
+                                            })
                                             ->orderBy("event_date", "desc")
                                             ->with(["equipment"])
                                             ->get();

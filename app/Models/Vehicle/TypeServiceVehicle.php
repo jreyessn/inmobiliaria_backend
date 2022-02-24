@@ -26,4 +26,9 @@ class TypeServiceVehicle extends Model implements Transformable
         "description",
     ];
 
+    public function services()
+    {
+        return $this->hasMany(ServiceVehicle::class, "type_service_vehicle_id");
+    }
+
 }

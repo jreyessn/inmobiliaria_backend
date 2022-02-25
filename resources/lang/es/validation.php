@@ -197,6 +197,7 @@ return [
         "concept"                 => "Concepto",
         "date"                    => "Fecha",
         "note"                    => "Nota",
+        "year"                    => "Año",
     ],
 
 ];

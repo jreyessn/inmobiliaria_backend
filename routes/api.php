@@ -39,13 +39,23 @@ Route::group(['middleware' => ['auth:api']], function(){
     /**
      * Gets
      */
+    // dashboard
     Route::get('dashboard-equipments', 'DashboardController');
     Route::get('dashboard-vehicles', 'Vehicle\DashboardVehicleController');
+
+    // fetch simple data
     Route::get('roles', 'RoleController@index');
     Route::get('categories_services', 'Services\CategoriesServicesController');
     Route::get('priorities_services', 'Controller@priorities');
-    Route::get('reports/services', 'Reports\ReportsServicesController@services');
+
+    // reports
     Route::get('services/pdf/{id}', 'Services\ServicesController@pdfDetail');
+    
+    Route::group(["prefix" => "reports"], function(){
+        Route::get('services',     'Reports\ReportsServicesController@services');
+        Route::get('fuels_months', 'Vehicle\ReportsVehicleController@fuelsMonths');
+    });
+
 
     /**
      * Deletes

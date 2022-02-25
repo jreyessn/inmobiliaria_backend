@@ -92,10 +92,10 @@ class Vehicle extends Model implements Transformable
     public function getKmTraveledAttribute()
     {
         $total_tracker = DB::table("vehicles_km_tracker")
-                        ->select(DB::raw("sum((km_current - km_previous)) as km_traveled"))
-                        ->where("vehicle_id", $this->id)
-                        ->where("deleted_at", null)
-                        ->first();
+                            ->select(DB::raw("sum((km_current - km_previous)) as km_traveled"))
+                            ->where("vehicle_id", $this->id)
+                            ->where("deleted_at", null)
+                            ->first();
 
 
         return $total_tracker->km_traveled ?? 0;

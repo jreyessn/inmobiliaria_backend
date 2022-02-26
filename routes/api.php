@@ -26,11 +26,6 @@ Route::group(['prefix' => 'auth','namespace' => 'Auth'], function () {
 
 // Recovery Password
 
-Route::get('fuels_months', 'Vehicle\ReportsVehicleController@fuelsMonths');
-Route::get('km_months', 'Vehicle\ReportsVehicleController@KmMonths');
-Route::get('services_vehicle_month', 'Vehicle\ReportsVehicleController@servicesMonth');
-Route::get('executive_vehicles', 'Vehicle\ReportsVehicleController@executiveVehicles');
-
 Route::group(['namespace' => 'Auth', 'middleware' => 'api', 'prefix' => 'password'], function () {
     Route::get('find/{token}', 'ResetPasswordController@find');
     Route::post('create_token', 'ResetPasswordController@create');
@@ -63,7 +58,6 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::get('services_vehicle_month', 'Vehicle\ReportsVehicleController@servicesMonth');
         Route::get('executive_vehicles', 'Vehicle\ReportsVehicleController@executiveVehicles');
     });
-
 
     /**
      * Deletes

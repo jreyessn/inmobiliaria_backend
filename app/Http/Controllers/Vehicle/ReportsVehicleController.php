@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Vehicle;
 
 use App\Criteria\VehicleCriteria;
 use App\Criteria\VehicleReportsCriteria;
-use App\Exports\ViewExport;
+use App\Exports\VehicleReportExecutiveExport;
+use App\Exports\VehicleReportsExport;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\FuelRepositoryEloquent;
 use App\Repositories\Vehicle\VehicleRepositoryEloquent;
@@ -39,25 +40,26 @@ class ReportsVehicleController extends Controller
             "format"     => "nullable",
             "vehicle_id" => "nullable" //example: 1,2,34
         ]);
-
+        $formatOriginal = $request->get("format");
         $request->merge(["executive" => true]);
+        $request->merge(["format"    => "json"]); // para solo obtener json de los otros metodos
 
         $data["services_month"] = $this->servicesMonth($request);
         $data["km_month"]       = $this->KmMonths($request);
         $data["fuels_month"]    = $this->fuelsMonths($request);
         $data["year"]           = $request->year;
 
-        switch ($request->format) {
+        switch ($formatOriginal) {
             case 'excel':
-  
-                
+                return Excel::download(
+                    new VehicleReportExecutiveExport ([ 'data' => $data ]),
+                    'reports_executive_vehicles.xlsx'
+                );
             break;
                 
             case 'pdf':
-
                 return PDF::loadView('reports/pdf/reports_executive_vehicle', $data)
                            ->stream('reports_executive_vehicle.pdf');
-
             break;
 
             default:    
@@ -101,20 +103,20 @@ class ReportsVehicleController extends Controller
                 $vehicles = $this->VehicleRepositoryEloquent->whereHas("services", function($query){
                     $query->where("status", 1);
                 })->get();
-                $months   = $this->mapKmTraveled($months, $vehicles);
+                $months   = $this->mapServicesMonth($months, $vehicles);
                 $totals   = $this->mapTotals($months, ["services", "amount"]);
 
                 return Excel::download(
-                    new ViewExport ([
+                    new VehicleReportsExport ([
                         'data' => [
                             "rows"    => $vehicles,
                             "columns" => $months,
                             "totals"  => $totals,
                             "year"    => $request->year,
                         ],
-                        'view' => 'reports.excel....'
+                        'view' => 'reports.excel.reports_services_month'
                     ]),
-                    '....xlsx'
+                    'reports_services_month.xlsx'
                 );
             break;
                 
@@ -253,16 +255,16 @@ class ReportsVehicleController extends Controller
                 $totals   = $this->mapTotals($months, ["km_traveled", "amount"]);
 
                 return Excel::download(
-                    new ViewExport ([
+                    new VehicleReportsExport ([
                         'data' => [
                             "rows"    => $vehicles,
                             "columns" => $months,
                             "totals"  => $totals,
                             "year"    => $request->year,
                         ],
-                        'view' => 'reports.excel....'
+                        'view' => 'reports.excel.reports_km_month'
                     ]),
-                    '....xlsx'
+                    'reports_km_month.xlsx'
                 );
             break;
                 
@@ -413,16 +415,18 @@ class ReportsVehicleController extends Controller
                 $totals   = $this->mapTotals($months, ["total_loaded", "amount"]);
 
                 return Excel::download(
-                    new ViewExport ([
-                        'data' => [
-                            "rows"    => $vehicles,
-                            "columns" => $months,
-                            "totals"  => $totals,
-                            "year"    => $request->year,
+                    new VehicleReportsExport (
+                        [
+                            'data' => [
+                                "rows"    => $vehicles,
+                                "columns" => $months,
+                                "totals"  => $totals,
+                                "year"    => $request->year,
+                            ],
+                            'view' => 'reports.excel.reports_fuel_month'
                         ],
-                        'view' => 'reports.excel....'
-                    ]),
-                    '....xlsx'
+                    ),
+                    'reports_fuel_month.xlsx'
                 );
             break;
                 

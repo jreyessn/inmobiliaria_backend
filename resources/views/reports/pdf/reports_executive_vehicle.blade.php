@@ -96,6 +96,13 @@
                         </td>
                     @endforeach
                 </tr>
+                <tr>
+                    <td colspan="13" style="text-align: right; border-top: 1px solid #1d3958; padding-right: 1rem">
+                        <b>Costo Total: </b> <span>{{ currency() }} {{ $services_month["totals"]["amount"] }}</span>
+                        <br>
+                        <b>Servicios Total: </b> <span>{{ $services_month["totals"]["services"] }}</span>
+                    </td>
+                </tr>
             @endif
         </tbody>
     </table>
@@ -166,6 +173,13 @@
                             </b>
                         </td>
                     @endforeach
+                </tr>
+                <tr>
+                    <td colspan="13" style="text-align: right; border-top: 1px solid #1d3958; padding-right: 1rem">
+                        <b>Costo Total: </b> <span>{{ currency() }} {{ $fuels_month["totals"]["amount"] }}</span>
+                        <br>
+                        <b>Combustible Total: </b> <span>{{ $fuels_month["totals"]["total_loaded"] }} Lts</span>
+                    </td>
                 </tr>
             @endif
         </tbody>
@@ -238,21 +252,64 @@
                         </td>
                     @endforeach
                 </tr>
+                <tr>
+                    <td colspan="13" style="text-align: right; border-top: 1px solid #1d3958; padding-right: 1rem">
+                        <b>Costo Total: </b> <span>{{ currency() }} {{ $km_month["totals"]["amount"] }}</span>
+                        <br>
+                        <b>Km Total: </b> <span>{{ $km_month["totals"]["km_traveled"] }} Km</span>
+                    </td>
+                </tr>
             @endif
         </tbody>
     </table>
 
-    {{-- <table class="col-10">
+    <table class="col-10">
         <tbody>
             <tr>
                 <td colspan="3" style="border-top: 1px solid rgb(145, 144, 144)">
                     <h2 class="fcb align-center">
-                        Total Gastos
+                        Total General
                     </h2>
                 </td>
             </tr>
         </tbody>
-    </table> --}}
+    </table>
+
+    <table cellspacing="0" class="col-10 mt10 border-2">
+        <thead>
+            <tr>
+                <td class="align-center fcw bg-blue"></td>
+                @foreach ($km_month["columns"] as $column)
+                    <td class="align-center fcw bg-blue">
+                        <b>
+                            {{ substr($column["description"], 0, 3) }}
+                        </b>
+                    </td>
+                @endforeach
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="align-center">
+                    <b>Total General</b>
+                </td>
+                @foreach ($total_general["months"] as $totalMonth)
+                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
+                        <b style="color: rgb(2, 114, 24)">
+                            {{ currency() }}  {{ $totalMonth }}
+                        </b>
+                    </td>
+                @endforeach
+                
+            </tr>
+            <tr>
+                <td colspan="13" style="text-align: right; border-top: 1px solid #1d3958; padding-right: 1rem">
+                    <b>Costo Total: </b> <span>{{ currency() }} {{ $total_general["total"] }}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
 
 </body>
 

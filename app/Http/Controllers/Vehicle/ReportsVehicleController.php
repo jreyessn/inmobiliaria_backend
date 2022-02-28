@@ -7,6 +7,7 @@ use App\Criteria\VehicleReportsCriteria;
 use App\Exports\VehicleReportExecutiveExport;
 use App\Exports\VehicleReportsExport;
 use App\Http\Controllers\Controller;
+use App\Models\Vehicle\Fuel;
 use App\Repositories\Vehicle\FuelRepositoryEloquent;
 use App\Repositories\Vehicle\VehicleRepositoryEloquent;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ class ReportsVehicleController extends Controller
         $data["services_month"] = $this->servicesMonth($request);
         $data["km_month"]       = $this->KmMonths($request);
         $data["fuels_month"]    = $this->fuelsMonths($request);
+        $data["total_general"]  = $this->totalGeneral($data);
         $data["year"]           = $request->year;
 
         switch ($formatOriginal) {
@@ -66,6 +68,41 @@ class ReportsVehicleController extends Controller
                 return $data;
             break;
         }
+    }
+
+    /**
+     * Totaliza los gastos generales de todas las entidades
+     * 
+     * @param array $data[services_month] Entidad servicios por mes
+     * @param array $data[km_month] Entidad km por mes
+     * @param array $data[fuels_month] Entidad combustible por mes
+     * @return array
+     */
+    public function totalGeneral($data)
+    {
+        extract($data);
+
+        $values["services_month"] = collect($services_month["columns"])->map(function($column){
+            return $column["total"]->amount;
+        })->toArray();
+
+        $values["km_month"] = collect($km_month["columns"])->map(function($column){
+            return $column["total"]->amount;
+        })->toArray();
+
+        $values["fuels_month"] = collect($fuels_month["columns"])->map(function($column){
+            return $column["total"]->amount;
+        })->toArray();
+
+        $total = array_map(function (...$arrays) {
+            return array_sum($arrays);
+        }, $values["services_month"], $values["km_month"], $values["fuels_month"]);
+
+        return [
+            "months" => $total,
+            "total"  => collect($total)->sum()
+        ];
+        
     }
 
     /**
@@ -508,15 +545,13 @@ class ReportsVehicleController extends Controller
     private function totalFuelVehicle($vehicle, $month){
         $data = [];
 
-        $data["total_loaded"] = $this->FuelRepositoryEloquent
-                                    ->select(DB::raw("SUM(lts_loaded) as lts_loaded"))
+        $data["total_loaded"] = Fuel::select(DB::raw("SUM(lts_loaded) as lts_loaded"))
                                     ->where("vehicle_id", $vehicle->id)
                                     ->whereBetween("created_at", [$month["since"], $month["until"]])
                                     ->first()
                                     ->lts_loaded ?? 0;
 
-        $data["amount"] = $this->FuelRepositoryEloquent
-                                    ->select(DB::raw("SUM(amount) as amount"))
+        $data["amount"]       = Fuel::select(DB::raw("SUM(amount) as amount"))
                                     ->where("vehicle_id", $vehicle->id)
                                     ->whereBetween("created_at", [$month["since"], $month["until"]])
                                     ->first()

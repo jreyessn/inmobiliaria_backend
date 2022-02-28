@@ -87,6 +87,24 @@
                         </td>
                     @endforeach
                 </tr>
+                <tr>
+                    <td colspan="9" style="text-align: right"></td>
+                    <td colspan="3">
+                        <b>Costo Total: </b>
+                    </td>
+                    <td>
+                        <span>{{ currency() }} {{ $totals["amount"] }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="text-align: right"></td>
+                    <td colspan="3">
+                        <b>Combustible Total: </b>
+                    </td>
+                    <td>
+                        <span>{{ $totals["total_loaded"] }} Lts</span>                    
+                    </td>
+                </tr>
             @endif
         </tbody>
     </table>

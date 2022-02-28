@@ -85,6 +85,13 @@
                         </td>
                     @endforeach
                 </tr>
+                <tr>
+                    <td colspan="13" style="text-align: right; border-top: 1px solid #1d3958; padding-right: 1rem">
+                        <b>Costo Total: </b> <span>{{ currency() }} {{ $totals["amount"] }}</span>
+                        <br>
+                        <b>Km Total: </b> <span>{{ $totals["km_traveled"] }} Km</span>
+                    </td>
+                </tr>
             @endif
         </tbody>
     </table>

@@ -26,6 +26,7 @@ class LicensePlate extends Model implements Transformable
         "vehicle_id",
         "user_id",
         "expiration_at",
+        "last_notification_expired_at",
     ];
 
     protected $casts = [

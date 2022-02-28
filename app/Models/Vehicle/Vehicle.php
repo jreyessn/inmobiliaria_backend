@@ -37,6 +37,7 @@ class Vehicle extends Model implements Transformable
         "maintenance_limit_at",
         "expiration_license_at",
         "expiration_policy_at",
+        "last_notification_expired_at",
     ];
 
     protected $casts = [

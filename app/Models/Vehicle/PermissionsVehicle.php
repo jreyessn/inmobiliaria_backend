@@ -26,6 +26,7 @@ class PermissionsVehicle extends Model implements Transformable
         "concept",
         "date",
         "expiration_at",
+        "last_notification_expired_at",
     ];
 
     protected $casts = [

@@ -17,7 +17,7 @@ class VehicleLimitService implements Rule
      *
      * @return void
      */
-    public function __construct(int $km_current)
+    public function __construct($km_current)
     {
         $this->km_current = $km_current;
     }
@@ -32,6 +32,9 @@ class VehicleLimitService implements Rule
     public function passes($attribute, $value)
     {
         $vehicle = Vehicle::find($value); 
+
+        if(is_null($this->km_current))
+            return true;
 
         if($this->km_current > $vehicle->km_limit){
             $this->message = "Ha sobrepasado el limite de kilometraje de esta unidad. Limite: {$vehicle->km_limit} KM";

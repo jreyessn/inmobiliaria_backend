@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Vehicle;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Vehicle\ServiceVehicleRepositoryEloquent;
 use App\Rules\KmLessThat;
 use App\Rules\ServiceVehicleCompleted;
@@ -14,11 +15,15 @@ class ServiceVehicleController extends Controller
 {
     private $ServiceVehicleRepositoryEloquent;
 
+    private $ImageRepositoryEloquent;
+
     function __construct(
-        ServiceVehicleRepositoryEloquent $ServiceVehicleRepositoryEloquent
+        ServiceVehicleRepositoryEloquent $ServiceVehicleRepositoryEloquent,
+        ImageRepositoryEloquent $ImageRepositoryEloquent
     )
     {
         $this->ServiceVehicleRepositoryEloquent = $ServiceVehicleRepositoryEloquent;
+        $this->ImageRepositoryEloquent = $ImageRepositoryEloquent;
     }
 
     /**
@@ -97,6 +102,7 @@ class ServiceVehicleController extends Controller
         $data = $this->ServiceVehicleRepositoryEloquent->find($id)->load([
             "vehicle",
             "type_service_vehicle",
+            "evidences"
         ]);
 
         return ["data" => $data];
@@ -115,16 +121,22 @@ class ServiceVehicleController extends Controller
         $request->validate([
             "id"                        => [ new ServiceVehicleCompleted ],
             "vehicle_id"                => [
-                "required", 
+                "required_without:save_from", 
                 "exists:vehicles,id", 
-                new KmLessThat($request->km_current),
-                new VehicleLimitService($request->km_current),
+                new KmLessThat($request->km_current ?? null),
+                new VehicleLimitService($request->km_current ?? null),
             ],
-            "km_current"                => "required|numeric|min:0",
-            "type_service_vehicle_id"   => "required|exists:type_service_vehicles,id",
-            "event_date"                => "required|date|after_or_equal:today",
+            "km_current"                => "required_without:save_from|numeric|min:0",
+            "type_service_vehicle_id"   => "required_without:save_from|exists:type_service_vehicles,id",
+            "event_date"                => "required_without:save_from|date|after_or_equal:today",
             "amount"                    => "nullable|numeric|min:0",
             "note"                      => "nullable|string",
+
+            "status"                    => "nullable",
+            "completed_at"              => "nullable",
+            "observation"               => "nullable",
+            "evidences.*"               => "file|mimes:jpg,jpeg,png",
+
         ], [
             "event_date.after_or_equal" => "El campo :attribute debe ser una fecha posterior o igual a hoy."
         ]);
@@ -132,8 +144,13 @@ class ServiceVehicleController extends Controller
         DB::beginTransaction();
 
         try{
-            $this->ServiceVehicleRepositoryEloquent->saveUpdate($request->all(), $id);
+            $data = $this->ServiceVehicleRepositoryEloquent->saveUpdate($request->all(), $id);
             
+            $this->ImageRepositoryEloquent->saveMany($request->file("evidences") ?? [], $data, [
+                "path" => "evidences_vehicles_services",
+                "type" => "Evidences",
+            ]);
+
             DB::commit();
 
             return response()->json([
@@ -165,5 +182,26 @@ class ServiceVehicleController extends Controller
             return response()->json(null, 404);
         }
 
+    }
+
+    /**
+     * Se completa el servicio
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     */
+    public function comply(Request $request, $id)
+    {
+        $service = $this->ServiceVehicleRepositoryEloquent->find($id);
+
+        $request->merge([
+            "id"           => $service->id,
+            'save_from'    => true,
+            "vehicle_id"   => $service->vehicle_id,
+            "completed_at" => now(),
+            "status"       => 1
+        ]);
+
+        return $this->update($request, $id);
     }
 }

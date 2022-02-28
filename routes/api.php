@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Puts
      */
     Route::put("services/comply/{id}", "Services\ServicesController@comply");
+    Route::put("services_vehicles/comply/{id}", "Vehicle\ServiceVehicleController@comply");
     Route::put('notifications/push', 'NotificationController@savePlayerSignal');
 
     /**

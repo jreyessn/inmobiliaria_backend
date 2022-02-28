@@ -16,7 +16,7 @@ class KmLessThat implements Rule
      *
      * @return void
      */
-    public function __construct(int $km_current)
+    public function __construct($km_current)
     {
         $this->km_current = $km_current;
     }
@@ -30,7 +30,11 @@ class KmLessThat implements Rule
      */
     public function passes($attribute, $value)
     {
-        $vehicle = Vehicle::find($value); 
+        $vehicle = Vehicle::find($value);
+        
+        if(is_null($this->km_current))
+            return true;
+        
         $this->km_traveled = $vehicle->km_traveled;
 
         if($this->km_current >= $vehicle->km_traveled){

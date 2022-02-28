@@ -2,6 +2,7 @@
 
 namespace App\Models\Vehicle;
 
+use App\Models\Images\Image;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -76,6 +77,11 @@ class ServiceVehicle extends Model implements Transformable
     public function getKmTraveledAttribute()
     {
         return $this->km_current - $this->km_last_service;
+    }
+
+    public function evidences()
+    {
+        return $this->morphMany(Image::class, "model")->where("type", "Evidences");
     }
 
     public function getStatusAttribute($status)

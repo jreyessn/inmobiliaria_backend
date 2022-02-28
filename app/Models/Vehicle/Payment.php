@@ -36,6 +36,8 @@ class Payment extends Model implements Transformable
     ];
 
     protected $appends = [
+        "km_last_payment",
+        "km_traveled", // km_current - km_last_service
         "is_last_payment"
     ];
 
@@ -48,6 +50,20 @@ class Payment extends Model implements Transformable
         return $this->morphOne(VehiclesKmTracker::class, "model");
     }
 
+    public function getKmLastPaymentAttribute()
+    {
+
+        $prev = Payment::where('id', '<', $this->id)
+                        ->where("vehicle_id", $this->vehicle_id) 
+                        ->orderBy('id', 'desc')->first();
+
+        if($prev){
+            return $prev->km_current;
+        }
+
+        return $this->km_tracker()->first()->km_previous;
+    }
+
     public function getIsLastPaymentAttribute()
     {
         $prev = Payment::where('id', '>', $this->id)
@@ -57,6 +73,11 @@ class Payment extends Model implements Transformable
             return false;
         }
         return true;
+    }
+
+    public function getKmTraveledAttribute()
+    {
+        return $this->km_current - $this->km_last_payment;
     }
 
 }

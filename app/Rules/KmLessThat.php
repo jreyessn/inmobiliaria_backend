@@ -11,14 +11,19 @@ class KmLessThat implements Rule
 
     private $km_traveled = 0;
 
+    private $km_sub = 0;
+
     /**
      * Create a new rule instance.
      *
+     * @param $km_current Kilometraje actual a verificar
+     * @param $km_sub Se resta kilometraje (del registro actual para casos de actualizar) al recorrido
      * @return void
      */
-    public function __construct($km_current)
+    public function __construct($km_current, $km_sub = 0)
     {
         $this->km_current = $km_current;
+        $this->km_sub     = $km_sub;
     }
 
     /**
@@ -35,9 +40,9 @@ class KmLessThat implements Rule
         if(is_null($this->km_current))
             return true;
         
-        $this->km_traveled = $vehicle->km_traveled;
+        $this->km_traveled = $vehicle->km_traveled - $this->km_sub;
 
-        if($this->km_current >= $vehicle->km_traveled){
+        if($this->km_current >= $this->km_traveled){
             return true;
         }
         return false;

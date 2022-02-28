@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Vehicle;
 use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\FuelRepositoryEloquent;
+use App\Repositories\Vehicle\VehicleKmTrackerRepositoryEloquent;
 use App\Rules\IsLastFuel;
 use App\Rules\KmLessThat;
+use App\Rules\KmLimiTravel;
+use App\Rules\VehicleLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,11 +17,15 @@ class FuelsController extends Controller
 {
     private $FuelRepositoryEloquent;
 
+    private $VehicleKmTrackerRepositoryEloquent;
+
     function __construct(
-        FuelRepositoryEloquent $FuelRepositoryEloquent
+        FuelRepositoryEloquent $FuelRepositoryEloquent,
+        VehicleKmTrackerRepositoryEloquent $VehicleKmTrackerRepositoryEloquent
     )
     {
         $this->FuelRepositoryEloquent = $FuelRepositoryEloquent;
+        $this->VehicleKmTrackerRepositoryEloquent = $VehicleKmTrackerRepositoryEloquent;
     }
 
     /**
@@ -53,7 +60,12 @@ class FuelsController extends Controller
     {
 
         $request->validate([
-            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
+            "vehicle_id"    => [
+                "required", 
+                "exists:vehicles,id", 
+                new KmLessThat($request->km_current),
+                new VehicleLimitService($request->km_current ?? null),
+            ],
             "lts_loaded"    => "required|numeric|min:0",
             "amount"        => "required|numeric|min:0",
             "km_current"    => "required|numeric|min:0",
@@ -103,13 +115,22 @@ class FuelsController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        // Kilometraje recorrido hasta este registro especifico
+        $fuel         = $this->FuelRepositoryEloquent->find($id);
+        $traveledCurrent = $this->VehicleKmTrackerRepositoryEloquent->kmLastRoadTraveled($fuel, $fuel->vehicle ?? null);
+        $limitTraveled   = $this->VehicleKmTrackerRepositoryEloquent->kmNextTraveled($fuel, $fuel->vehicle ?? null);
+
+        $rulesVehicle   = ["required", "exists:vehicles,id", ];
+
+        if($fuel && $fuel->is_last_loaded){
+            array_push($rulesVehicle, new KmLessThat($request->km_current, $traveledCurrent));
+            array_push($rulesVehicle, new VehicleLimitService($request->km_current ?? null));
+            array_push($rulesVehicle, new KmLimiTravel($request->km_current ?? null, $limitTraveled));
+        }
+
         $request->validate([
-            "id"            => [ new IsLastFuel ],
-            "vehicle_id"    => [
-                "required", 
-                "exists:vehicles,id", 
-                new KmLessThat($request->km_current),
-            ],
+            "vehicle_id"    => $rulesVehicle,
             "lts_loaded"    => "required|numeric|min:0",
             "amount"        => "required|numeric|min:0",
             "km_current"    => "required|numeric|min:0",
@@ -118,7 +139,9 @@ class FuelsController extends Controller
         DB::beginTransaction();
 
         try{
-            $this->FuelRepositoryEloquent->saveUpdate($request->all(), $id);
+            $data = $fuel->is_last_loaded? $request->all() : $request->except(["km_current"]);
+
+            $this->FuelRepositoryEloquent->saveUpdate($data, $id);
             
             DB::commit();
 

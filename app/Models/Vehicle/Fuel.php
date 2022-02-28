@@ -55,7 +55,9 @@ class Fuel extends Model implements Transformable
     public function getKmLastFuelAttribute()
     {
 
-        $prev = Fuel::where('id', '<', $this->id)->orderBy('id', 'desc')->first();
+        $prev = Fuel::where('id', '<', $this->id)
+                    ->where("vehicle_id", $this->vehicle_id) 
+                    ->orderBy('id', 'desc')->first();
 
         if($prev){
             return $prev->km_current;
@@ -66,7 +68,10 @@ class Fuel extends Model implements Transformable
 
     public function getisLastLoadedAttribute()
     {
-        $prev = Fuel::where('id', '>', $this->id)->orderBy('id', 'desc')->first();
+        $prev = Fuel::where('id', '>', $this->id)
+                    ->where("vehicle_id", $this->vehicle_id) 
+                    ->orderBy('id', 'desc')->first();
+
         if($prev){
             return false;
         }
@@ -80,6 +85,6 @@ class Fuel extends Model implements Transformable
 
     public function getEfficiencyAttribute($value)
     {
-        return $this->km_traveled / $this->lts_loaded;
+        return (float) number_format($this->km_traveled / $this->lts_loaded, 2);
     }
 }

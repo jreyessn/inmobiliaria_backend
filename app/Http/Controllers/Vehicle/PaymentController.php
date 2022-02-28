@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Vehicle;
 use App\Criteria\VehicleCriteria;
 use App\Http\Controllers\Controller;
 use App\Repositories\Vehicle\PaymentRepositoryEloquent;
+use App\Repositories\Vehicle\VehicleKmTrackerRepositoryEloquent;
 use App\Rules\KmLessThat;
+use App\Rules\KmLimiTravel;
+use App\Rules\VehicleLimitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,11 +16,15 @@ class PaymentController extends Controller
 {
     private $PaymentRepositoryEloquent;
 
+    private $VehicleKmTrackerRepositoryEloquent;
+
     function __construct(
-        PaymentRepositoryEloquent $PaymentRepositoryEloquent
+        PaymentRepositoryEloquent $PaymentRepositoryEloquent,
+        VehicleKmTrackerRepositoryEloquent $VehicleKmTrackerRepositoryEloquent
     )
     {
         $this->PaymentRepositoryEloquent = $PaymentRepositoryEloquent;
+        $this->VehicleKmTrackerRepositoryEloquent = $VehicleKmTrackerRepositoryEloquent;
     }
 
     /**
@@ -52,7 +59,12 @@ class PaymentController extends Controller
     {
 
         $request->validate([
-            "vehicle_id"    => ["required", "exists:vehicles,id", new KmLessThat($request->km_current)],
+            "vehicle_id"    => [
+                "required", 
+                "exists:vehicles,id", 
+                new KmLessThat($request->km_current),
+                new VehicleLimitService($request->km_current ?? null),
+            ],
             "concept"       => "required|string|max:200",
             "km_current"    => "required|numeric|min:0",
             "date"          => "required|date",
@@ -105,11 +117,16 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $paymentCurrent = $this->PaymentRepositoryEloquent->find($id);
-        $rulesVehicle   = ["required", "exists:vehicles,id", ];
+        $paymentCurrent  = $this->PaymentRepositoryEloquent->find($id);
+        $traveledCurrent = $this->VehicleKmTrackerRepositoryEloquent->kmLastRoadTraveled($paymentCurrent, $paymentCurrent->vehicle ?? null);
+        $limitTraveled   = $this->VehicleKmTrackerRepositoryEloquent->kmNextTraveled($paymentCurrent, $paymentCurrent->vehicle ?? null);
+
+        $rulesVehicle    = ["required", "exists:vehicles,id", ];
 
         if($paymentCurrent && $paymentCurrent->is_last_payment){
-            array_push($rulesVehicle, new KmLessThat($request->km_current));
+            array_push($rulesVehicle, new KmLessThat($request->km_current, $traveledCurrent));
+            array_push($rulesVehicle, new VehicleLimitService($request->km_current ?? null));
+            array_push($rulesVehicle, new KmLimiTravel($request->km_current ?? null, $limitTraveled));
         }
 
         $request->validate([
@@ -125,7 +142,7 @@ class PaymentController extends Controller
 
         try{
 
-            $data           = $paymentCurrent->is_last_payment? $request->all() : $request->except(["km_current"]);
+            $data = $paymentCurrent->is_last_payment? $request->all() : $request->except(["km_current"]);
 
             $this->PaymentRepositoryEloquent->saveUpdate($data, $id);
             

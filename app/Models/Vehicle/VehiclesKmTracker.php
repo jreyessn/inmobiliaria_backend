@@ -4,10 +4,11 @@ namespace App\Models\Vehicle;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VehiclesKmTracker extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = "vehicles_km_tracker";
 
@@ -23,6 +24,11 @@ class VehiclesKmTracker extends Model
         "km_traveled"
     ];
 
+    protected $casts = [
+        "km_previous" => "float",
+        "km_current"  => "float",
+    ];
+
     public function model()
     {
         return $this->morphTo();
@@ -30,6 +36,6 @@ class VehiclesKmTracker extends Model
 
     public function getKmTraveledAttribute()
     {
-        return $this->km_current - $this->km_last_service;
+        return $this->km_current - $this->km_previous;
     }
 }

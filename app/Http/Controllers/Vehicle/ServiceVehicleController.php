@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Vehicle;
 use App\Http\Controllers\Controller;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use App\Repositories\Vehicle\ServiceVehicleRepositoryEloquent;
+use App\Repositories\Vehicle\VehicleKmTrackerRepositoryEloquent;
 use App\Rules\KmLessThat;
+use App\Rules\KmLimiTravel;
 use App\Rules\ServiceVehicleCompleted;
 use App\Rules\VehicleLimitService;
 use Illuminate\Http\Request;
@@ -17,13 +19,17 @@ class ServiceVehicleController extends Controller
 
     private $ImageRepositoryEloquent;
 
+    private $VehicleKmTrackerRepositoryEloquent;
+
     function __construct(
         ServiceVehicleRepositoryEloquent $ServiceVehicleRepositoryEloquent,
-        ImageRepositoryEloquent $ImageRepositoryEloquent
+        ImageRepositoryEloquent $ImageRepositoryEloquent,
+        VehicleKmTrackerRepositoryEloquent $VehicleKmTrackerRepositoryEloquent
     )
     {
         $this->ServiceVehicleRepositoryEloquent = $ServiceVehicleRepositoryEloquent;
         $this->ImageRepositoryEloquent = $ImageRepositoryEloquent;
+        $this->VehicleKmTrackerRepositoryEloquent = $VehicleKmTrackerRepositoryEloquent;
     }
 
     /**
@@ -117,14 +123,18 @@ class ServiceVehicleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $serviceCurrent  = $this->ServiceVehicleRepositoryEloquent->find($id);
+        $traveledCurrent = $this->VehicleKmTrackerRepositoryEloquent->kmLastRoadTraveled($serviceCurrent, $serviceCurrent->vehicle ?? null);
+        $limitTraveled   = $this->VehicleKmTrackerRepositoryEloquent->kmNextTraveled($serviceCurrent, $serviceCurrent->vehicle ?? null);
+
         $request->validate([
             "id"                        => [ new ServiceVehicleCompleted ],
             "vehicle_id"                => [
                 "required_without:save_from", 
                 "exists:vehicles,id", 
-                new KmLessThat($request->km_current ?? null),
+                new KmLessThat($request->km_current ?? null, $traveledCurrent),
                 new VehicleLimitService($request->km_current ?? null),
+                new KmLimiTravel($request->km_current ?? null, $limitTraveled)
             ],
             "km_current"                => "required_without:save_from|numeric|min:0",
             "type_service_vehicle_id"   => "required_without:save_from|exists:type_service_vehicles,id",

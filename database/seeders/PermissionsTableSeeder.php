@@ -18,6 +18,7 @@ class PermissionsTableSeeder extends Seeder
 
         Role::where(['name' => 'Administrador'])->first()->syncPermissions([]);
         Role::where(['name' => 'Técnico'])->first()->syncPermissions([]);
+        Role::where(['name' => 'Chofer'])->first()->syncPermissions([]);
 
         Permission::query()->delete();
 
@@ -29,10 +30,11 @@ class PermissionsTableSeeder extends Seeder
         
         // FILTERS SELECT
         Permission::create(['name' => 'filter technicians']);
+        Permission::create(['name' => 'filter chofers']);
 
-        // MODULES ACTIONS
+        // MODULES ACTIONS EQUIPMENTS
         Permission::create(['name' => 'reports service']);
-        Permission::create(['name' => 'dashboard']);
+        Permission::create(['name' => 'dashboard equipments']);
 
         Permission::create(['name' => 'list users']);
         Permission::create(['name' => 'store users']);
@@ -40,23 +42,50 @@ class PermissionsTableSeeder extends Seeder
         Permission::create(['name' => 'destroy users']);
 
         Permission::create(['name' => 'list tools']);
-        Permission::create(['name' => 'list type services']);
+        Permission::create(['name' => 'list type services equipments']);
         Permission::create(['name' => 'list spare parts']);
         Permission::create(['name' => 'list farms']);
         Permission::create(['name' => 'list areas']);
         Permission::create(['name' => 'list equipment categories']);
         
-        Permission::create(['name' => 'list services']);
-        Permission::create(['name' => 'calendary services']);
-        Permission::create(['name' => 'store services']);
-        Permission::create(['name' => 'update services']);
-        Permission::create(['name' => 'destroy services']);
-        Permission::create(['name' => 'complete services']);
+        Permission::create(['name' => 'list services equipments']);
+        Permission::create(['name' => 'calendary services equipments']);
+        Permission::create(['name' => 'store services equipments']);
+        Permission::create(['name' => 'update services equipments']);
+        Permission::create(['name' => 'destroy services equipments']);
+        Permission::create(['name' => 'complete services equipments']);
 
         Permission::create(['name' => 'list equipments']);
         Permission::create(['name' => 'store equipments']);
         Permission::create(['name' => 'update equipments']);
         Permission::create(['name' => 'destroy equipments']);
+
+        // MODULES ACTIONS VEHICLES
+        Permission::create(['name' => 'dashboard vehicles']);
+
+        Permission::create(['name' => 'list vehicles']);
+        Permission::create(['name' => 'store vehicles']);
+        Permission::create(['name' => 'update vehicles']);
+        Permission::create(['name' => 'destroy vehicles']);
+
+        Permission::create(['name' => 'list services vehicles']);
+        Permission::create(['name' => 'store services vehicles']);
+        Permission::create(['name' => 'update services vehicles']);
+        Permission::create(['name' => 'destroy services vehicles']);
+        Permission::create(['name' => 'complete services vehicles']);
+        
+        Permission::create(['name' => 'list binnacle']);
+        Permission::create(['name' => 'list fuels']);
+        Permission::create(['name' => 'list payments']);
+        Permission::create(['name' => 'list permissions']);
+        Permission::create(['name' => 'list licenses']);
+        Permission::create(['name' => 'list type services vehicles']);
+        
+        Permission::create(['name' => 'reports executive']);
+        Permission::create(['name' => 'reports fuel month']);
+        Permission::create(['name' => 'reports km month']);
+        Permission::create(['name' => 'reports services month']);
+
 
         $role = Role::where(['name' => 'Administrador'])->first();
         $role->givePermissionTo( 
@@ -72,9 +101,9 @@ class PermissionsTableSeeder extends Seeder
             Permission::whereIn("name", [
                'system equipments',
                'reports service',
-               'list services',
-               'calendary services',
-               'complete services',
+               'list services equipments',
+               'calendary services equipments',
+               'complete services equipments',
                'home pwa',
             ])->get() 
         );
@@ -84,6 +113,8 @@ class PermissionsTableSeeder extends Seeder
         $role->givePermissionTo( 
             Permission::whereIn("name", [
                'system vehicles',
+               'dashboard vehicles',
+               'list services vehicles'
             ])->get() 
         );
         

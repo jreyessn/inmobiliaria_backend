@@ -49,11 +49,5 @@ class AppServiceProvider extends ServiceProvider
             $url->forceScheme('https');
         }
 
-        // Tracking para totalizar los montos
-        ServiceVehicle::observe(KmTrackerObserver::class);
-        Fuel::observe(KmTrackerObserver::class);
-        Payment::observe(KmTrackerObserver::class);
-
-
     }
 }

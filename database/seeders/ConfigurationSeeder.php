@@ -14,9 +14,29 @@ class ConfigurationSeeder extends Seeder
      */
     public function run()
     {
-        Configuration::create([
-            "key" => "correo_premier",
-            "value" => "premier_del_noroeste@hotmail.com"
+        Configuration::insert([
+            [
+               "key"   => "system_name",
+               "value" => "Sistema de Inmuebles"
+            ],
+            [
+               "key"   => "business_name",
+            ],
+            [
+               "key"   => "business_address",
+            ],
+            [
+               "key"   => "business_identify",
+            ],
+            [
+               "key"   => "business_contact",
+            ],
+            [
+               "key"   => "business_phone",
+            ],
+            [
+               "key"   => "logo",
+            ],
         ]);
     }
 }

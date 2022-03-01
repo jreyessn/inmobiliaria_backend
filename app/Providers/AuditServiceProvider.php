@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Coupons\CouponsMovements;
 use App\Models\Coupons\CouponsRequest;
 use App\Models\Customer\Customer;
+use App\Models\Furniture\Furniture;
+use App\Models\Sale\Sale;
 use App\Models\User;
 use App\Models\Visit\Visit;
 use App\Observers\AuditObserver;
@@ -36,5 +38,7 @@ class AuditServiceProvider extends ServiceProvider
         DB::enableQueryLog();
 
         User::observe(AuditObserver::class);
+        Sale::observe(AuditObserver::class);
+        Furniture::observe(AuditObserver::class);
     }
 }

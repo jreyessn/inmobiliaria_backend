@@ -28,4 +28,7 @@ class Customer extends Model implements Transformable
         "limit_credit"
     ];
 
+    protected $casts = [
+        "limit_credit" => "float"
+    ];
 }

@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
             PermissionsTableSeeder::class,
             UserSeeder::class,
             ConfigurationSeeder::class,
+            DocumentSeeder::class,
+            PaymentMethodSeeder::class,
+            TypeFurniture::class,
+            MeasureUnitSeeder::class,
         ]);
 
     }

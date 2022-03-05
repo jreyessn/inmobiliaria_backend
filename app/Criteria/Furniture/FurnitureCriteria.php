@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Criteria;
+namespace App\Criteria\Furniture;
 
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Class VehicleReportsCriteria.
+ * Class FurnitureCriteria.
  *
- * @package namespace App\Criteria;
+ * @package namespace App\Criteria\Furniture;
  */
-class VehicleReportsCriteria implements CriteriaInterface
+class FurnitureCriteria implements CriteriaInterface
 {
     /**
      * Apply criteria in query repository
@@ -22,12 +22,10 @@ class VehicleReportsCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        $vehicles = request()->get("vehicle_id", null);
+        $is_sold = request()->get("is_sold", null);
 
-        if($vehicles){
-            $list = explode(",", $vehicles);
-
-            $model = $model->whereIn("id", $list);
+        if($is_sold){
+            $model = $model->has("sale");
         }
 
         return $model;

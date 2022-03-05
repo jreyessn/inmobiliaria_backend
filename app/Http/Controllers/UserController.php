@@ -37,7 +37,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'perPage'      =>  'nullable|integer',
+            'perPage'      =>   'nullable|integer',
             'page'          =>  'nullable|integer',
             'search'        =>  'nullable|string',
             'orderBy'       =>  'nullable|string',
@@ -91,7 +91,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return $this->repository->with(['roles.permissions'])->find($id);
+        return [
+            "data" => $this->repository->with(['roles.permissions'])->find($id)
+        ];
     }
 
     /**
@@ -114,42 +116,6 @@ class UserController extends Controller
             
             $user->save();
             $user->roles()->sync( $request->roles );
-
-            DB::commit();
-
-            return response()->json([
-                "message" => "Actualización exitosa",
-                "data" => $user
-            ], 201);
-
-        }catch(\Exception $e){
-            DB::rollback();
-
-            return response()->json(['message' => $e->getMessage()], 500);
-        }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UserUpdateRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function updateProfile(UserProfileRequest $request)
-    {
-        
-        DB::beginTransaction();
-
-        try{
-            $user = $request->user();
-            $user->fill( $request->only(['name', 'email']) );
-
-            if($request->has('password')){
-                $user->password = $request->password;
-                $user->password_changed_at = date('Y-m-d H:i:s');
-            }
-            
-            $user->save();
 
             DB::commit();
 

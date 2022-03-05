@@ -4,7 +4,7 @@ namespace App\Repositories\Sale;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\sale\payment_methodRepository;
+use App\Repositories\Sale\PaymentMethodRepository;
 use App\Models\Sale\PaymentMethod;
 use App\Validators\Sale\PaymentMethodValidator;
 

@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Configuration extends Model
 {
+    use HasFactory;
 
     protected $table = "configuration";
 
-    use HasFactory;
+    protected $primaryKey = 'key';
 
+    public $incrementing = false;
+    
     protected $fillable = [
         'key',
         'value'

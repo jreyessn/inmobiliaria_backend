@@ -4,7 +4,7 @@ namespace App\Repositories\Country;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\country\cityRepository;
+use App\Repositories\Country\CityRepository;
 use App\Models\Country\City;
 use App\Validators\Country\CityValidator;
 
@@ -35,4 +35,30 @@ class CityRepositoryEloquent extends BaseRepository implements CityRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+     
+    /**
+     * Guardar ciudades
+     */
+    public function save(array $data)
+    {
+
+        $data["country_id"] = config("app.country_id") ?? 1;
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar ciudades
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        $data["country_id"] = config("app.country_id") ?? 1;
+        
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
 }

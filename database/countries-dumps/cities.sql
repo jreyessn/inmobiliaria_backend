@@ -260,7 +260,6 @@ INSERT INTO `cities` (`id`, `name`, `country_id`, `country_code`, `latitude`, `l
 --
 ALTER TABLE `cities`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `cities_test_ibfk_1` (`state_id`),
   ADD KEY `cities_test_ibfk_2` (`country_id`);
 
 --
@@ -281,7 +280,6 @@ ALTER TABLE `cities`
 -- Constraints for table `cities`
 --
 ALTER TABLE `cities`
-  ADD CONSTRAINT `cities_ibfk_1` FOREIGN KEY (`state_id`) REFERENCES `states` (`id`),
   ADD CONSTRAINT `cities_ibfk_2` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`);
 SET FOREIGN_KEY_CHECKS=1;
 

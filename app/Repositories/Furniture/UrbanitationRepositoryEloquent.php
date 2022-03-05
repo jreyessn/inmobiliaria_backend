@@ -4,7 +4,7 @@ namespace App\Repositories\Furniture;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\furniture\urbanitationRepository;
+use App\Repositories\Furniture\UrbanitationRepository;
 use App\Models\Furniture\Urbanitation;
 use App\Validators\Furniture\UrbanitationValidator;
 
@@ -33,6 +33,31 @@ class UrbanitationRepositoryEloquent extends BaseRepository implements Urbanitat
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+ 
+         
+    /**
+     * Guardar urbanizaciones
+     */
+    public function save(array $data)
+    {
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar urbanizaciones
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
     }
     
 }

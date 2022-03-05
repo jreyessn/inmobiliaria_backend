@@ -16,27 +16,37 @@ class ConfigurationSeeder extends Seeder
     {
         Configuration::insert([
             [
-               "key"   => "system_name",
+               "key"   => "name",
                "value" => "Sistema de Inmuebles"
             ],
             [
                "key"   => "business_name",
+               "value" => null
             ],
             [
                "key"   => "business_address",
+               "value" => null
             ],
             [
                "key"   => "business_identify",
+               "value" => null
             ],
             [
                "key"   => "business_contact",
+               "value" => null
             ],
             [
                "key"   => "business_phone",
+               "value" => null
             ],
             [
                "key"   => "logo",
+               "value" => null
             ],
+            [
+               "key"   => "country_id",
+               "value" => 62 // DO
+            ]
         ]);
     }
 }

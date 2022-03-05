@@ -14,7 +14,7 @@ class CreateConfigurationTable extends Migration
     public function up()
     {
         Schema::create('configuration', function (Blueprint $table) {
-            $table->string("key")->index();
+            $table->string("key")->primary();
             $table->string("value")->nullable();
         });
     }

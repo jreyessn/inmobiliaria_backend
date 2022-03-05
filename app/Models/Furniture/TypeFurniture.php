@@ -16,6 +16,8 @@ class TypeFurniture extends Model implements Transformable
 {
     use TransformableTrait, SoftDeletes;
 
+    protected $table = "type_furnitures";
+
     /**
      * The attributes that are mass assignable.
      *

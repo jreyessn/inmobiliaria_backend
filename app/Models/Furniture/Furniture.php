@@ -4,6 +4,8 @@ namespace App\Models\Furniture;
 
 use App\Models\Audit;
 use App\Models\Country\City;
+use App\Models\Images\Image;
+use App\Models\Sale\Sale;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -34,6 +36,7 @@ class Furniture extends Model implements Transformable
         "covered_garages",
         "uncovered_garages",
         "measure_unit_id",
+        "area",
         "unit_price",
         "sale_price",
         "type_furniture_id",
@@ -55,6 +58,10 @@ class Furniture extends Model implements Transformable
         "city",
         "getter_user",
         "agent_user",
+    ];
+
+    protected $appends = [
+        "is_sold",
     ];
 
     public function measure_unit()
@@ -79,12 +86,22 @@ class Furniture extends Model implements Transformable
 
     public function agent_user()
     {
-        return $this->belongsTo(City::class, "agent_user_id")->withTrashed();
+        return $this->belongsTo(User::class, "agent_user_id")->withTrashed();
     }
 
     public function images()
     {
         return $this->morphMany(Image::class, "model")->where("type", "Gallery");
+    }
+
+    public function sale()
+    {
+        return $this->hasOne(Sale::class);
+    }
+
+    public function getIsSoldAttribute()
+    {
+        return $this->sale()->first()? true : false;
     }
 
     /**

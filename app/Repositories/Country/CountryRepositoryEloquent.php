@@ -4,7 +4,7 @@ namespace App\Repositories\Country;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\country\countryRepository;
+use App\Repositories\Country\CountryRepository;
 use App\Models\Country\Country;
 use App\Validators\Country\CountryValidator;
 

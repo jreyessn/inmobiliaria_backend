@@ -4,7 +4,7 @@ namespace App\Repositories\Sale;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\sale\documentRepository;
+use App\Repositories\Sale\DocumentRepository;
 use App\Models\Sale\Document;
 use App\Validators\Sale\DocumentValidator;
 

@@ -26,6 +26,8 @@ class City extends Model implements Transformable
         "country_id",
     ];
 
+    public $timestamps = false;
+
     public function country()
     {
         return $this->belongsTo(Country::class);

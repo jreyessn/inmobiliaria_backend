@@ -4,7 +4,7 @@ namespace App\Repositories\Furniture;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\furniture\furnitureRepository;
+use App\Repositories\Furniture\FurnitureRepository;
 use App\Models\Furniture\Furniture;
 use App\Validators\Furniture\FurnitureValidator;
 
@@ -34,5 +34,28 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    /**
+     * Guardar apartamentos
+     */
+    public function save(array $data)
+    {
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar apartamentos
+     */
+    public function saveUpdate(array $data, int $id)
+    {
+        
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
+    }
 }

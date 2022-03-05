@@ -36,18 +36,21 @@ class AppServiceProvider extends ServiceProvider
         // configurations
         Schema::defaultStringLength(191);
 
-        if (Schema::hasTable('configurations')) {
-            $all = Configuration::all();
-
-            foreach ($all as $setting) {
-
-                Config::set('configuration.'.$setting->key, $setting->value);
-            }
-        }
+        $this->setConfigDatabase();
 
         if (env('APP_ENV') === 'production') {
             $url->forceScheme('https');
         }
 
+    }
+
+    private function setConfigDatabase(){
+        if (Schema::hasTable('configuration')) {
+            $all = Configuration::all();
+
+            foreach ($all as $setting) {
+                Config::set('app.'.$setting->key, $setting->value);
+            }
+        }
     }
 }

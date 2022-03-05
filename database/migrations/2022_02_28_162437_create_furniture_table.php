@@ -22,6 +22,7 @@ class CreateFurnitureTable extends Migration
             $table->integer("covered_garages")->default(0);
             $table->integer("uncovered_garages")->default(0);
             $table->foreignId("measure_unit_id")->constrained();
+            $table->string("area")->nullable();
             $table->float("unit_price")->default(0);
             $table->float("sale_price")->default(0);
             $table->foreignId("type_furniture_id")->constrained();

@@ -4,7 +4,7 @@ namespace App\Repositories\Customer;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\customer\customerRepository;
+use App\Repositories\Customer\CustomerRepository;
 use App\Models\Customer\Customer;
 use App\Validators\Customer\CustomerValidator;
 
@@ -33,6 +33,28 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+    }
+
+    /**
+     * Guardar clientes
+     */
+    public function save(array $data)
+    {
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    /**
+     * Actualizar clientes
+     */
+    public function saveUpdate(array $data, int $id)
+    {        
+        $store = $this->find($id);
+        $store->fill($data);
+        $store->save();
+
+        return $store;
     }
     
 }

@@ -40,6 +40,7 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
      */
     public function save(array $data)
     {
+        $data  = sanitize_null($data);
         $store = $this->create($data);
 
         return $store;
@@ -49,7 +50,8 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
      * Actualizar clientes
      */
     public function saveUpdate(array $data, int $id)
-    {        
+    {     
+        $data  = sanitize_null($data);   
         $store = $this->find($id);
         $store->fill($data);
         $store->save();

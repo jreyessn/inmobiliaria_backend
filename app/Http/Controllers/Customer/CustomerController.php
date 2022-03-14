@@ -51,7 +51,7 @@ class CustomerController extends Controller
             "name"         => "required|string|max:200|unique:customers,name,NULL,id,deleted_at,NULL",
             "email"        => "required|email|unique:customers,email,NULL,id,deleted_at,NULL",
             "phone"        => "nullable|numeric",
-            "limit_credit" => "required|numeric",
+            "limit_credit" => "nullable|numeric",
         ]);
 
         DB::beginTransaction();
@@ -99,7 +99,7 @@ class CustomerController extends Controller
             "name"         => "required|string|max:200|unique:customers,name,{$id},id,deleted_at,NULL",
             "email"        => "required|email|unique:customers,email,{$id},id,deleted_at,NULL",
             "phone"        => "nullable|numeric",
-            "limit_credit" => "required|numeric",
+            "limit_credit" => "nullable|numeric",
         ]);
         
         DB::beginTransaction();

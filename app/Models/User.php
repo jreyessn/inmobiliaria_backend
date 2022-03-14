@@ -7,6 +7,7 @@ use App\Models\Coupons\CouponsMovements;
 use App\Models\Farm\Farm;
 use App\Models\Farm\FarmUser;
 use App\Models\Group\Group;
+use App\Models\User\UserPreferences;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,7 +53,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = [];
+    protected $appends = [
+        "preferences"
+    ];
 
     /**
      * Setters attributers
@@ -64,14 +67,6 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($password);
     }
 
-    public function movements_coupons()
-    {
-        return $this->hasManyThrough(CouponsMovements::class, Audit::class, "user_id", "id", "id", "model_id")->where([
-            "model_type" => CouponsMovements::class,
-            "action"     => "CREAR"
-        ]);
-    }
-
     public function players(){
         return $this->hasMany(UserPlayer::class);
     }
@@ -79,6 +74,17 @@ class User extends Authenticatable
     public function routeNotificationForOneSignal()
     {
         return $this->players()->pluck("player_id");
+    }
+
+    public function getPreferencesAttribute(){
+        $preferencesDefault = collect(defaultPreferences());
+        $preferences        = UserPreferences::where("user_id", $this->id)->get()->flatMap(function($item){
+            return [ 
+                $item->key => $item->value 
+            ];
+        });
+
+        return $preferencesDefault->merge($preferences);
     }
 
 }

@@ -32,7 +32,7 @@ class ConfigurationSeeder extends Seeder
                "value" => null
             ],
             [
-               "key"   => "business_contact",
+               "key"   => "business_email",
                "value" => null
             ],
             [
@@ -40,7 +40,11 @@ class ConfigurationSeeder extends Seeder
                "value" => null
             ],
             [
-               "key"   => "logo",
+               "key"   => "logo_white",
+               "value" => null
+            ],
+            [
+               "key"   => "logo_dark",
                "value" => null
             ],
             [

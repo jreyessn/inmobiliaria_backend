@@ -3,6 +3,7 @@
 namespace App\Repositories\Users;
 
 use App\Models\User;
+use App\Models\User\UserPreferences;
 use App\Repositories\Users\UserRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -40,6 +41,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * get admins
+     */
     public function getAdminUsers()
     {
         return $this->whereHas("roles", function($query){
@@ -47,6 +51,35 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         })->get();
     }
 
+    /**
+     * update preferences
+     * 
+     * @param $data Data
+     * @param $user_id ID user
+     */
+    public function updatePreferences(array $data, $user_id){
+        $data = collect($data);
+        $keys = defaultPreferences();
+
+        foreach (array_keys($keys) as $key) {
+            $params = [
+                "key"     => $key,
+                "user_id" => $user_id
+            ];
+
+            $userPreference = UserPreferences::where($params)->first();
+
+            if($userPreference && $data->has($key)){
+                $userPreference->value = $data->get($key);
+                $userPreference->save();
+            }
+            else if($data->has($key)){
+                $params["value"] = $data->get($key);
+                UserPreferences::create($params);
+            }
+        }
+
+    }
 
 
 }

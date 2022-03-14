@@ -136,3 +136,12 @@ if(!function_exists("convertTobase64")){
     }
 }
 
+if(!function_exists("defaultPreferences")){
+    function defaultPreferences(){
+       return [
+           "layout" => "classic",
+           "scheme" => "light"
+       ];
+    }
+}
+

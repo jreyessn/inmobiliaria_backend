@@ -15,12 +15,15 @@ use Illuminate\Support\Facades\Route;
 
 // Auth
 
-Route::group(['prefix' => 'auth','namespace' => 'Auth'], function () {
-    Route::post('login', 'LoginController@login');
+Route::get("config", "Controller@config");
+
+Route::group(['prefix' => 'auth'], function () {
+    Route::post('login', 'Auth\LoginController@login');
 
     Route::group(['middleware' => 'auth:api'], function() {
-        Route::get('logout', 'LoginController@logout');
-        Route::get('user', 'LoginController@user');
+        Route::get('logout', 'Auth\LoginController@logout');
+        Route::get('user', 'Auth\LoginController@user');
+        Route::patch('preferences', 'UserController@updatePreferences');
     });
 });
 
@@ -41,7 +44,6 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Config general
      */
     Route::group(["prefix" => "config"], function(){
-        Route::get("/", "Controller@config");
         Route::put("/", "Controller@putConfig");
     });
 

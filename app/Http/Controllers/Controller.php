@@ -21,16 +21,22 @@ class Controller extends BaseController
     {
         $request->validate([
             "country_id" => "nullable|exists:countries,id",
-            "logo"       => "file|mimes:jpg,jpeg,png|dimensions:max_width=900,max_height=700"
+            "logo_white" => "file|mimes:jpg,jpeg,png|dimensions:max_width=900,max_height=700",
+            "logo_dark"  => "file|mimes:jpg,jpeg,png|dimensions:max_width=900,max_height=700"
         ]);
         $configs = Configuration::get();
 
         foreach (sanitize_null($request->all()) as $key => $value) {
             $configFound = $configs->firstWhere("key", $key);
   
-            if($key == "logo"){
-                $file    = $request->file("logo");
-                $value   = Storage::disk('local')->putFileAs("config", $file, "logo-{$file->hashName()}"); 
+            if($key == "logo_white"){
+                $file    = $request->file("logo_white");
+                $value   = Storage::disk('public')->putFileAs("logos", $file, "logo_white-{$file->hashName()}"); 
+            }
+
+            if($key == "logo_dark"){
+                $file    = $request->file("logo_dark");
+                $value   = Storage::disk('public')->putFileAs("logos", $file, "logo_dark-{$file->hashName()}"); 
             }
 
             if($configFound){
@@ -47,8 +53,14 @@ class Controller extends BaseController
      */
     public function config()
     {
-        return Configuration::get()->flatMap(function($values){
-            return [ $values->key => $values->value ];
+        return Configuration::get()->flatMap(function($item){
+            $value = $item->value;
+
+            if($item->key == "logo_dark" || $item->key == "logo_white"){
+                $value = url("/storage/". $item->value);
+            }
+
+            return [ $item->key => $value ];
         });
     }
 

@@ -110,10 +110,12 @@ class UserController extends Controller
 
         try{
             $user = $this->repository->find($id);
-            $user->fill( $request->all() );
+            $user->fill( $request->except(["password"]) );
 
-            if($request->has('password'))
+            if($request->has('password') && $request->password){
+                $user->password = $request->password;
                 $user->password_changed_at = date('Y-m-d H:i:s');
+            }
             
             $user->save();
             $user->roles()->sync( $request->roles );
@@ -147,7 +149,7 @@ class UserController extends Controller
             $user = $request->user();
             $user->fill( $request->only(['name', 'email']) );
 
-            if($request->has('password')){
+            if($request->has('password') && $request->password){
                 $user->password = $request->password;
                 $user->password_changed_at = date('Y-m-d H:i:s');
             }

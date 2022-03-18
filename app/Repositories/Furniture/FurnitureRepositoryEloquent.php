@@ -15,6 +15,20 @@ use App\Validators\Furniture\FurnitureValidator;
  */
 class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like",
+        "description" => "like",
+        "area" => "like",
+        "unit_price" => "like",
+        "price_sale" => "like",
+        "postal_code" => "like",
+        "region" => "like",
+        "address" => "like",
+        "street_number" => "like",
+        "aditional_info_address" => "like",
+    ];
+
     /**
      * Specify Model class name
      *

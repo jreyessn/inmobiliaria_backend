@@ -58,6 +58,7 @@ class Furniture extends Model implements Transformable
         "city",
         "getter_user",
         "agent_user",
+        "images",
     ];
 
     protected $appends = [

@@ -15,6 +15,11 @@ use App\Validators\Country\CityValidator;
  */
 class CityRepositoryEloquent extends BaseRepository implements CityRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

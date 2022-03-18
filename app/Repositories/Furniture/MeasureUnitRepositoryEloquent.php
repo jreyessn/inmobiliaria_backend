@@ -15,6 +15,11 @@ use App\Validators\Furniture\MeasureUnitValidator;
  */
 class MeasureUnitRepositoryEloquent extends BaseRepository implements MeasureUnitRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

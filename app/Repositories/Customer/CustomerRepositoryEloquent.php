@@ -15,6 +15,11 @@ use App\Validators\Customer\CustomerValidator;
  */
 class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

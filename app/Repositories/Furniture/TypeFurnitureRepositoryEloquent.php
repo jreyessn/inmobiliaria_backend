@@ -15,6 +15,11 @@ use App\Validators\Furniture\TypeFurnitureValidator;
  */
 class TypeFurnitureRepositoryEloquent extends BaseRepository implements TypeFurnitureRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+
     /**
      * Specify Model class name
      *

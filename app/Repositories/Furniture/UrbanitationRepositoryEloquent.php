@@ -15,6 +15,11 @@ use App\Validators\Furniture\UrbanitationValidator;
  */
 class UrbanitationRepositoryEloquent extends BaseRepository implements UrbanitationRepository
 {
+
+    protected $fieldSearchable = [
+        "name" => "like"
+    ];
+    
     /**
      * Specify Model class name
      *

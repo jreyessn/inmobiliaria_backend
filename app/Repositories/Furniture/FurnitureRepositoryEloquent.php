@@ -20,8 +20,6 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
         "name" => "like",
         "description" => "like",
         "area" => "like",
-        "unit_price" => "like",
-        "price_sale" => "like",
         "postal_code" => "like",
         "region" => "like",
         "address" => "like",

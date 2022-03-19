@@ -105,7 +105,7 @@ class FurnitureController extends Controller
 
         try{
             $store = $this->FurnitureRepositoryEloquent->saveUpdate($request->all(), $id);
-
+            
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $store, [
                 "path" => "furnitures"
             ]);

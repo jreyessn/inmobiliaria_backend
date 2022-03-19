@@ -26,7 +26,7 @@ class CreateFurnitureTable extends Migration
             $table->float("unit_price")->default(0);
             $table->float("sale_price")->default(0);
             $table->foreignId("type_furniture_id")->constrained();
-            $table->unsignedBigInteger("city_id")->constrained();
+            $table->unsignedBigInteger("city_id")->nullable();
             $table->string("postal_code")->nullable();
             $table->string("region")->nullable();
             $table->string("address")->nullable();

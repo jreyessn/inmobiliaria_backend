@@ -28,16 +28,18 @@ class FurnitureStoreRequest extends FormRequest
         return [
             "name"                    => "required|string|max:200|unique:furniture,name,{$id},id,deleted_at,NULL",
             "description"             => "nullable|string|max:200",
+            
             "bathrooms"               => "required|numeric|min:0",
             "bedrooms"                => "required|numeric|min:0",
             "covered_garages"         => "required|numeric|min:0",
             "uncovered_garages"       => "required|numeric|min:0",
+
             "measure_unit_id"         => "required|exists:measure_units,id",
             "area"                    => "nullable|string|max:200",
             "unit_price"              => "required|numeric|min:0",
             "sale_price"              => "required|numeric|min:0",
             "type_furniture_id"       => "required|exists:type_furnitures,id",
-            "city_id"                 => "required|exists:cities,id",
+            "city_id"                 => "nullable|exists:cities,id",
             "postal_code"             => "nullable|numeric",
             "region"                  => "nullable|string|max:200",
             "address"                 => "nullable|string|max:200",

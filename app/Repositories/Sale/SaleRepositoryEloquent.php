@@ -4,7 +4,7 @@ namespace App\Repositories\Sale;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\sale\saleRepository;
+use App\Repositories\Sale\SaleRepository;
 use App\Models\Sale\Sale;
 use App\Validators\Sale\SaleValidator;
 
@@ -35,4 +35,13 @@ class SaleRepositoryEloquent extends BaseRepository implements SaleRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Guardar ventas
+     */
+    public function save(array $data)
+    {
+        $data["status"] = 1;
+        $store = $this->create($data);
+        return $store;
+    }
 }

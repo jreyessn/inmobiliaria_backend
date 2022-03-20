@@ -34,9 +34,15 @@ class Sale extends Model implements Transformable
         "payment_method_id",
         "tax_percentage",
         "subtotal",
+        "total",
         "note",
         "is_credit",
         "status",
+    ];
+
+    protected $casts = [
+        "total"     => "float",
+        "is_credit" => "integer"
     ];
 
     public function furniture()
@@ -57,6 +63,19 @@ class Sale extends Model implements Transformable
     public function payment_method()
     {
         return $this->belongsTo(PaymentMethod::class)->withTrashed();
+    }
+
+    public function credit()
+    {
+        return $this->hasOne(Credit::class);
+    }
+
+    protected static function booted()
+    {
+        static::deleted(function ($model) {
+            $model->credit->cuotes()->delete();
+            $model->credit->delete();
+        });
     }
 
     /**

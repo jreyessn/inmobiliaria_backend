@@ -28,11 +28,13 @@ class CreditPayment extends Model implements Transformable
         "note",
     ];
 
-    public function credit_cuote(){
+    public function credit_cuote()
+    {
         return $this->belongsTo(CreditCuote::class);
     }
-
-    public function payment_method(){
+    
+    public function payment_method()
+    {
         return $this->belongsTo(PaymentMethod::class)->withTrashed();
     }
 }

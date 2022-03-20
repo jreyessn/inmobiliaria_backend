@@ -34,5 +34,24 @@ class CreditCuoteRepositoryEloquent extends BaseRepository implements CreditCuot
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    /**
+     * Almacena cada cuota en base al crédito
+     * 
+     * @param App\Models\Sale\Credit $credit Modelo de credito
+     * @param array $cuotes[number_letter] Letra
+     * @param array $cuotes[giro_at] Fecha de Giro
+     * @param array $cuotes[expiration_at] Fecha de Expiración
+     */
+    public function save($credit, $cuotes){
+        foreach ($cuotes as $cuote) {
+            
+            // Cada letra tendrá el mismo valor
+            $cuote["credit_id"] = $credit->id;
+            $cuote["total"]     = $credit->total / count($cuotes); 
+
+            $this->create($cuote);
+        }
+    }
     
 }

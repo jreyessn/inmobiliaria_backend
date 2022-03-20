@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Rules;
+namespace App\Rules\Credit;
 
+use App\Models\Sale\CreditCuote;
 use Illuminate\Contracts\Validation\Rule;
 
-class KmLimiTravel implements Rule
+class AmountLessCuote implements Rule
 {
-    private $km_current = 0;
+    private $cuote_id;
 
-    private $km_limit = 0;
+    private $cuote;
 
     /**
      * Create a new rule instance.
      *
      * @return void
      */
-    public function __construct($km_current, $km_limit)
+    public function __construct($cuote_id)
     {
-        $this->km_current = $km_current;
-        $this->km_limit   = $km_limit;
+        $this->cuote_id = $cuote_id;
     }
 
     /**
@@ -30,14 +30,11 @@ class KmLimiTravel implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(is_null($this->km_current) || $this->km_limit == 0){
-            return true;
-        }
+        $this->cuote = CreditCuote::find($this->cuote_id);
 
-        if($this->km_current > $this->km_limit){
+        if($value > $this->cuote->amount_pending){
             return false;
         }
-
         return true;
     }
 
@@ -48,6 +45,8 @@ class KmLimiTravel implements Rule
      */
     public function message()
     {
-        return "El registro no debe sobrepasar el kilometraje de {$this->km_limit} puesto que alteraría los calculos de registros posteriores.";
+        $format = number_format($this->cuote->amount_pending, 2);
+
+        return "El monto no puede superar al valor de la cuota. Valor: {$format}";
     }
 }

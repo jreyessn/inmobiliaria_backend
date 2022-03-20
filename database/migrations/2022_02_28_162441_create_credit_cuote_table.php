@@ -17,6 +17,8 @@ class CreateCreditCuoteTable extends Migration
             $table->id();
             $table->foreignId("credit_id")->constrained();
             $table->string("number_letter")->nullable();
+            $table->string("reference", 100)->nullable();
+            $table->timestamp("giro_at")->nullable();
             $table->timestamp("expiration_at")->nullable();
             $table->float("total")->default(0);
             $table->timestamps();

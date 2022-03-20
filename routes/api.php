@@ -58,6 +58,13 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('documents', 'Sale\DocumentController@index');
     Route::get('payment_methods', 'Sale\PaymentMethodController@index');
 
+
+    /**
+     * Credits
+     */
+    Route::put("credits/pay/{credit_cuote_id}", 'Sale\CreditController@pay');
+    Route::get('credits/{id}', 'Sale\CreditController@show');
+
     /**
      * Deletes
      */
@@ -69,6 +76,7 @@ Route::group(['middleware' => ['auth:api']], function(){
         'urbanitations' => 'Furniture\UrbanitationController',
         'customers'     => 'Customer\CustomerController',
         'furnitures'    => 'Furniture\FurnitureController',
+        'sales'         => 'Sale\SaleController',
     ]);
 
 

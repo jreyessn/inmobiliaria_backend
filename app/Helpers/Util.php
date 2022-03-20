@@ -145,3 +145,15 @@ if(!function_exists("defaultPreferences")){
     }
 }
 
+if(!function_exists("sum_amount_tax")){
+    /**
+     * Obtiene valor del monto con el impuesto
+     * 
+     * @param int $amount Monto
+     * @param int $tax Impuesto reflejado en entero (0 - 100)
+     */
+    function sum_amount_tax($amount, $tax){
+        return (float) number_format((float) $amount * (((float) $tax / 100) + 1), 2);
+    }
+}
+

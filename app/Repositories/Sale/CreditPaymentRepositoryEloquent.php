@@ -35,4 +35,14 @@ class CreditPaymentRepositoryEloquent extends BaseRepository implements CreditPa
         $this->pushCriteria(app(RequestCriteria::class));
     }
     
+    /**
+     * Guardar pago
+     * 
+     * @param array $data
+     */
+    public function save($data){
+        $store = $this->create($data);
+
+        return $store;
+    }
 }

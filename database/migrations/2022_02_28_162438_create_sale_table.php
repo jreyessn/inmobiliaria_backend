@@ -21,8 +21,9 @@ class CreateSaleTable extends Migration
             $table->foreignId("document_id")->constrained();
             $table->foreignId("customer_id")->constrained();
             $table->foreignId("payment_method_id")->constrained();
-            $table->float("tax_percentage")->default(0);
             $table->float("subtotal")->default(0);
+            $table->float("tax_percentage")->default(0);
+            $table->float("total")->default(0);
             $table->text("note")->nullable();
             $table->boolean("is_credit")->default(0);
             $table->boolean("status")->default(0);

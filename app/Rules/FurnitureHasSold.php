@@ -2,10 +2,11 @@
 
 namespace App\Rules;
 
-use App\Models\Services\Service;
+use App\Models\Furniture\Furniture;
+use App\Models\Products\Brand;
 use Illuminate\Contracts\Validation\Rule;
 
-class ServiceAutomatic implements Rule
+class FurnitureHasSold implements Rule
 {
     /**
      * Create a new rule instance.
@@ -26,12 +27,10 @@ class ServiceAutomatic implements Rule
      */
     public function passes($attribute, $value)
     {
-        $service = Service::find($value); 
-
-        if($service->is_automatic ?? false){
+        $furniture = Furniture::find($value);
+        if($furniture->is_sold){
             return false;
         }
-
         return true;
     }
 
@@ -42,6 +41,6 @@ class ServiceAutomatic implements Rule
      */
     public function message()
     {
-        return "No puede realizar esta acción con servicios generados por el sistema";
+        return 'No puede realizar esta operación. El inmueble ya se encuentra vendido.';
     }
 }

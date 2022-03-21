@@ -27,8 +27,12 @@ class FurnitureCriteria implements CriteriaInterface
         $type_furniture_id = request()->get("type_furniture_id", null);
         $city_id = request()->get("city_id", null);
 
-        if($is_sold){
+        if($is_sold == 1){
             $model = $model->has("sale");
+        }
+
+        if($is_sold == 2){
+            $model = $model->doesntHave("sale");
         }
 
         if($agent_user_id){

@@ -42,7 +42,17 @@ class Sale extends Model implements Transformable
 
     protected $casts = [
         "total"     => "float",
-        "is_credit" => "integer"
+        "is_credit" => "integer",
+    ];
+
+    protected $with = [
+        "document",
+        "customer",
+        "payment_method",
+    ];
+
+    protected $appends = [
+        "serie_number"
     ];
 
     public function furniture()
@@ -68,6 +78,15 @@ class Sale extends Model implements Transformable
     public function credit()
     {
         return $this->hasOne(Credit::class);
+    }
+
+    public function getSerieNumberAttribute()
+    {
+        if($this->serie && $this->number){
+            return $this->serie.'-'.$this->number;
+        }
+
+        return "";
     }
 
     protected static function booted()

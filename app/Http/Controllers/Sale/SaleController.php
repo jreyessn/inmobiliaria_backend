@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Sale;
 
+use App\Criteria\Sale\SaleCriteria;
+use App\Criteria\SinceUntilCreatedAtCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sales\SalesStoreRequest;
 use App\Repositories\Sale\CreditRepositoryEloquent;
@@ -41,6 +43,9 @@ class SaleController extends Controller
         
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
+        $this->SaleRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->SaleRepositoryEloquent->pushCriteria(SaleCriteria::class);
+
         return $this->SaleRepositoryEloquent->paginate($perPage);
     }
 
@@ -56,7 +61,7 @@ class SaleController extends Controller
         DB::beginTransaction();
 
         try{
-            
+
             $request->merge([
                 "total" => sum_amount_tax($request->subtotal, $request->tax_percentage)
             ]);

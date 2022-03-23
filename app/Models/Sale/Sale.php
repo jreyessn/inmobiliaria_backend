@@ -52,7 +52,8 @@ class Sale extends Model implements Transformable
     ];
 
     protected $appends = [
-        "serie_number"
+        "serie_number",
+        "tax_amount"
     ];
 
     public function furniture()
@@ -85,8 +86,11 @@ class Sale extends Model implements Transformable
         if($this->serie && $this->number){
             return $this->serie.'-'.$this->number;
         }
-
         return "";
+    }
+
+    public function getTaxAmountAttribute(){
+        return $this->tax_percentage > 0? ($this->tax_percentage / 100) * $this->subtotal : 0;
     }
 
     protected static function booted()

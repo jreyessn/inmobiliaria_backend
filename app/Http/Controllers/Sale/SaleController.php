@@ -99,7 +99,10 @@ class SaleController extends Controller
     public function show($id)
     {
         return [
-            "data" => $this->SaleRepositoryEloquent->find($id)->load(["credit.cuotes"])
+            "data" => $this->SaleRepositoryEloquent->find($id)->load([
+                "credit.cuotes",
+                "furniture"
+            ])
         ];
     }
 

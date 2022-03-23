@@ -33,6 +33,7 @@ class Credit extends Model implements Transformable
         "amount_pending",
         "status",
         "status_text",
+        "tax_amount"
     ];
 
     public function sale()
@@ -49,6 +50,10 @@ class Credit extends Model implements Transformable
         $sumPayments = $this->hasManyThrough(CreditPayment::class, CreditCuote::class)->get()->sum("amount");
 
         return $sumPayments;
+    }
+
+    public function getTaxAmountAttribute(){
+        return $this->interest_percentage > 0? ($this->interest_percentage / 100) * $this->total : 0;
     }
 
     public function getAmountPendingAttribute(){

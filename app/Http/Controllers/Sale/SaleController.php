@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Sale;
 
 use App\Criteria\Sale\SaleCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
+use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sales\SalesStoreRequest;
 use App\Repositories\Sale\CreditRepositoryEloquent;
 use App\Repositories\Sale\SaleRepositoryEloquent;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class SaleController extends Controller
 {
@@ -45,8 +49,39 @@ class SaleController extends Controller
 
         $this->SaleRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
         $this->SaleRepositoryEloquent->pushCriteria(SaleCriteria::class);
+        
+        switch ($request->format) {
+            case 'excel':
+                $data = $this->SaleRepositoryEloquent->get();
 
-        return $this->SaleRepositoryEloquent->paginate($perPage);
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                            "since" => $request->since? Carbon::parse($request->since) : null,
+                            "until" => $request->until? Carbon::parse($request->until) : null,
+                        ],
+                        'view' => 'reports.excel.sale'
+                    ]),
+                    'sales.xlsx'
+                );
+            break;
+                
+            case 'pdf':
+                $data = $this->SaleRepositoryEloquent->get();
+
+                return PDF::loadView('reports.pdf.sale', [
+                    "data"  => $data,
+                    "since" => $request->since? Carbon::parse($request->since) : null,
+                    "until" => $request->until? Carbon::parse($request->until) : null,
+                ])->download('sales.pdf');
+
+            break;
+
+            default:    
+                return $this->SaleRepositoryEloquent->paginate($perPage);
+            break;
+        }
     }
 
     /**

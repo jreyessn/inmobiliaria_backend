@@ -4,96 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reportes de Servicio</title>
+    <title>Venta</title>
 </head>
 <body>
     <table>
         <tr>
             <td>
-                <img src="{{ public_path('logo.png') }}" width="120" />
+                <img src="{{ public_path() . "/storage/" . config("app.logo_white") }}" width="120" />
             </td>
         </tr>
     </table>
     <table>
         <tr>
             <td>
-                <b>Reporte de Servicios Realizados</b>
+                <b>Lista de Ventas</b>
             </td>
         </tr>
-        
-        @if ($since)
-            <tr>
-                <td>Desde: {{ $since->format('d/m/Y')}}</td>
-            </tr>
-        @endif
-
-        @if ($until)
-            <tr>
-                <td>Hasta: {{ $until->format('d/m/Y')}}</td>
-            </tr>
-        @endif
-
-        <tr></tr>
+        <tr>
+            <td>Desde: {{ $since? $since->format('d/m/Y') : '' }}</td>
+        </tr>
+        <tr>
+            <td>Hasta: {{ $until? $until->format('d/m/Y') : '' }}</td>
+        </tr>
     </table>
-
-
     <table cellspacing="0" class="col-10 mt10 border-2">
-        <thead>
-            <tr>
+        <thead>            
+            <tr> 
                 <td class="align-center fcw bg-blue">
-                    <b>Fecha/Hora Completado:</b>
+                    <b>Número</b>
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Equipo:</b>
-                </td>
-                
-                <td class="align-center fcw bg-blue">
-                    <b>Pieza:</b>
+                    <b>Inmueble</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
-                    <b>Técnico:</b>
-                </td>
-                
-                <td class="align-center fcw bg-blue">
-                    <b>Tipo de Servicio:</b>
+                    <b>Cliente</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
-                    <b>Costo:</b>
+                    <b>Método de Pago</b>
                 </td>
+
+                <td class="align-center fcw bg-blue">
+                    <b>Total</b>
+                </td>
+
+                <td class="align-center fcw bg-blue">
+                    <b>Crédito</b>
+                </td>
+
             </tr>
-
         </thead>
         <tbody>
             @foreach ($data as $item)
                 <tr>
                     <td class="align-center">
-                        {{ $item->completed_at->format("d/m/Y H:i A") }}
+                        {{ $item->serie_number }}
                     </td>
                     <td class="align-center">
-                        {{ $item->equipment->name }}
+                        {{ $item->furniture->name ?? '' }}
                     </td>
                     <td class="align-center">
-                        {{ $item->equipments_part->name ?? '' }}
+                        {{ $item->customer->name ?? ''}}
                     </td>
                     <td class="align-center">
-                        {{ $item->user_assigned->name ?? '' }}
+                        {{ $item->payment_method->name ?? ''}}
                     </td>
                     <td class="align-center">
-                        {{ $item->type_service->name ?? '' }}
+                        {{ $item->total }}
                     </td>
                     <td class="align-center">
-                        {{ currency() }} {{ $item->cost }}
+                        {{ $item->is_credit? "Sí" : "No" }}
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
-
-    <br>
-
 </body>
 </html>
 <?php

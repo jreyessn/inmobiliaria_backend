@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Furniture;
 
 use App\Criteria\Furniture\FurnitureCriteria;
+use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Furniture\FurnitureStoreRequest;
 use App\Repositories\Furniture\FurnitureRepositoryEloquent;
 use App\Repositories\Images\ImageRepositoryEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade as PDF;
+use Carbon\Carbon;
 
 class FurnitureController extends Controller
 {
@@ -44,7 +48,34 @@ class FurnitureController extends Controller
 
         $this->FurnitureRepositoryEloquent->pushCriteria(FurnitureCriteria::class);
 
-        return $this->FurnitureRepositoryEloquent->paginate($perPage);
+        switch ($request->format) {
+            case 'excel':
+                $data = $this->FurnitureRepositoryEloquent->get();
+
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                        ],
+                        'view' => 'reports.excel.furniture'
+                    ]),
+                    'furnitures.xlsx'
+                );
+            break;
+                
+            case 'pdf':
+                $data = $this->FurnitureRepositoryEloquent->get();
+
+                return PDF::loadView('reports.pdf.furniture', [
+                    "data"  => $data,
+                ])->download('furnitures.pdf');
+
+            break;
+
+            default:    
+                return $this->FurnitureRepositoryEloquent->paginate($perPage);
+            break;
+        }
     }
 
     /**

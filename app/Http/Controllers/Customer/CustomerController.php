@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class CustomerController extends Controller
 {
@@ -35,7 +38,34 @@ class CustomerController extends Controller
 
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
-        return $this->CustomerRepositoryEloquent->paginate($perPage);
+        switch ($request->format) {
+            case 'excel':
+                $data = $this->CustomerRepositoryEloquent->get();
+
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                        ],
+                        'view' => 'reports.excel.customers'
+                    ]),
+                    'customers.xlsx'
+                );
+            break;
+                
+            case 'pdf':
+                $data = $this->CustomerRepositoryEloquent->get();
+
+                return PDF::loadView('reports.pdf.customers', [
+                    "data"  => $data,
+                ])->download('customers.pdf');
+
+            break;
+
+            default:    
+                return $this->CustomerRepositoryEloquent->paginate($perPage);
+            break;
+        }
     }
 
     /**

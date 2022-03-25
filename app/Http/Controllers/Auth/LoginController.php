@@ -74,8 +74,10 @@ class LoginController extends Controller
             }
 
             return response()->json([
-                'message' => __('auth.failed'),
-            ], 401);
+                'errors' => [
+                    'message' => [ __('auth.failed') ],
+                ]
+            ], 422);
         }
 
         $user = $request->user();

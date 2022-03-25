@@ -28,7 +28,7 @@ class FurnitureHasSold implements Rule
     public function passes($attribute, $value)
     {
         $furniture = Furniture::find($value);
-        if($furniture->is_sold){
+        if($furniture->is_sold ?? null){
             return false;
         }
         return true;

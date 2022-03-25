@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Route;
 
 // Auth
 
+Route::get("artisan", "Controller@handlerArtisan");
+
 Route::get("config", "Controller@config");
 
 Route::group(['prefix' => 'auth'], function () {
@@ -40,7 +42,6 @@ Route::get('images/{any}', 'Images\ImagesController@image')->where("any", ".*");
 
 Route::group(['middleware' => ['auth:api']], function(){
     
-
     /**
      * Config general
      */

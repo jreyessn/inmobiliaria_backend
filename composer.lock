@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e347d4e49467009348be983c0a1f4b27",
+    "content-hash": "88bb8103b89958a6eac5450c064a1223",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -935,6 +935,48 @@
                 "php"
             ],
             "time": "2020-03-25T18:49:23+00:00"
+        },
+        {
+            "name": "froiden/sql-generator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Froiden/sql-generator.git",
+                "reference": "03d517276c8d1f5127d578b9986b7b4ba9f20e6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Froiden/sql-generator/zipball/03d517276c8d1f5127d578b9986b7b4ba9f20e6f",
+                "reference": "03d517276c8d1f5127d578b9986b7b4ba9f20e6f",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": ">= 5.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Froiden\\SqlGenerator\\": "src",
+                    "Froiden\\SqlGenerator\\Tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jayant Soni",
+                    "email": "jayant@froiden.com"
+                }
+            ],
+            "description": "convert Laravel migrations to raw SQL scripts",
+            "support": {
+                "issues": "https://github.com/Froiden/sql-generator/issues",
+                "source": "https://github.com/Froiden/sql-generator/tree/master"
+            },
+            "time": "2018-06-26T08:11:09+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -9297,7 +9339,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "froiden/sql-generator": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

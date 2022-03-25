@@ -1,29 +1,11 @@
-# Migrations
+## Migraciones en servidor compartido
 
-php artisan make:repository furniture/measure_unit --skip-migration
-php artisan make:repository furniture/type_furniture --skip-migration
-php artisan make:repository furniture/urbanitation --skip-migration
-php artisan make:repository furniture/furniture --skip-migration
-php artisan make:repository country/country --skip-migration
-php artisan make:repository country/city --skip-migration
-php artisan make:repository customer/customer --skip-migration
-php artisan make:repository sale/sale --skip-migration
-php artisan make:repository sale/document --skip-migration
-php artisan make:repository sale/payment_method --skip-migration
-php artisan make:repository sale/credit --skip-migration
-php artisan make:repository sale/credit_cuote --skip-migration
-php artisan make:repository sale/credit_payment --skip-migration
+Se habilitará la ruta **api/artisan** para correr las migraciones en el servidor compartido. Esta validará por medio de queryParams el comando a ejecutar y la contraseña de la base de datos (de esta manera, por lo menos se intenta evitar que la ruta sea de tan acceso publico, aunque sea una brecha de seguridad).
 
-php artisan make:migration create_measure_unit_table 
-php artisan make:migration create_type_furniture_table 
-php artisan make:migration create_urbanitation_table 
-php artisan make:migration create_country_table 
-php artisan make:migration create_city_table 
-php artisan make:migration create_customer_table 
-php artisan make:migration create_document_table 
-php artisan make:migration create_payment_method_table 
-php artisan make:migration create_credit_table 
-php artisan make:migration create_credit_cuote_table 
-php artisan make:migration create_credit_payment_table 
-php artisan make:migration create_furniture_table 
-php artisan make:migration create_sale_table 
+### Parametros GET que son aceptados:
+
+| param      | description  | validation |
+|----------------|-------------------------------|-----------------------------
+| sentence | La sentencia a ejecutar. Ejemplo: **artisan** o **seed**| nullable |
+| password  | Contraseña de base de datos. Debe coincidir con el .env  | required |
+> **Nota:** La sentencia de enviarse nula, no ejecutará nada.

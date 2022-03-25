@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class Controller extends BaseController
@@ -62,6 +63,24 @@ class Controller extends BaseController
 
             return [ $item->key => $value ];
         });
+    }
+
+    /**
+     * Manejador de Artisan desde petición GET
+     * 
+     */
+    public function handlerArtisan(){
+        // Sentencia php artisan
+        $sentence = request()->get("sentence", null);
+        // Sentencia password de la base de datos (para evitar exponer demasiado la ruta)
+        $password = request()->get("password", null);
+
+        $passwordEnv = getenv("DB_PASSWORD");
+
+        if($password == $passwordEnv){
+            Artisan::call($sentence, ["--force" => true]);
+        }
+
     }
 
 }

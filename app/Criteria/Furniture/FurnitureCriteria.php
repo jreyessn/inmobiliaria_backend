@@ -26,6 +26,7 @@ class FurnitureCriteria implements CriteriaInterface
         $type_furniture_id = request()->get("type_furniture_id", null);
         $city_id           = request()->get("city_id", null);
         $customer_id       = request()->get("customer_id", null);
+        $paid              = request()->get("paid", null);
 
         if($agent_user_id){
             $list = explode(",", $agent_user_id);
@@ -45,6 +46,12 @@ class FurnitureCriteria implements CriteriaInterface
         if($customer_id){
             $list = explode(",", $customer_id);
             $model = $model->whereIn("customer_id", $list);
+        }
+
+        if(is_null($paid) == false){
+            $model = $model->whereHas("credit", function($query) use ($paid){
+                $query->where("status", $paid);
+            });
         }
 
         return $model;

@@ -56,13 +56,16 @@ class CreditController extends Controller
     */
     public function totals(Request $request)
     {
-       $total     = $this->CreditRepositoryEloquent
-                     ->selectRaw("sum(total) as total_credit")
+
+       $this->CreditRepositoryEloquent->pushCriteria(CreditCriteria::class);
+
+       $total      = $this->CreditRepositoryEloquent
+                     ->selectRaw("credits.id, sum(credits.total) as total_credit")
                      ->first()
                      ->total_credit ?? 0;
 
        $total_paid = $this->CreditRepositoryEloquent
-                        ->selectRaw("sum(credit_payments.amount) as total_paid")
+                        ->selectRaw("credits.id, sum(credit_payments.amount) as total_paid")
                         ->join("credit_cuotes", "credit_cuotes.credit_id", "=", "credits.id", "left")
                         ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")
                         ->first()

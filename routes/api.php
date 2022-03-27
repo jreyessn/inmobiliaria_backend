@@ -72,6 +72,12 @@ Route::group(['middleware' => ['auth:api']], function(){
     });
 
     /**
+     * Customers
+     */
+
+    Route::get("customers/account_status", "Customer\CustomerController@account_status");
+
+    /**
      * Deletes
      */
     Route::delete('images/{any}', 'Images\ImagesController@destroy')->where("any", ".*");

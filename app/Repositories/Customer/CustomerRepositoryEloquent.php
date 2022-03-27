@@ -40,6 +40,29 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function paginateAccountStatus($perPage) {
+        $paginate = $this->paginate($perPage);
+
+        foreach ($paginate->items() as $item) {
+            $item = $this->appendAccountStatus($item);
+        }
+
+        return $paginate;
+    }
+
+    /**
+     * Mapea toda la información referente al estado de cuenta del cliente
+     */
+    public function appendAccountStatus(Customer $customer)
+    {
+        $customer->total         = $customer->credits->sum("total");
+        $customer->total_paid    = $customer->credits->sum("amount_payment");
+        $customer->total_balance = $customer->total - $customer->total_paid;
+        $customer->credits->load(["payments.credit_cuote", "furniture"]); 
+
+        return $customer;
+    }
+
     /**
      * Guardar clientes
      */

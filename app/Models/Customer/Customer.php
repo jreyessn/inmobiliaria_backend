@@ -2,6 +2,8 @@
 
 namespace App\Models\Customer;
 
+use App\Models\Furniture\Furniture;
+use App\Models\Sale\Credit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -27,5 +29,10 @@ class Customer extends Model implements Transformable
         "phone",
         "dni"
     ];
+
+    public function credits()
+    {
+        return $this->hasManyThrough(Credit::class, Furniture::class);
+    }
 
 }

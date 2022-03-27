@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Criteria\Customer\AccountStatusCriteria;
 use App\Exports\ViewExport;
 use App\Http\Controllers\Controller;
 use App\Repositories\Customer\CustomerRepositoryEloquent;
@@ -64,6 +65,55 @@ class CustomerController extends Controller
 
             default:    
                 return $this->CustomerRepositoryEloquent->paginate($perPage);
+            break;
+        }
+    }
+
+    /**
+     * Listar estados de cuenta
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function account_status(Request $request)
+    {
+        $request->validate([
+            'perPage'       =>  'nullable|integer',
+            'page'          =>  'nullable|integer',
+            'search'        =>  'nullable|string',
+            'orderBy'       =>  'nullable|string',
+            'sortBy'        =>  'nullable|in:desc,asc',
+        ]);
+
+        $perPage = $request->get('perPage', config('repository.pagination.limit'));
+
+        $this->CustomerRepositoryEloquent->pushCriteria(AccountStatusCriteria::class);
+
+        switch ($request->format) {
+            case 'excel':
+                $data = $this->CustomerRepositoryEloquent->get();
+
+                return Excel::download(
+                    new ViewExport ([
+                        'data' => [
+                            "data"  => $data,
+                        ],
+                        'view' => 'reports.excel.customers'
+                    ]),
+                    'customers.xlsx'
+                );
+            break;
+                
+            case 'pdf':
+                $data = $this->CustomerRepositoryEloquent->get();
+
+                return PDF::loadView('reports.pdf.customers', [
+                    "data"  => $data,
+                ])->download('customers.pdf');
+
+            break;
+
+            default:    
+                return $this->CustomerRepositoryEloquent->paginateAccountStatus($perPage);
             break;
         }
     }

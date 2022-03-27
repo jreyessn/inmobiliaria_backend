@@ -16,9 +16,9 @@ class CreateCustomerTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->string("dni")->nullable();
             $table->string("email")->nullable();
             $table->string("phone")->nullable();
-            $table->float("limit_credit")->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

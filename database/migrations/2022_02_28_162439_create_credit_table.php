@@ -15,7 +15,7 @@ class CreateCreditTable extends Migration
     {
         Schema::create('credits', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("sale_id")->constrained();
+            $table->foreignId("furniture_id")->constrained();
             $table->float("amount_anticipated")->default(0);
             $table->float("interest_percentage")->default(0);
             $table->float("total")->default(0);

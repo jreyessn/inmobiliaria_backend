@@ -26,6 +26,9 @@ class FurnitureStoreRequest extends FormRequest
         $id = $this->route("furniture");
 
         return [
+            "customer_name"           => "required_unless:customer_dni,null",
+            "customer_dni"            => "nullable",
+
             "name"                    => "required|string|max:200|unique:furniture,name,{$id},id,deleted_at,NULL",
             "description"             => "nullable|string|max:200",
             
@@ -34,10 +37,12 @@ class FurnitureStoreRequest extends FormRequest
             "covered_garages"         => "required|numeric|min:0",
             "uncovered_garages"       => "required|numeric|min:0",
 
-            "measure_unit_id"         => "required|exists:measure_units,id",
-            "area"                    => "nullable|string|max:200",
+            // "measure_unit_id"         => "required|exists:measure_units,id",
+            // "area"                    => "nullable|string|max:200",
+
             "unit_price"              => "required|numeric|min:0",
-            "sale_price"              => "required|numeric|min:0",
+            "initial_price"           => "required|numeric|min:0|lt:unit_price",
+
             "type_furniture_id"       => "required|exists:type_furnitures,id",
             "city_id"                 => "nullable|exists:cities,id",
             "postal_code"             => "nullable|numeric",
@@ -56,7 +61,9 @@ class FurnitureStoreRequest extends FormRequest
     public function attributes()
     {
         $validationMessages = [
-            "name" => "Titulo"
+            "name"          => "Titulo" ,
+            "customer_dni"  => "Cédula de Cliente",
+            "customer_name" => "Nombre de Cliente",
         ];
 
         foreach ($this->file('images') ?? [] as $key => $val) {
@@ -64,6 +71,13 @@ class FurnitureStoreRequest extends FormRequest
         }
 
         return $validationMessages;
+    }
+
+    public function messages()
+    {
+        return [
+            "customer_name.required_unless" => "El campo :attribute es requerido si se coloca la cédula."
+        ];
     }
 
 }

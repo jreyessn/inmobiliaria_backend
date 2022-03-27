@@ -6,7 +6,6 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Sale\CreditRepository;
 use App\Models\Sale\Credit;
-use App\Validators\Sale\CreditValidator;
 use Illuminate\Container\Container as Application;
 
 /**

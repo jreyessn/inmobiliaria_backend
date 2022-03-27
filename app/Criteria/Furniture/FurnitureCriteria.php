@@ -22,18 +22,10 @@ class FurnitureCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        $is_sold = request()->get("is_sold", null);
-        $agent_user_id = request()->get("agent_user_id", null);
+        $agent_user_id     = request()->get("agent_user_id", null);
         $type_furniture_id = request()->get("type_furniture_id", null);
-        $city_id = request()->get("city_id", null);
-
-        if($is_sold == 1){
-            $model = $model->has("sale");
-        }
-
-        if($is_sold == 2){
-            $model = $model->doesntHave("sale");
-        }
+        $city_id           = request()->get("city_id", null);
+        $customer_id       = request()->get("customer_id", null);
 
         if($agent_user_id){
             $list = explode(",", $agent_user_id);
@@ -48,6 +40,11 @@ class FurnitureCriteria implements CriteriaInterface
         if($city_id){
             $list = explode(",", $city_id);
             $model = $model->whereIn("city_id", $list);
+        }
+
+        if($customer_id){
+            $list = explode(",", $customer_id);
+            $model = $model->whereIn("customer_id", $list);
         }
 
         return $model;

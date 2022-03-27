@@ -190,6 +190,8 @@ return [
         "credit_amount_anticipated"  => "Monto Anticipado",
         "credit_interest_percentage" => "Porcentaje de Interés",
         "amount"                     => "Monto",
+        "initial_price"              => "Precio Inicial",
+        "dni"                        => "Identificación",
     ],
 
 ];

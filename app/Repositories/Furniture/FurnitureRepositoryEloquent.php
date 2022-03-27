@@ -6,7 +6,8 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Furniture\FurnitureRepository;
 use App\Models\Furniture\Furniture;
-use App\Validators\Furniture\FurnitureValidator;
+use App\Repositories\Customer\CustomerRepositoryEloquent;
+use Illuminate\Container\Container as Application;
 
 /**
  * Class FurnitureRepositoryEloquent.
@@ -26,6 +27,17 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
         "street_number" => "like",
         "aditional_info_address" => "like",
     ];
+
+    private $CustomerRepositoryEloquent;
+
+    function __construct(
+        CustomerRepositoryEloquent $CustomerRepositoryEloquent,
+        Application $app
+    )
+    {
+        parent::__construct($app);
+        $this->CustomerRepositoryEloquent = $CustomerRepositoryEloquent;
+    }
 
     /**
      * Specify Model class name
@@ -52,8 +64,12 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
      */
     public function save(array $data)
     {
-
         $store = $this->create($data);
+        
+        if($data["customer_name"]){
+            $store->customer_id = $this->updateOrCreateCustomer($data)->id;
+            $store->save();
+        }
 
         return $store;
     }
@@ -67,7 +83,28 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
         $store = $this->find($id);
         $store->fill($data);
         $store->save();
+        
+        if($data["customer_name"]){
+            $store->customer_id = $this->updateOrCreateCustomer($data)->id;
+            $store->save();
+        }
 
         return $store;
+    }
+
+    public function updateOrCreateCustomer(array $data)
+    {
+        $storeCustomer = $this->CustomerRepositoryEloquent->updateOrCreate(
+            [
+                "name" => $data["customer_name"],
+                "dni"  => $data["customer_dni"]
+            ],
+            [
+                "name" => $data["customer_name"],
+                "dni"  => $data["customer_dni"]
+            ]
+        );
+
+        return $storeCustomer;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models\Furniture;
 
 use App\Models\Audit;
 use App\Models\Country\City;
+use App\Models\Customer\Customer;
 use App\Models\Images\Image;
 use App\Models\Sale\Sale;
 use App\Models\User;
@@ -38,8 +39,9 @@ class Furniture extends Model implements Transformable
         "measure_unit_id",
         "area",
         "unit_price",
-        "sale_price",
+        "initial_price",
         "type_furniture_id",
+        "customer_id",
         "city_id",
         "postal_code",
         "region",
@@ -59,10 +61,18 @@ class Furniture extends Model implements Transformable
         "getter_user",
         "agent_user",
         "images",
+        "customer"
+    ];
+
+    protected $casts = [
+        "initial_price" => "float",
+        "unit_price" => "float",
     ];
 
     protected $appends = [
-        "is_sold",
+        "customer_name",
+        "customer_dni",
+        "percentage_to_initial"
     ];
 
     public function measure_unit()
@@ -95,14 +105,23 @@ class Furniture extends Model implements Transformable
         return $this->morphMany(Image::class, "model")->where("type", "Gallery");
     }
 
-    public function sale()
-    {
-        return $this->hasOne(Sale::class);
+    public function customer(){
+        return $this->belongsTo(Customer::class);
     }
 
-    public function getIsSoldAttribute()
+    public function getCustomerNameAttribute()
     {
-        return $this->sale()->first()? true : false;
+        return $this->customer->name ?? '';
+    }
+
+    public function getCustomerDniAttribute()
+    {
+        return $this->customer->dni ?? '';
+    }
+
+    public function getPercentageToInitialAttribute()
+    {
+        return $this->initial_price * 100 / $this->unit_price;
     }
 
     /**

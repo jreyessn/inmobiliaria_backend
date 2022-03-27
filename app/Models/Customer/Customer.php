@@ -25,10 +25,7 @@ class Customer extends Model implements Transformable
         "name",
         "email",
         "phone",
-        "limit_credit"
+        "dni"
     ];
 
-    protected $casts = [
-        "limit_credit" => "float"
-    ];
 }

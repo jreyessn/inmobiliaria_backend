@@ -34,11 +34,14 @@ class CreditCuote extends Model implements Transformable
         "amount_pending",
         "status",
         "status_text",
-        "days_late"
+        "days_late",
+        "amount", // Utilizado por el componente de modal de créditos
+        "periods_days" // Utilizado por el componente de modal de créditos
     ];
 
     protected $casts = [
-        "expiration_at" => "datetime"
+        "giro_at"       => "datetime",
+        "expiration_at" => "datetime",
     ];
 
     public function credit(){
@@ -67,8 +70,15 @@ class CreditCuote extends Model implements Transformable
         if(now()->gt($this->expiration_at)){
             return $this->expiration_at->diffInDays();
         }
-
         return 0;
+    }
+
+    public function getAmountAttribute(){
+        return $this->total;
+    }
+
+    public function getPeriodsDaysAttribute(){
+        return $this->expiration_at->diff($this->giro_at, "days")->days ?? 1;
     }
 
 }

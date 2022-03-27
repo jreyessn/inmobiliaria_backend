@@ -54,7 +54,14 @@ class FurnitureStoreRequest extends FormRequest
             "reference_address"       => "nullable|string|max:200",
             "getter_user_id"          => "nullable|exists:users,id",
             "agent_user_id"           => "nullable|exists:users,id",
-            "images.*"                => "file|mimes:jpg,jpeg,png"
+            "images.*"                => "file|mimes:jpg,jpeg,png",
+
+            "credit_amount_anticipated"     => "nullable|numeric|min:0",
+            "credit_interest_percentage"    => "nullable|numeric|min:0",
+            "credit_cuotes"                 => "nullable|array",
+            "credit_cuotes.*.number_letter" => "required|string|max:20",
+            "credit_cuotes.*.giro_at"       => "required|date:Y-m-d",
+            "credit_cuotes.*.expiration_at" => "required|date:Y-m-d",
         ];
     }
 
@@ -68,6 +75,12 @@ class FurnitureStoreRequest extends FormRequest
 
         foreach ($this->file('images') ?? [] as $key => $val) {
             $validationMessages["images." . $key] = "imagen °N ".($key + 1);
+        }
+
+        foreach ($this->get('credit_cuotes') ?? [] as $key => $val) {
+            $validationMessages["credit_cuotes." . $key . ".number_letter"] = "Letra de Cuota N° ".($key + 1);
+            $validationMessages["credit_cuotes." . $key . ".giro_at"]       = "Fecha Giro de Cuota N° ".($key + 1);
+            $validationMessages["credit_cuotes." . $key . ".expiration_at"] = "Fecha de Vencimiento de Cuota N° ".($key + 1);
         }
 
         return $validationMessages;

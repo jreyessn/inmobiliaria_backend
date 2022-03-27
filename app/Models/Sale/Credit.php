@@ -2,6 +2,7 @@
 
 namespace App\Models\Sale;
 
+use App\Models\Furniture\Furniture;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -22,7 +23,7 @@ class Credit extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        "sale_id",
+        "furniture_id",
         "total",
         "amount_anticipated",
         "interest_percentage",
@@ -36,9 +37,9 @@ class Credit extends Model implements Transformable
         "tax_amount"
     ];
 
-    public function sale()
+    public function furniture()
     {
-        return $this->belongsTo(Sale::class);
+        return $this->belongsTo(Furniture::class);
     }
 
     public function cuotes()

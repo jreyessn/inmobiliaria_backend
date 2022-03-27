@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Furniture\FurnitureStoreRequest;
 use App\Repositories\Furniture\FurnitureRepositoryEloquent;
 use App\Repositories\Images\ImageRepositoryEloquent;
+use App\Repositories\Sale\CreditRepositoryEloquent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,13 +20,17 @@ class FurnitureController extends Controller
 
     private $ImageRepositoryEloquent;
 
+    private $CreditRepositoryEloquent;
+
     function __construct(
         FurnitureRepositoryEloquent $FurnitureRepositoryEloquent,
-        ImageRepositoryEloquent     $ImageRepositoryEloquent
+        ImageRepositoryEloquent     $ImageRepositoryEloquent,
+        CreditRepositoryEloquent    $CreditRepositoryEloquent
     )
     {
         $this->FurnitureRepositoryEloquent = $FurnitureRepositoryEloquent;
         $this->ImageRepositoryEloquent     = $ImageRepositoryEloquent;
+        $this->CreditRepositoryEloquent    = $CreditRepositoryEloquent;
     }
 
     /**
@@ -95,6 +100,12 @@ class FurnitureController extends Controller
                 "path" => "furnitures"
             ]);
 
+            $this->CreditRepositoryEloquent->save($store, [
+                "credit_amount_anticipated"  => $request->credit_amount_anticipated,
+                "credit_interest_percentage" => $request->credit_interest_percentage,
+                "credit_cuotes"              => $request->credit_cuotes ?? []
+            ]);
+
             DB::commit();
 
             return response()->json([
@@ -117,7 +128,7 @@ class FurnitureController extends Controller
      */
     public function show($id)
     {
-        $data = $this->FurnitureRepositoryEloquent->find($id)->load(["images"]);
+        $data = $this->FurnitureRepositoryEloquent->find($id)->load(["images", "credit.cuotes"]);
 
         return ["data" => $data];
     }
@@ -134,8 +145,35 @@ class FurnitureController extends Controller
         DB::beginTransaction();
 
         try{
-            $store = $this->FurnitureRepositoryEloquent->saveUpdate($request->all(), $id);
+            $furniture = $this->FurnitureRepositoryEloquent->find($id);
+            $data      = $request->all();
+
+            // Si tiene pagos, no se actualizara ningun precio
+            if(($furniture->credit->amount_payment ?? 0) > 0){
+                $data  = $request->except(["unit_price", "initial_price"]);
+            }
+
+            $store = $this->FurnitureRepositoryEloquent->saveUpdate($data, $id);
             
+            // Si no tiene pagos, se vuelven a regenerar
+            if(($furniture->credit->amount_payment ?? 0) == 0){
+                
+                // Se eliminan fisicamente todos los registros anteriores
+                if($furniture->credit){
+                    foreach ($furniture->credit->cuotes as $cuote) {
+                        $cuote->payments()->forceDelete();
+                        $cuote->forceDelete();
+                    }
+                    $furniture->credit->forceDelete();
+                }
+                
+                $this->CreditRepositoryEloquent->save($store, [
+                    "credit_amount_anticipated"  => $request->credit_amount_anticipated,
+                    "credit_interest_percentage" => $request->credit_interest_percentage,
+                    "credit_cuotes"              => $request->credit_cuotes ?? []
+                ]);
+            }
+
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $store, [
                 "path" => "furnitures"
             ]);

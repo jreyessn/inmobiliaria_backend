@@ -50,18 +50,18 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
     /**
      * Generar créditos para la venta
      * 
-     * @param App\Models\Sale\Sale $sale Modelo de Venta
+     * @param App\Models\Furniture\Furniture $furniture Modelo de Inmueble
      * @param array $body[credit_amount_anticipated] Monto Anticipado
      * @param array $body[credit_interest_percentage] Porcentaje de Interés
      * @param array $body[credit_cuotes] Cuotas
      */
-    public function save($sale, $body){
+    public function save($furniture, $body){
         
         // Se calcula total sin el monto anticipado
-        $total_out_anticipated = $sale->total - ($body["credit_amount_anticipated"]);
+        $total_out_anticipated = $furniture->unit_price - (float) $body["credit_amount_anticipated"];
 
         $store = $this->create([
-            "sale_id"             => $sale->id,
+            "furniture_id"       => $furniture->id,
             "total"               => sum_amount_tax($total_out_anticipated, $body["credit_interest_percentage"]),
             "amount_anticipated"  => $body["credit_amount_anticipated"],
             "interest_percentage" => $body["credit_interest_percentage"],

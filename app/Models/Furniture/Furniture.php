@@ -6,6 +6,7 @@ use App\Models\Audit;
 use App\Models\Country\City;
 use App\Models\Customer\Customer;
 use App\Models\Images\Image;
+use App\Models\Sale\Credit;
 use App\Models\Sale\Sale;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -107,6 +108,10 @@ class Furniture extends Model implements Transformable
 
     public function customer(){
         return $this->belongsTo(Customer::class);
+    }
+
+    public function credit(){
+        return $this->hasOne(Credit::class);
     }
 
     public function getCustomerNameAttribute()

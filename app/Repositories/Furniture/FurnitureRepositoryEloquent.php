@@ -86,9 +86,12 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
         
         if($data["customer_name"]){
             $store->customer_id = $this->updateOrCreateCustomer($data)->id;
-            $store->save();
         }
-
+        else{
+            $store->customer_id = null;
+        }
+        $store->save();
+        
         return $store;
     }
 

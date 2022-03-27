@@ -53,15 +53,11 @@
                 </td>
 
                 <td class="align-center fcw bg-blue">
-                    <b>Precio Unitario</b>
+                    <b>Valor Unitario</b>
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Precio Venta</b>
-                </td>
-                
-                <td class="align-center fcw bg-blue">
-                    <b>Vendido</b>
+                    <b>Inicial</b>
                 </td>
 
                 <td class="align-center fcw bg-blue">
@@ -78,7 +74,7 @@
             @foreach ($data as $key => $item)
                 <tr>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
-                        {{ $item->name }} - {{ $item->type_furniture->name ?? '' }}
+                        {{ $item->name }} <br> {{ $item->type_furniture->name ?? '' }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
                         <strong>Pisos:</strong> {{ $item->flat == 0? 'Una sola planta' : $item->flat . ' pisos'  }}
@@ -114,13 +110,10 @@
                         {{ currency() }} {{ number_format($item->unit_price, 2) }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
-                        {{ currency() }} {{ number_format($item->sale_price, 2) }}
+                        {{ currency() }} {{ number_format($item->initial_price, 2) }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
-                        {{ $item->is_sold? "Sí" : "No" }}
-                    </td>
-                    <td class="align-center"  style="border-top: 1px solid #f3f3f3">
-                        {{ $item->sale->customer->name ?? '' }}
+                        {{ $item->customer->name ?? '' }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
                         {{ $item->agent_user->name ?? '' }}
@@ -129,7 +122,7 @@
             @endforeach
             @if (count($data) == 0)
                 <tr>
-                    <td colspan="10" class="align-center" style="border-top: 1px solid #f3f3f3">
+                    <td colspan="9" class="align-center" style="border-top: 1px solid #f3f3f3">
                         Sin datos
                     </td>
                 </tr>

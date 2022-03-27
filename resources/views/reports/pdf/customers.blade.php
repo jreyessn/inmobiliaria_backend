@@ -35,15 +35,15 @@
                 <td class="align-center fcw bg-blue">
                     <b>Nombre</b>
                 </td>
+                <td class="align-center fcw bg-blue">
+                    <b>Cédula</b>
+                </td>
                 
                 <td class="align-center fcw bg-blue">
                     <b>Correo</b>
                 </td>
                 <td class="align-center fcw bg-blue">
                     <b>Teléfono</b>
-                </td>
-                <td class="align-center fcw bg-blue">
-                    <b>Límite de Crédito</b>
                 </td>
                 <td class="align-center fcw bg-blue">
                     <b>Fecha de Creación</b>
@@ -57,15 +57,15 @@
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->name }}
                     </td>
+                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
+                        {{ $item->dni }}
+                    </td>
                     
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->email }}
                     </td>
                     <td class="align-center" style="border-top: 1px solid #f3f3f3">
                         {{ $item->phone }}
-                    </td>
-                    <td class="align-center" style="border-top: 1px solid #f3f3f3">
-                        {{ currency() }} {{ number_format($item->limit_credit, 2) }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
                         {{ $item->created_at->format("d/m/Y H:i A") }}

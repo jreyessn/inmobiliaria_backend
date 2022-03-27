@@ -23,8 +23,8 @@ class CreateFurnitureTable extends Migration
             $table->integer("uncovered_garages")->default(0);
             $table->foreignId("measure_unit_id")->nullable()->constrained();
             $table->string("area")->nullable();
-            $table->float("unit_price")->default(0)->comment("Valor Unitario");
-            $table->float("initial_price")->default(0)->comment("Inicial");
+            $table->float("unit_price", 16, 2)->default(0)->comment("Valor Unitario");
+            $table->float("initial_price", 16, 2)->default(0)->comment("Inicial");
             $table->foreignId("type_furniture_id")->constrained();
             $table->unsignedBigInteger("city_id")->nullable();
             $table->string("postal_code")->nullable();

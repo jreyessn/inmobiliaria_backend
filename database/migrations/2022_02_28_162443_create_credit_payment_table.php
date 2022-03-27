@@ -15,7 +15,7 @@ class CreateCreditPaymentTable extends Migration
     {
         Schema::create('credit_payments', function (Blueprint $table) {
             $table->id();
-            $table->float("amount")->default(0);
+            $table->float("amount", 16, 2)->default(0);
             $table->foreignId("credit_cuote_id")->constrained();
             $table->foreignId("payment_method_id")->constrained();
             $table->text("note")->nullable();

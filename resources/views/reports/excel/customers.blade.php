@@ -35,7 +35,7 @@
                     <b>Teléfono</b>
                 </td>
                 <td class="align-center fcw bg-blue">
-                    <b>Límite de Crédito</b>
+                    <b>Cédula</b>
                 </td>
                 <td class="align-center fcw bg-blue">
                     <b>Fecha de Creación</b>
@@ -49,15 +49,15 @@
                     <td>
                         {{ $item->name }}
                     </td>
+                    <td>
+                        {{ $item->dni }}
+                    </td>
                     
                     <td>
                         {{ $item->email }}
                     </td>
                     <td>
                         {{ $item->phone }}
-                    </td>
-                    <td>
-                        {{ $item->limit_credit }}
                     </td>
                     <td>
                         {{ $item->created_at->format("d/m/Y H:i A") }}

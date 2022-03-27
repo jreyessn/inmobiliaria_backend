@@ -27,7 +27,9 @@
                 <td class="align-center fcw bg-blue">
                     <b>Nombre</b>
                 </td>
-                
+                <td class="align-center fcw bg-blue">
+                    <b>Tipo</b>
+                </td>
                 <td class="align-center fcw bg-blue">
                     <b>Pisos</b>
                 </td>
@@ -57,17 +59,13 @@
                 </td>
 
                 <td class="align-center fcw bg-blue">
-                    <b>Precio Unitario</b>
+                    <b>Valor Unitario</b>
                 </td>
                 
                 <td class="align-center fcw bg-blue">
-                    <b>Precio Venta</b>
+                    <b>Inicial Venta</b>
                 </td>
                 
-                <td class="align-center fcw bg-blue">
-                    <b>Vendido</b>
-                </td>
-
                 <td class="align-center fcw bg-blue">
                     <b>Cliente</b>
                 </td>
@@ -83,7 +81,10 @@
             @foreach ($data as $item)
                 <tr>
                     <td>
-                        {{ $item->name }} - {{ $item->type_furniture->name ?? '' }}
+                        {{ $item->name }}
+                    </td>
+                    <td>
+                        {{ $item->type_furniture->name ?? '' }}
                     </td>
                     <td>
                         {{ $item->flat == 0? 'Una sola planta' : $item->flat . ' pisos'  }}
@@ -121,13 +122,11 @@
                          {{ $item->unit_price }}
                     </td>
                     <td>
-                         {{ $item->sale_price }}
+                         {{ $item->initial_price }}
                     </td>
+    
                     <td>
-                        {{ $item->is_sold? "Sí" : "No" }}
-                    </td>
-                    <td>
-                        {{ $item->sale->customer->name ?? '' }}
+                        {{ $item->customer->name ?? '' }}
                     </td>
                     <td>
                         {{ $item->agent_user->name ?? '' }}

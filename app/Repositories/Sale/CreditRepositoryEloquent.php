@@ -15,6 +15,14 @@ use Illuminate\Container\Container as Application;
  */
 class CreditRepositoryEloquent extends BaseRepository implements CreditRepository
 {
+
+    protected $fieldSearchable = [
+        "furniture.name" => "like",
+        "furniture.type_furniture.name" => "like",
+        "furniture.customer.name" => "like",
+        "furniture.unit_price" => "like",
+        "total" => "like",
+    ];
     
     private $CreditCuoteRepositoryEloquent;
 

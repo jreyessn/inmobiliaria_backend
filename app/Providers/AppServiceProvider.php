@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Configuration;
+use App\Models\Sale\CreditPayment;
 use App\Models\Vehicle\Fuel;
 use App\Models\Vehicle\Payment;
 use App\Models\Vehicle\ServiceVehicle;
+use App\Observers\Credit\CreditPaymentChangStatus;
 use App\Observers\KmTrackerObserver;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
@@ -50,6 +52,8 @@ class AppServiceProvider extends ServiceProvider
             KeysCommand::class,
         ]);
 
+        // Observers
+        CreditPayment::observe(CreditPaymentChangStatus::class);
     }
 
     private function setConfigDatabase(){

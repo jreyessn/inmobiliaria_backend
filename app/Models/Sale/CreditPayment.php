@@ -28,6 +28,18 @@ class CreditPayment extends Model implements Transformable
         "note",
     ];
 
+    protected $with = [
+        "payment_method",
+    ];
+
+    protected $appends = [
+        "remaining_balance"   
+    ];
+
+    protected $casts = [
+        "amount" => "float"
+    ];
+
     public function credit_cuote()
     {
         return $this->belongsTo(CreditCuote::class);
@@ -36,5 +48,15 @@ class CreditPayment extends Model implements Transformable
     public function payment_method()
     {
         return $this->belongsTo(PaymentMethod::class)->withTrashed();
+    }
+
+    public function getRemainingBalanceAttribute()
+    {
+        $paymentsPrevious = CreditPayment::where("credit_cuote_id", $this->credit_cuote_id)
+                                          ->where("id", "<", $this->id)
+                                          ->sum("amount");
+        $totalCredit      =  $this->credit_cuote()->select("total")->first()->total;
+
+        return $totalCredit - $paymentsPrevious - $this->amount;
     }
 }

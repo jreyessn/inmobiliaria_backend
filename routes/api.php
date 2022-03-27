@@ -63,8 +63,13 @@ Route::group(['middleware' => ['auth:api']], function(){
     /**
      * Credits
      */
-    Route::put("credits/pay/{credit_cuote_id}", 'Sale\CreditController@pay');
-    Route::get('credits/{id}', 'Sale\CreditController@show');
+    Route::group(["prefix" => "credits"], function(){
+        Route::get('', 'Sale\CreditController@index');
+        Route::get('totals', 'Sale\CreditController@totals');
+        Route::get('{id}', 'Sale\CreditController@show');
+        Route::put("pay/{credit_cuote_id}", 'Sale\CreditController@pay');
+        Route::patch("cuote_reference/{credit_cuote_id}", 'Sale\CreditController@patchCuoteReference');
+    });
 
     /**
      * Deletes

@@ -19,6 +19,7 @@ class CreateCreditTable extends Migration
             $table->float("amount_anticipated", 16, 2)->default(0);
             $table->float("interest_percentage", 16, 2)->default(0);
             $table->float("total", 16, 2)->default(0);
+            $table->boolean("status")->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

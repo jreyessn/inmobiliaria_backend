@@ -67,9 +67,18 @@ class CreditCuote extends Model implements Transformable
     }
 
     public function getDaysLateAttribute(){
-        if(now()->gt($this->expiration_at)){
-            return $this->expiration_at->diffInDays();
+        if(now()->gt($this->expiration_at) && $this->status == 0){
+            return now()->diff($this->expiration_at, "days")->days;
         }
+        
+        if($this->status == 1){
+            $last_payment = $this->payments()->orderBy("created_at", "desc")->first();
+
+            return $last_payment->created_at->gt($this->expiration_at)? 
+                    $last_payment->created_at->diff($this->expiration_at, "days")->days : 
+                    0;
+        }
+
         return 0;
     }
 

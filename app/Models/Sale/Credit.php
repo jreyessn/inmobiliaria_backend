@@ -25,6 +25,7 @@ class Credit extends Model implements Transformable
     protected $fillable = [
         "furniture_id",
         "total",
+        "status",
         "amount_anticipated",
         "interest_percentage",
     ];
@@ -32,7 +33,6 @@ class Credit extends Model implements Transformable
     protected $appends = [
         "amount_payment",
         "amount_pending",
-        "status",
         "status_text",
         "tax_amount"
     ];
@@ -46,9 +46,14 @@ class Credit extends Model implements Transformable
     {
         return $this->hasMany(CreditCuote::class);
     }
+
+    public function payments()
+    {
+        return $this->hasManyThrough(CreditPayment::class, CreditCuote::class);
+    }
     
     public function getAmountPaymentAttribute(){
-        $sumPayments = $this->hasManyThrough(CreditPayment::class, CreditCuote::class)->get()->sum("amount");
+        $sumPayments = $this->payments()->get()->sum("amount");
 
         return $sumPayments;
     }
@@ -61,13 +66,8 @@ class Credit extends Model implements Transformable
         return $this->total - $this->amount_payment;
     }
 
-    public function getStatusAttribute(){
-        return $this->amount_pending == 0? 1 : 0;
-    }
-
     public function getStatusTextAttribute(){
         return $this->status == 1? "Pagado" : "Pendiente";
     }
-
 
 }

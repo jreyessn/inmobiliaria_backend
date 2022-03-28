@@ -43,6 +43,11 @@ Route::get('images/{any}', 'Images\ImagesController@image')->where("any", ".*");
 Route::group(['middleware' => ['auth:api']], function(){
     
     /**
+     * Dashboard
+     */
+    Route::get("dashboard", "DashboardController");
+
+    /**
      * Config general
      */
     Route::group(["prefix" => "config"], function(){
@@ -59,7 +64,6 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('documents', 'Sale\DocumentController@index');
     Route::get('payment_methods', 'Sale\PaymentMethodController@index');
 
-
     /**
      * Credits
      */
@@ -74,7 +78,6 @@ Route::group(['middleware' => ['auth:api']], function(){
     /**
      * Customers
      */
-
     Route::get("customers/account_status", "Customer\CustomerController@account_status");
 
     /**

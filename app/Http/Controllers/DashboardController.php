@@ -6,6 +6,7 @@ use App\Models\Customer\Customer;
 use App\Models\Furniture\Furniture;
 use App\Models\Movements\MovementDetail;
 use App\Models\Products\Stock;
+use App\Models\Sale\Credit;
 use App\Models\Sale\CreditCuote;
 use App\Models\Services\CategoriesService;
 use App\Models\Services\Service;
@@ -137,15 +138,25 @@ class DashboardController extends Controller
                                 credit_cuotes.number_letter,
                                 (credit_cuotes.total - SUM(credit_payments.amount)) AS amount_pending,
                                 credit_cuotes.total,
-                                credit_cuotes.expiration_at
+                                credit_cuotes.expiration_at,
+                                furniture.name as furniture_name,
+                                customers.name as customer_name
                               ")
                               ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")
+                              ->join("credits", "credits.id", "=", "credit_cuotes.credit_id", "left")
+                              ->join("furniture", "furniture.id", "=", "credits.furniture_id", "left")
+                              ->join("customers", "customers.id", "=", "furniture.customer_id", "left")
                               ->where("credit_cuotes.expiration_at", ">=", now())
                               ->groupBy("credit_cuotes.id")
                               ->havingRaw("amount_pending > 0 or amount_pending is null")
                               ->orderBy("expiration_at", "asc")
                               ->limit(8)
-                              ->get();
+                              ->get()
+                              ->map(function($data){
+                                $data->credit_cuote = CreditCuote::find($data->id);
+
+                                return $data;
+                              });
 
         return $chart;
     }
@@ -164,15 +175,25 @@ class DashboardController extends Controller
                                 credit_cuotes.number_letter,
                                 (credit_cuotes.total - SUM(credit_payments.amount)) AS amount_pending,
                                 credit_cuotes.total,
-                                credit_cuotes.expiration_at
+                                credit_cuotes.expiration_at,
+                                furniture.name as furniture_name,
+                                customers.name as customer_name
                               ")
                               ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")
+                              ->join("credits", "credits.id", "=", "credit_cuotes.credit_id", "left")
+                              ->join("furniture", "furniture.id", "=", "credits.furniture_id", "left")
+                              ->join("customers", "customers.id", "=", "furniture.customer_id", "left")
                               ->where("credit_cuotes.expiration_at", "<", now())
                               ->groupBy("credit_cuotes.id")
                               ->havingRaw("amount_pending > 0 or amount_pending is null")
                               ->orderBy("expiration_at", "asc")
                               ->limit(8)
-                              ->get();
+                              ->get()
+                              ->map(function($data){
+                                $data->credit_cuote = CreditCuote::find($data->id);
+
+                                return $data;
+                            });
         return $chart;
     }
 

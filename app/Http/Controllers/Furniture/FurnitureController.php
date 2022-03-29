@@ -201,7 +201,13 @@ class FurnitureController extends Controller
     {
         try{
 
-            $this->FurnitureRepositoryEloquent->delete($id);
+            $furniture = $this->FurnitureRepositoryEloquent->find($id);
+            
+            if($furniture->credit){
+                $furniture->credit->delete();
+            }
+
+            $furniture->delete();
 
             return response()->json(null, 204);
 

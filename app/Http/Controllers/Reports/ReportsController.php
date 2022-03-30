@@ -57,22 +57,22 @@ class ReportsController extends Controller
                             "since" => $request->since? Carbon::parse($request->since) : null,
                             "until" => $request->until? Carbon::parse($request->until) : null,
                         ],
-                        'view' => 'reports.excel.reports_services'
+                        'view' => 'reports.excel.report_credit_cuote'
                     ]),
-                    'reports_services.xlsx'
+                    'report_credit_cuote.xlsx'
                 );
             break;
                 
             case 'pdf':
-                $data = $this->CreditCuoteRepositoryEloquent->get();
+                $data = $this->CreditCuoteRepositoryEloquent->orderBy("expiration_at", "ASC")->get();
 
-                return PDF::loadView('reports/pdf/reports_services', [
+                return PDF::loadView('reports/pdf/report_credit_cuote', [
                     
                     "data"  => $data,
                     "since" => $request->since? Carbon::parse($request->since) : null,
                     "until" => $request->until? Carbon::parse($request->until) : null,
 
-                ])->stream('reports_services.pdf');
+                ])->stream('report_credit_cuote.pdf');
 
             break;
 

@@ -153,6 +153,36 @@ class CreditController extends Controller
     }
 
     /**
+     * Actualizar cuota de referencia
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function patchPaymentNfc(Request $request, $payment_id)
+    {
+
+        DB::beginTransaction();
+
+        try{
+            
+            $store = $this->CreditPaymentRepositoryEloquent->find($payment_id);
+            $store->nfc = $request->nfc ?? '';
+            $store->save();
+
+            DB::commit();
+
+            return response()->json([
+                "message" => "Actualizado con éxito",
+                "data" => $store
+            ], 201);
+
+        }catch(\Exception $e){
+            DB::rollback();
+            
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

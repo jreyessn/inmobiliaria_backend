@@ -70,11 +70,10 @@ class CreditCuote extends Model implements Transformable
         if(now()->gt($this->expiration_at) && $this->status == 0){
             return now()->diff($this->expiration_at, "days")->days;
         }
-        
+
         if($this->status == 1){
             $last_payment = $this->payments()->orderBy("created_at", "desc")->first();
-
-            return $last_payment->created_at->gt($this->expiration_at)? 
+            return $last_payment->created_at->gt($this->expiration_at . " 23:59:59")? 
                     $last_payment->created_at->diff($this->expiration_at, "days")->days : 
                     0;
         }

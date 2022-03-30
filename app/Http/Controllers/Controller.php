@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Configuration;
+use App\Models\Country\City;
+use App\Models\Country\Country;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -22,6 +24,7 @@ class Controller extends BaseController
     {
         $request->validate([
             "country_id" => "nullable|exists:countries,id",
+            "city_id"    => "nullable|exists:cities,id",
             "logo_white" => "file|mimes:jpg,jpeg,png|dimensions:max_width=900,max_height=700",
             "logo_dark"  => "file|mimes:jpg,jpeg,png|dimensions:max_width=900,max_height=700"
         ]);
@@ -54,7 +57,7 @@ class Controller extends BaseController
      */
     public function config()
     {
-        return Configuration::get()->flatMap(function($item){
+        $configs = Configuration::get()->flatMap(function($item){
             $value = $item->value;
 
             if($item->key == "logo_dark" || $item->key == "logo_white"){
@@ -63,6 +66,17 @@ class Controller extends BaseController
 
             return [ $item->key => $value ];
         });
+
+        foreach ($configs as $key => $configValue) {
+            if($key == "city_id"){
+                $configs["city"] = City::find($configValue);
+            }
+            if($key == "country_id"){
+                $configs["country"] = Country::find($configValue);
+            }
+        }
+
+        return $configs;
     }
 
     /**

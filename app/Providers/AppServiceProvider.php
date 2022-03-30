@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Configuration;
+use App\Models\Country\City;
+use App\Models\Country\Country;
 use App\Models\Sale\Credit;
 use App\Models\Sale\CreditPayment;
 use App\Models\Vehicle\Fuel;
@@ -64,6 +66,17 @@ class AppServiceProvider extends ServiceProvider
             $all = Configuration::all();
 
             foreach ($all as $setting) {
+
+                if($setting->key == "country_id"){
+                    $country_name = Country::find($setting->value)->name ?? '';
+                    Config::set('app.country_name', $country_name);
+                }
+
+                if($setting->key == "city_id"){
+                    $city_name = City::find($setting->value)->name ?? '';
+                    Config::set('app.city_name', $city_name);
+                }
+
                 Config::set('app.'.$setting->key, $setting->value);
             }
         }

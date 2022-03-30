@@ -50,7 +50,19 @@ class ConfigurationSeeder extends Seeder
             [
                "key"   => "country_id",
                "value" => 62 // DO
-            ]
+            ],
+            [
+               "key"   => "city_id",
+               "value" => null
+            ],
+            [
+               "key"   => "receipt_name",
+               "value" => null
+            ],
+            [
+               "key"   => "receipt_footer",
+               "value" => null
+            ],
         ]);
     }
 }

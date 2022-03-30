@@ -40,6 +40,9 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * Paginacion estados de cuenta
+     */
     public function paginateAccountStatus($perPage) {
         $paginate = $this->paginate($perPage);
 
@@ -48,6 +51,19 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         }
 
         return $paginate;
+    }
+
+    /**
+     * Obtener todo estados de cuenta
+     */
+    public function getAccountStatus() {
+        $items = $this->get();
+
+        foreach ($items as $item) {
+            $item = $this->appendAccountStatus($item);
+        }
+
+        return $items;
     }
 
     /**

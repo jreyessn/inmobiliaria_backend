@@ -11,6 +11,7 @@ use App\Rules\Credit\AmountLessCuote;
 use App\Rules\Credit\CuoteValid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class CreditController extends Controller
 {
@@ -97,7 +98,8 @@ class CreditController extends Controller
                 new AmountLessCuote($request->credit_cuote_id)
             ],
             'payment_method_id' => 'required|exists:payment_methods,id',
-            "note"              => "nullable|string"
+            "note"              => "nullable|string",
+            "nfc"               => "nullable|string",
         ]);
 
         DB::beginTransaction();
@@ -161,6 +163,17 @@ class CreditController extends Controller
         return [
             "data" => $this->CreditRepositoryEloquent->find($id)->load(["cuotes.payments"])
         ];
+    }
+
+    /**
+     * Imprimir recibo de pago
+     */
+    public function printPay($payment_id){
+        $payment = $this->CreditPaymentRepositoryEloquent->find($payment_id);
+
+        return PDF::loadView('reports.pdf.recibo_pago', [
+            "payment"  => $payment,
+        ])->stream('recibo_pago.pdf');
     }
 
 }

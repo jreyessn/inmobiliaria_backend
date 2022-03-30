@@ -26,6 +26,7 @@ class CreditPayment extends Model implements Transformable
         "credit_cuote_id",
         "payment_method_id",
         "note",
+        "nfc",
     ];
 
     protected $with = [

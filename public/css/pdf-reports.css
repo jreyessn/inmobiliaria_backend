@@ -190,3 +190,91 @@ thead{
 tr{
     width: 100%;
 }
+
+/**
+* PDF estado cuenta
+*/
+.account-status {
+    border: 1px solid #e2e8f0;
+    font-size: 10px;
+}
+
+.account-status thead td {
+    border-bottom: 0.5px solid #e2e8f0;
+}
+
+.account-status .cell-title {
+    color: #555e6b;
+    background-color: #e2e8f0;
+    text-transform: uppercase;
+}
+
+.account-status td {
+    color: #555e6b;
+}
+
+.account-status .span-pending {
+    color: #ed9600;
+}
+.account-status .span-success {
+    color: #48ce79;
+}
+
+.account-status .strong td {
+    font-weight: bold;
+}
+
+
+body.recibo {
+    color: #000;
+    font-size: 16px;
+}
+
+.recibo .titulo-empresa {
+    font-weight: 800;
+    font-size: 28px;
+    line-height: 1rem;
+    letter-spacing: -1.5px;
+}
+
+.recibo .titulo-recibo {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1rem;
+    letter-spacing: 1px;
+    text-align: right;
+}
+.recibo .info-empresa {
+    font-size: 13px;
+}
+
+.recibo .bold {
+    font-weight: 600;
+}
+
+.recibo .mb-2 {
+    margin-bottom: 2rem;
+}
+
+.recibo td.campos-recibo {
+    text-align: right;
+}
+
+.recibo td.value-recibo {
+    text-align: center;
+}
+
+.recibo .table-conceptos td {
+    padding-top: 0.5rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.recibo .table-conceptos td.concepto {
+    border-bottom: 0px;
+}
+
+
+.line{
+    border-bottom: 1px solid grey;
+}

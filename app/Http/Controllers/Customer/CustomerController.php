@@ -90,25 +90,25 @@ class CustomerController extends Controller
 
         switch ($request->format) {
             case 'excel':
-                $data = $this->CustomerRepositoryEloquent->get();
+                $data = $this->CustomerRepositoryEloquent->getAccountStatus();
 
                 return Excel::download(
                     new ViewExport ([
                         'data' => [
                             "data"  => $data,
                         ],
-                        'view' => 'reports.excel.customers'
+                        'view' => 'reports.excel.account_status'
                     ]),
-                    'customers.xlsx'
+                    'account_status.xlsx'
                 );
             break;
                 
             case 'pdf':
-                $data = $this->CustomerRepositoryEloquent->get();
+                $data = $this->CustomerRepositoryEloquent->getAccountStatus();
 
-                return PDF::loadView('reports.pdf.customers', [
+                return PDF::loadView('reports.pdf.account_status', [
                     "data"  => $data,
-                ])->download('customers.pdf');
+                ])->stream('account_status.pdf');
 
             break;
 

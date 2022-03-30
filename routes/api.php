@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 // Auth
 
 Route::get("artisan", "Controller@handlerArtisan");
+Route::get("credits/print/pay/{payment_id}", 'Sale\CreditController@printPay');
 
 Route::get("config", "Controller@config");
 
@@ -72,6 +73,7 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::get('totals', 'Sale\CreditController@totals');
         Route::get('{id}', 'Sale\CreditController@show');
         Route::put("pay/{credit_cuote_id}", 'Sale\CreditController@pay');
+        // Route::get("print/pay/{payment_id}", 'Sale\CreditController@printPay');
         Route::patch("cuote_reference/{credit_cuote_id}", 'Sale\CreditController@patchCuoteReference');
     });
 

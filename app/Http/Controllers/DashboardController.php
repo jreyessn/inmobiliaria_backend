@@ -192,10 +192,10 @@ class DashboardController extends Controller
                               ->limit(8)
                               ->get()
                               ->map(function($data){
-                                $data->credit_cuote = CreditCuote::find($data->id);
+                                    $data->credit_cuote = CreditCuote::find($data->id);
 
-                                return $data;
-                            });
+                                    return $data;
+                              });
         return $chart;
     }
 

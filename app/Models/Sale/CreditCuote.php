@@ -49,7 +49,7 @@ class CreditCuote extends Model implements Transformable
     }
 
     public function payments(){
-        return $this->hasMany(CreditPayment::class);
+        return $this->hasMany(CreditPayment::class)->orderBy("created_at", "desc");
     }
 
     public function getAmountPendingAttribute(){

@@ -79,6 +79,12 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Customers
      */
     Route::get("customers/account_status", "Customer\CustomerController@account_status");
+    
+    
+    /**
+     * Reports
+     */
+    Route::get("reports/credit_cuotes", "Reports\ReportsController@credit_cuotes");
 
     /**
      * Deletes

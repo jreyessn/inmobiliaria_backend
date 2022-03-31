@@ -25,6 +25,30 @@
                 <b style="font-size: 15px;">Estados de Cuenta</b>
             </td>
         </tr>
+        <tr>
+            <td>
+                <strong>Total Créditos: </strong> 
+            </td>
+            <td colspan="6">
+                <span>{{ currency() }} {{ number_format($data->sum("total"), 2) }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Total Pagado: </strong> 
+            </td>
+            <td colspan="6">
+                <span>{{ currency() }} {{ number_format($data->sum("total_paid"), 2) }}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Total Deuda: </strong> 
+            </td>
+            <td colspan="6">
+                <span>{{ currency() }} {{ number_format($data->sum("total_balance"), 2) }}</span>
+            </td>
+        </tr>
     </table>
 
     @foreach ($data as $item) 

@@ -2,11 +2,14 @@
 
 namespace App\Repositories\Customer;
 
+use App\Criteria\SinceUntilCreatedAtCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\Customer\CustomerRepository;
 use App\Models\Customer\Customer;
+use App\Repositories\Sale\CreditPaymentRepositoryEloquent;
 use App\Validators\Customer\CustomerValidator;
+use Illuminate\Container\Container as Application;
 
 /**
  * Class CustomerRepositoryEloquent.
@@ -20,6 +23,18 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         "name" => "like"
     ];
     
+    private $CreditPaymentRepositoryEloquent;
+
+    function __construct(
+        CreditPaymentRepositoryEloquent $CreditPaymentRepositoryEloquent,
+        Application $app
+    )
+    {
+        parent::__construct($app);
+        $this->CreditPaymentRepositoryEloquent = $CreditPaymentRepositoryEloquent;
+    }
+
+
     /**
      * Specify Model class name
      *
@@ -71,10 +86,19 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
      */
     public function appendAccountStatus(Customer $customer)
     {
-        $customer->total         = $customer->credits->sum("total");
-        $customer->total_paid    = $customer->credits->sum("amount_payment");
-        $customer->total_balance = $customer->total - $customer->total_paid;
-        $customer->credits->load(["payments.credit_cuote", "furniture"]); 
+        $this->CreditPaymentRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+
+        $customer->credits->load(["furniture"]);        
+        $customer->total              = $customer->credits->sum("total");
+        $customer->total_paid         = $customer->credits->sum("amount_payment");
+        $customer->total_balance      = $customer->total - $customer->total_paid;
+        
+        foreach ($customer->credits as $credit) {
+            $credit->payments = $this->CreditPaymentRepositoryEloquent
+                                     ->whereHas("credit_cuote", function($query) use ($credit){
+                                           $query->where("credit_id", $credit->id);
+                                      })->with("credit_cuote")->get();
+        }
 
         return $customer;
     }

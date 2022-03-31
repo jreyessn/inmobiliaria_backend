@@ -26,6 +26,21 @@
                     <h2 class="fcb align-center">Estados de Cuenta</h2>
                 </td>
             </tr>
+            <tr>
+                <td colspan="3">
+                    <strong>Total Créditos: </strong> <span>{{ currency() }} {{ number_format($data->sum("total"), 2) }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <strong>Total Pagado: </strong> <span>{{ currency() }} {{ number_format($data->sum("total_paid"), 2) }}</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <strong>Total Deuda: </strong> <span>{{ currency() }} {{ number_format($data->sum("total_balance"), 2) }}</span>
+                </td>
+            </tr>
         </tbody>
     </table>
 

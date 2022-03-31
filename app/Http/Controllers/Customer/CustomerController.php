@@ -119,6 +119,24 @@ class CustomerController extends Controller
     }
 
     /**
+     * Mostrar total de estados de cuenta
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function account_status_total(Request $request)
+    {
+        $this->CustomerRepositoryEloquent->pushCriteria(AccountStatusCriteria::class);
+
+        $data = $this->CustomerRepositoryEloquent->getAccountStatus();
+
+        $resp["total"]         = $data->sum("total");
+        $resp["total_paid"]    = $data->sum("total_paid");
+        $resp["total_balance"] = $data->sum("total_balance");
+
+        return $resp;
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

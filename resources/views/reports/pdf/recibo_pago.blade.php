@@ -155,8 +155,9 @@
     <table cellspacing="0" class="col-10 table-conceptos">
         <tr>
             <td style="width: 60%" class="line concepto">&nbsp;</td>
-            <td style="width: 30%; text-align: center; font-size: 13px;" class="line">
+            <td style="width: 30%; text-align: center; font-size: 13px; position: relative;" class="line">
                 {{ config("app.receipt_name") }}
+                <img src="{{ public_path('sello.png') }}" width="40%" alt="" style="position: absolute; top: -40px; opacity: 0.6">
             </td>
             <td style="width: 10%" class="line concepto">&nbsp;</td>
         </tr>

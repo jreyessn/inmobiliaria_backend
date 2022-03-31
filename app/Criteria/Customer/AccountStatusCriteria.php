@@ -23,7 +23,17 @@ class AccountStatusCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
 
-        $id = request()->get("id", null);
+        $id    = request()->get("id", null);
+        $since = request()->get("since", null);
+        $until = request()->get("until", null);
+
+        if($since && $until){
+            $model = $model->whereHas("credits", function($query) use ($since, $until){
+                $query->whereHas("payments", function($query) use ($since, $until){
+                    $query->whereBetween("credit_payments.created_at", [ "$since 00:00:00", "$until 23:59:59" ]);
+                });
+            });
+        }
 
         if($id){
             $id    = explode(",", $id);

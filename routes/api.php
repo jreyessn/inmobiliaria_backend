@@ -83,6 +83,7 @@ Route::group(['middleware' => ['auth:api']], function(){
      * Customers
      */
     Route::get("customers/account_status", "Customer\CustomerController@account_status");
+    Route::get("customers/account_status_total", "Customer\CustomerController@account_status_total");
     
     
     /**

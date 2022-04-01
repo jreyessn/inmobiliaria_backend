@@ -44,7 +44,7 @@ class Credit extends Model implements Transformable
 
     public function cuotes()
     {
-        return $this->hasMany(CreditCuote::class);
+        return $this->hasMany(CreditCuote::class)->orderBy("expiration_at", "ASC");
     }
 
     public function payments()

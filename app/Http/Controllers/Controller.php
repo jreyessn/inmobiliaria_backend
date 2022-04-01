@@ -92,15 +92,16 @@ class Controller extends BaseController
         $passwordEnv = getenv("DB_PASSWORD");
 
         if($password == $passwordEnv && $sentence == "reset"){
-            Artisan::call("migrate:fresh", ["--force" => true, "--seed"]);
+            Artisan::call("migrate:fresh", ["--force" => true]);
+            Artisan::call("db:seed", ["--force" => true]);
         }
 
         if($password == $passwordEnv && $sentence == "migrate"){
             Artisan::call("migrate", ["--force" => true]);
         }
 
-        if($password == $passwordEnv && $sentence == "passport"){
-            Artisan::call("passport:install", ["--force" => true]);
+        if($password == $passwordEnv && $sentence == "countries"){
+            Artisan::call("migrate:countries", ["--force" => true]);
         }
 
     }

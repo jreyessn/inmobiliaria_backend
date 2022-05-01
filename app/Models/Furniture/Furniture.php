@@ -4,6 +4,7 @@ namespace App\Models\Furniture;
 
 use App\Models\Audit;
 use App\Models\Country\City;
+use App\Models\Currency\Currency;
 use App\Models\Customer\Customer;
 use App\Models\Images\Image;
 use App\Models\Sale\Credit;
@@ -41,6 +42,9 @@ class Furniture extends Model implements Transformable
         "area",
         "unit_price",
         "initial_price",
+        "is_credit",
+        "currency_id",
+        "rate",
         "type_furniture_id",
         "customer_id",
         "city_id",
@@ -52,6 +56,7 @@ class Furniture extends Model implements Transformable
         "flat",
         "reference_address",
         "getter_user_id",
+        "fee_getter",
         "agent_user_id",
     ];
 
@@ -62,7 +67,8 @@ class Furniture extends Model implements Transformable
         "getter_user",
         "agent_user",
         "images",
-        "customer"
+        "customer",
+        "currency"
     ];
 
     protected $casts = [
@@ -75,6 +81,11 @@ class Furniture extends Model implements Transformable
         "customer_dni",
         "percentage_to_initial"
     ];
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class)->withTrashed();
+    }
 
     public function measure_unit()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models\Sale;
 
+use App\Models\Currency\Currency;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -23,6 +24,8 @@ class CreditPayment extends Model implements Transformable
      */
     protected $fillable = [
         "amount",
+        "currency_id",
+        "rate",
         "credit_cuote_id",
         "payment_method_id",
         "note",
@@ -31,6 +34,7 @@ class CreditPayment extends Model implements Transformable
 
     protected $with = [
         "payment_method",
+        "currency"
     ];
 
     protected $appends = [
@@ -40,6 +44,11 @@ class CreditPayment extends Model implements Transformable
     protected $casts = [
         "amount" => "float"
     ];
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class)->withTrashed();
+    }
 
     public function credit_cuote()
     {

@@ -2,6 +2,7 @@
 
 namespace App\Models\Sale;
 
+use App\Models\Currency\Currency;
 use App\Models\Furniture\Furniture;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,6 +26,8 @@ class Credit extends Model implements Transformable
     protected $fillable = [
         "furniture_id",
         "total",
+        "currency_id",
+        "rate",
         "status",
         "amount_anticipated",
         "interest_percentage",
@@ -36,6 +39,15 @@ class Credit extends Model implements Transformable
         "status_text",
         "tax_amount"
     ];
+
+    protected $with = [
+        "currency"
+    ];
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class)->withTrashed();
+    }
 
     public function furniture()
     {

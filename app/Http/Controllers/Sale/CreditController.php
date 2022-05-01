@@ -72,12 +72,19 @@ class CreditController extends Controller
                         ->first()
                         ->total_paid ?? 0;
 
+       $total_unit_price =  $this->CreditRepositoryEloquent
+                                ->selectRaw("credits.id, sum(furniture.unit_price) as total_unit_price")
+                                ->join("furniture", "furniture.id", "=", "credits.furniture_id", "left")
+                                ->first()
+                                ->total_unit_price ?? 0;
+
         $total_debs = $total - $total_paid; 
         
         return [
-            "total" => $total,
-            "total_paid" => $total_paid,
-            "total_debs" => $total_debs,
+            "total"            => $total,
+            "total_paid"       => $total_paid,
+            "total_debs"       => $total_debs,
+            "total_unit_price" => $total_unit_price
         ];
     }
 

@@ -15,8 +15,9 @@ class CreateUsersPreferencesTable extends Migration
     {
         Schema::create('users_preferences', function (Blueprint $table) {
             $table->foreignId("user_id")->constrained();
-            $table->string("key")->primary();
+            $table->string("key");
             $table->string("value")->nullable();
+            $table->primary(["user_id", "key"]);
         });
     }
 

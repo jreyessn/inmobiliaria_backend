@@ -27,6 +27,11 @@ class FurnitureCriteria implements CriteriaInterface
         $city_id           = request()->get("city_id", null);
         $customer_id       = request()->get("customer_id", null);
         $paid              = request()->get("paid", null);
+        $currency_id       = request()->get("currency_id", null);
+
+        if($currency_id){
+            $model = $model->where("currency_id", $currency_id);
+        }
 
         if($agent_user_id){
             $list = explode(",", $agent_user_id);

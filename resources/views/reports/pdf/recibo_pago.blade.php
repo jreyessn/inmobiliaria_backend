@@ -104,14 +104,14 @@
         <tr>
             <td style="width: 17%" class="line concepto">La Cantidad de:</td>
             <td class="line">
-                {{  strtoupper(number_words($payment->amount, "Pesos", ",", ".")) }}
+                {{  strtoupper(number_words($payment->amount, ($payment->currency->name ?? "Pesos"), ",", ".")) }}
             </td>
         </tr>
     </table>
     <table cellspacing="0" class="col-10 table-conceptos">
         <tr>
             <td style="width: 55%" class="line"></td>
-            <td style="width: 7%" class="line concepto">RD$:</td>
+            <td style="width: 7%" class="line concepto">{{ ($payment->currency->symbol ?? "$") }}:</td>
             <td style="" class="line">
                 {{ number_format($payment->amount) }}
             </td>

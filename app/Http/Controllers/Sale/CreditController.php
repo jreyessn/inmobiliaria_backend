@@ -64,6 +64,7 @@ class CreditController extends Controller
                      ->selectRaw("credits.id, sum(credits.total) as total_credit")
                      ->first()
                      ->total_credit ?? 0;
+        $this->CreditRepositoryEloquent->resetModel();
 
        $total_paid = $this->CreditRepositoryEloquent
                         ->selectRaw("credits.id, sum(credit_payments.amount) as total_paid")
@@ -71,6 +72,7 @@ class CreditController extends Controller
                         ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")
                         ->first()
                         ->total_paid ?? 0;
+        $this->CreditRepositoryEloquent->resetModel();
 
        $total_unit_price =  $this->CreditRepositoryEloquent
                                 ->selectRaw("credits.id, sum(furniture.unit_price) as total_unit_price")
@@ -112,8 +114,11 @@ class CreditController extends Controller
         DB::beginTransaction();
 
         try{
-            
-            $store = $this->CreditPaymentRepositoryEloquent->save($request->all());
+            $creditCuote = $this->CreditCuoteRepositoryEloquent->find($credit_cuote_id);
+            $data        = $request->all();
+            $data["currency_id"] = $creditCuote->credit->furniture->currency_id ?? null;
+
+            $store = $this->CreditPaymentRepositoryEloquent->save($data);
 
             DB::commit();
 
@@ -198,7 +203,7 @@ class CreditController extends Controller
     public function show($id)
     {
         return [
-            "data" => $this->CreditRepositoryEloquent->find($id)->load(["cuotes.payments"])
+            "data" => $this->CreditRepositoryEloquent->find($id)->load(["cuotes.payments", "furniture"])
         ];
     }
 

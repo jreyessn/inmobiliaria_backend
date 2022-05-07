@@ -48,6 +48,7 @@ class DashboardController extends Controller
         if($request->has("cuotes_paid")){
             $data["cuotes_paid"] = $this->cuotes_paid();
         }
+
         if($request->has("overview")){
             $data["overview"] = $this->overview();
         }
@@ -130,6 +131,7 @@ class DashboardController extends Controller
     function next_cuotes(){
         $since  = request()->get("since");
         $until  = request()->get("until");
+        $currency_id = request()->get("currency_id", null);
         $chart  = [];
 
         $chart["cuotes"] = DB::table("credit_cuotes")
@@ -146,6 +148,12 @@ class DashboardController extends Controller
                               ->join("credits", "credits.id", "=", "credit_cuotes.credit_id", "left")
                               ->join("furniture", "furniture.id", "=", "credits.furniture_id", "left")
                               ->join("customers", "customers.id", "=", "furniture.customer_id", "left")
+                              ->when($currency_id, function($query) use ($currency_id){
+                                    $query->where(function($query) use ($currency_id){
+                                        $query->where("credit_payments.currency_id", $currency_id);
+                                        $query->orWhere("furniture.currency_id", $currency_id);
+                                    });
+                               })
                               ->whereNull("credits.deleted_at")
                               ->where("credit_cuotes.expiration_at", ">=", now())
                               ->groupBy("credit_cuotes.id")
@@ -168,6 +176,7 @@ class DashboardController extends Controller
     function expired_cuotes(){
         $since  = request()->get("since");
         $until  = request()->get("until");
+        $currency_id = request()->get("currency_id", null);
         $chart  = [];
 
         $chart["cuotes"] = DB::table("credit_cuotes")
@@ -184,6 +193,12 @@ class DashboardController extends Controller
                               ->join("credits", "credits.id", "=", "credit_cuotes.credit_id", "left")
                               ->join("furniture", "furniture.id", "=", "credits.furniture_id", "left")
                               ->join("customers", "customers.id", "=", "furniture.customer_id", "left")
+                              ->when($currency_id, function($query) use ($currency_id){
+                                    $query->where(function($query) use ($currency_id){
+                                        $query->where("credit_payments.currency_id", $currency_id);
+                                        $query->orWhere("furniture.currency_id", $currency_id);
+                                    });
+                                })
                               ->whereNull("credits.deleted_at")
                               ->where("credit_cuotes.expiration_at", "<", now())
                               ->groupBy("credit_cuotes.id")
@@ -205,6 +220,7 @@ class DashboardController extends Controller
     function customer_debs(){
         $since  = request()->get("since");
         $until  = request()->get("until");
+        $currency_id = request()->get("currency_id", null);
         $chart  = [];
 
         $customers = DB::table("customers")
@@ -217,6 +233,12 @@ class DashboardController extends Controller
                             ->whereNull("credits.deleted_at")
                             ->whereNull("credit_cuotes.deleted_at")
                             ->whereNull("credit_payments.deleted_at")
+                            ->when($currency_id, function($query) use ($currency_id){
+                                $query->where(function($query) use ($currency_id){
+                                    $query->where("credit_payments.currency_id", $currency_id);
+                                    $query->orWhere("furniture.currency_id", $currency_id);
+                                });
+                            })
                             ->groupBy("customers.id")
                             ->orderBy("amount_pending", "desc")
                             ->havingRaw("amount_pending is not null")
@@ -253,6 +275,7 @@ class DashboardController extends Controller
      */
     function overview(){
         $year = request()->get("year", date("Y"));
+        $currency_id = request()->get("currency_id", null);
         $period = \Carbon\CarbonPeriod::create("{$year}-01-01", '1 month', "{$year}-12-01");
         $months = collect([]);
 
@@ -267,7 +290,7 @@ class DashboardController extends Controller
 
         /* Se consulta por cada mes */
         foreach ($months as $month) {
-            $closure = function() use ($month){
+            $closure = function() use ($month, $currency_id){
                 $values = DB::table("credit_cuotes")
                                 ->selectRaw("
                                     credit_cuotes.id,
@@ -278,6 +301,9 @@ class DashboardController extends Controller
                                 ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")
                                 ->whereNull("credit_cuotes.deleted_at")
                                 ->whereBetween("credit_payments.created_at", [$month->first_day, $month->end_day])
+                                ->when($currency_id, function($query) use ($currency_id){
+                                    $query->where("credit_payments.currency_id", $currency_id);
+                                })
                                 ->groupBy("credit_cuotes.id")
                                 ->havingRaw("total_paid is not null")
                                 ->orderBy("credit_payments.created_at", "asc")

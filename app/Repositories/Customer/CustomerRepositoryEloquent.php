@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Customer;
 
+use App\Criteria\Sale\CreditPaymentCriteria;
 use App\Criteria\SinceUntilCreatedAtCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -87,13 +88,22 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     public function appendAccountStatus(Customer $customer)
     {
         $this->CreditPaymentRepositoryEloquent->pushCriteria(SinceUntilCreatedAtCriteria::class);
+        $this->CreditPaymentRepositoryEloquent->pushCriteria(CreditPaymentCriteria::class);
+        $whereCurrencyClosure = function($query){
+            $currency_id = request()->get("currency_id", null);
+            
+            if($currency_id)
+                $query->where("currency_id", $currency_id);
+        };
 
-        $customer->credits->load(["furniture"]);        
-        $customer->total              = $customer->credits->sum("total");
-        $customer->total_paid         = $customer->credits->sum("amount_payment");
+        $customer->total              = $customer->credits()->whereHas("furniture", $whereCurrencyClosure)->get()->sum("total");
+        $customer->total_paid         = $customer->credits()->whereHas("furniture", $whereCurrencyClosure)->get()->sum("amount_payment");
         $customer->total_balance      = $customer->total - $customer->total_paid;
         
-        foreach ($customer->credits as $credit) {
+        $credits = $customer->credits; 
+        $credits->load(["furniture"]);        
+
+        foreach ($credits as $credit) {
             $credit->payments = $this->CreditPaymentRepositoryEloquent
                                      ->whereHas("credit_cuote", function($query) use ($credit){
                                            $query->where("credit_id", $credit->id);
@@ -102,6 +112,12 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
                                       ->orderBy("id")
                                       ->get();
         }
+
+        $customer->unsetRelation("credits");
+
+        $customer->credits = $credits->filter(function($credit){
+            return $credit->payments->count() > 0? true : false;
+        })->values();
 
         return $customer;
     }

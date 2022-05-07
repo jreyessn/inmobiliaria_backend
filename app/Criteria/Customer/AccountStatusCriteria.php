@@ -23,9 +23,18 @@ class AccountStatusCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
 
-        $id    = request()->get("id", null);
-        $since = request()->get("since", null);
-        $until = request()->get("until", null);
+        $id           = request()->get("id", null);
+        $since        = request()->get("since", null);
+        $until        = request()->get("until", null);
+        $currency_id  = request()->get("currency_id", null);
+
+        if($currency_id){
+            $model->whereHas("credits", function($query) use ($currency_id){
+                $query->whereHas("payments", function($query) use ($currency_id){
+                    $query->where("currency_id", $currency_id);
+                });
+            });
+        }
 
         if($since && $until){
             $model = $model->whereHas("credits", function($query) use ($since, $until){

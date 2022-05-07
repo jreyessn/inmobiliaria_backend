@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Currencies\CurrenciesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,6 +64,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('countries', 'Country\CountryController@index');
     Route::get('documents', 'Sale\DocumentController@index');
     Route::get('payment_methods', 'Sale\PaymentMethodController@index');
+    Route::get("currencies", [CurrenciesController::class, "__invoke"]);
 
     /**
      * Credits

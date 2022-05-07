@@ -15,7 +15,8 @@ class CreateCurrenciesTable extends Migration
     {
         Schema::create('currencies', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 20);
+            $table->string("name", 50);
+            $table->string("short_name", 20);
             $table->string("symbol", 5);
             $table->boolean("main")->default(0)->comment("Moneda principal");
             $table->float("rate")->comment("Tasa de cambio");

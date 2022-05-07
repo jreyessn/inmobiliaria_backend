@@ -109,6 +109,7 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
             ]);
 
         $this->CreditPaymentRepositoryEloquent->save([
+            "currency_id"       => $furniture->currency_id,
             "amount"            => $furniture->initial_price,
             "credit_cuote_id"   => $cuote->id,
             "payment_method_id" => $payment["payment_method_id"],

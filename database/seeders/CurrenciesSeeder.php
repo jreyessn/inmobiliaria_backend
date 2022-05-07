@@ -16,6 +16,7 @@ class CurrenciesSeeder extends Seeder
     {
         Currency::create([
             "name"      => "Dolar Estadounidense",
+            "short_name"=> "USD",
             "symbol"    => "$",
             "main"      => 0,
             "rate"      => 0,
@@ -24,6 +25,7 @@ class CurrenciesSeeder extends Seeder
         
         Currency::create([
             "name"      => "Peso Dominicano",
+            "short_name"=> "RD",
             "symbol"    => "RD$",
             "main"      => 1,
             "rate"      => 0,

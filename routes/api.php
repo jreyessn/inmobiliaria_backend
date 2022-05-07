@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::get("artisan", "Controller@handlerArtisan");
 
 Route::get("config", "Controller@config");
+Route::get("currencies", [CurrenciesController::class, "__invoke"]);
 
 Route::group(['prefix' => 'auth'], function () {
     Route::post('login', 'Auth\LoginController@login');
@@ -64,7 +65,6 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::get('countries', 'Country\CountryController@index');
     Route::get('documents', 'Sale\DocumentController@index');
     Route::get('payment_methods', 'Sale\PaymentMethodController@index');
-    Route::get("currencies", [CurrenciesController::class, "__invoke"]);
 
     /**
      * Credits

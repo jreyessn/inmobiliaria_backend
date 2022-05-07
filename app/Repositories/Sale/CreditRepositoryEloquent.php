@@ -26,13 +26,18 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
     
     private $CreditCuoteRepositoryEloquent;
 
+    private $CreditPaymentRepositoryEloquent;
+
     function __construct(
         CreditCuoteRepositoryEloquent $CreditCuoteRepositoryEloquent,
+        CreditPaymentRepositoryEloquent $CreditPaymentRepositoryEloquent,
         Application $app
     )
     {
         parent::__construct($app);
-        $this->CreditCuoteRepositoryEloquent = $CreditCuoteRepositoryEloquent;
+
+        $this->CreditCuoteRepositoryEloquent    = $CreditCuoteRepositoryEloquent;
+        $this->CreditPaymentRepositoryEloquent  = $CreditPaymentRepositoryEloquent;
     }
 
     /**
@@ -78,6 +83,38 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
         $this->CreditCuoteRepositoryEloquent->save($store, $body["credit_cuotes"]);
 
         return $store;
+    }
+
+    /**
+     * Generar contado para la venta
+     * 
+     * @param App\Models\Furniture\Furniture $furniture Modelo de Inmueble
+     * @param array $payment[nfc] NFC
+     * @param array $payment[note] Nota
+     * @param array $payment[payment_method_id] ID método pago
+     */
+    public function saveCounted($furniture, array $payment){
+       
+        $store = $this->create([
+            "furniture_id"        => $furniture->id,
+            "total"               => $furniture->initial_price,
+            "amount_anticipated"  => 0,
+            "interest_percentage" => 0,
+        ]);
+
+        $cuote = $this->CreditCuoteRepositoryEloquent->createOneCuote($store, [
+                "number_letter"       => "Contado",
+                "giro_at"             => now(),
+                "expiration_at"       => now(),
+            ]);
+
+        $this->CreditPaymentRepositoryEloquent->save([
+            "amount"            => $furniture->initial_price,
+            "credit_cuote_id"   => $cuote->id,
+            "payment_method_id" => $payment["payment_method_id"],
+            "note"              => $payment["note"],
+            "nfc"               => $payment["nfc"],
+        ]);
     }
     
 }

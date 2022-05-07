@@ -97,7 +97,10 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
             $credit->payments = $this->CreditPaymentRepositoryEloquent
                                      ->whereHas("credit_cuote", function($query) use ($credit){
                                            $query->where("credit_id", $credit->id);
-                                      })->with("credit_cuote")->get();
+                                      })
+                                      ->with("credit_cuote")
+                                      ->orderBy("id")
+                                      ->get();
         }
 
         return $customer;

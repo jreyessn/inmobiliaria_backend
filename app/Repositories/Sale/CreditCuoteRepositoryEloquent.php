@@ -45,13 +45,18 @@ class CreditCuoteRepositoryEloquent extends BaseRepository implements CreditCuot
      */
     public function save($credit, $cuotes){
         foreach ($cuotes as $cuote) {
-            
-            // Cada letra tendrá el mismo valor
-            $cuote["credit_id"] = $credit->id;
-            $cuote["total"]     = $credit->total / count($cuotes); 
-
-            $this->create($cuote);
+            $this->createOneCuote($credit, $cuote, count($cuotes));
         }
+    }
+
+    /**
+     * Crea una cuota
+     */
+    public function createOneCuote($credit, $cuote, $countCuotes = 1){
+        $cuote["credit_id"] = $credit->id;
+        $cuote["total"]     = $credit->total / $countCuotes; 
+
+        return $this->create($cuote);
     }
     
 }

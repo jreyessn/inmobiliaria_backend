@@ -62,6 +62,9 @@ class FurnitureStoreRequest extends FormRequest
             "credit_cuotes.*.number_letter" => "required|string|max:20",
             "credit_cuotes.*.giro_at"       => "required|date:Y-m-d",
             "credit_cuotes.*.expiration_at" => "required|date:Y-m-d",
+
+            "fee_getter"                    => "nullable|numeric|lt:unit_price",
+            "is_credit"                     => "required|in:1,0",
         ];
     }
 
@@ -71,6 +74,8 @@ class FurnitureStoreRequest extends FormRequest
             "name"          => "Titulo" ,
             "customer_dni"  => "Cédula de Cliente",
             "customer_name" => "Nombre de Cliente",
+            "fee_getter"    => "Comisión de Captador",
+            "is_credit"     => "Forma de Pago"
         ];
 
         foreach ($this->file('images') ?? [] as $key => $val) {

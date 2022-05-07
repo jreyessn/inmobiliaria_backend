@@ -85,6 +85,10 @@ class CreditCuote extends Model implements Transformable
         return $this->total;
     }
 
+    public function getNumberLetterAttribute($text){
+        return $text == "Contado"? $text : "Letra " . $text;
+    }
+
     public function getPeriodsDaysAttribute(){
         return $this->expiration_at->diff($this->giro_at, "days")->days ?? 1;
     }

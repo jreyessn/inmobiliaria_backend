@@ -90,21 +90,27 @@ class FurnitureController extends Controller
      */
     public function store(FurnitureStoreRequest $request)
     {
-
         DB::beginTransaction();
 
-        try{            
+        try{
             $store = $this->FurnitureRepositoryEloquent->save($request->all());
 
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $store, [
                 "path" => "furnitures"
             ]);
 
-            $this->CreditRepositoryEloquent->save($store, [
-                "credit_amount_anticipated"  => $request->credit_amount_anticipated,
-                "credit_interest_percentage" => $request->credit_interest_percentage,
-                "credit_cuotes"              => $request->credit_cuotes ?? []
-            ]);
+            if($request->get("is_credit", 0)){
+                $this->CreditRepositoryEloquent->save($store, [
+                    "credit_amount_anticipated"  => $request->credit_amount_anticipated,
+                    "credit_interest_percentage" => $request->credit_interest_percentage,
+                    "credit_cuotes"              => $request->credit_cuotes ?? []
+                ]);
+            }
+            else{
+                $dataPayment = $request->get("payment_counted", []);
+
+                $this->CreditRepositoryEloquent->saveCounted($store, $dataPayment);
+            }
 
             DB::commit();
 

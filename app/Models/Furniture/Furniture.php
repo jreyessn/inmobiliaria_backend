@@ -73,13 +73,16 @@ class Furniture extends Model implements Transformable
 
     protected $casts = [
         "initial_price" => "float",
-        "unit_price" => "float",
+        "unit_price"    => "float",
+        "fee_getter"    => "float",
     ];
 
     protected $appends = [
         "customer_name",
         "customer_dni",
-        "percentage_to_initial"
+        "percentage_to_initial",
+        "percentage_getter",
+        "text_credit"
     ];
 
     public function currency()
@@ -138,6 +141,16 @@ class Furniture extends Model implements Transformable
     public function getPercentageToInitialAttribute()
     {
         return $this->initial_price * 100 / $this->unit_price;
+    }
+
+    public function getPercentageGetterAttribute()
+    {
+        return $this->fee_getter * 100 / $this->unit_price;
+    }
+
+    public function getTextCreditAttribute()
+    {
+        return $this->is_credit? "Crédito" : "Contado";
     }
 
     /**

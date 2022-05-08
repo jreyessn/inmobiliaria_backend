@@ -33,6 +33,9 @@ class AccountStatusCriteria implements CriteriaInterface
                 $query->whereHas("payments", function($query) use ($currency_id){
                     $query->where("currency_id", $currency_id);
                 });
+                $query->orWhereHas("furniture", function($query) use ($currency_id){
+                    $query->where("currency_id", $currency_id);
+                });
             });
         }
 

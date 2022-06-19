@@ -58,6 +58,8 @@ class Furniture extends Model implements Transformable
         "getter_user_id",
         "fee_getter",
         "agent_user_id",
+        "agent_name",
+        "getter_name",
     ];
 
     protected $with = [
@@ -151,6 +153,14 @@ class Furniture extends Model implements Transformable
     public function getTextCreditAttribute()
     {
         return $this->is_credit? "Crédito" : "Contado";
+    }
+
+    public function getAgentNameAttribute($value){
+        return strtoupper($value);
+    }
+
+    public function getGetterNameAttribute($value){
+        return strtoupper($value);
     }
 
     /**

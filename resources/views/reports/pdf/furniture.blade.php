@@ -116,7 +116,7 @@
                         {{ $item->customer->name ?? '' }}
                     </td>
                     <td class="align-center"  style="border-top: 1px solid #f3f3f3">
-                        {{ $item->agent_user->name ?? '' }}
+                        {{ $item->agent_name ?? '' }}
                     </td>
                 </tr>
             @endforeach

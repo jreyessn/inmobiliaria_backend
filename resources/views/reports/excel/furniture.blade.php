@@ -129,7 +129,7 @@
                         {{ $item->customer->name ?? '' }}
                     </td>
                     <td>
-                        {{ $item->agent_user->name ?? '' }}
+                        {{ $item->agent_name ?? '' }}
                     </td>
                 </tr>
             @endforeach

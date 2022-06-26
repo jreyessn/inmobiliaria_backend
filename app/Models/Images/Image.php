@@ -48,7 +48,12 @@ class Image extends Model implements Transformable
     
     public function getMimesAttribute()
     {
-        return Storage::mimeType($this->name) ?? '';
+        try {
+            return Storage::mimeType($this->name) ?? '';
+        } catch (\Throwable $th) {
+            report($th);
+            return null;
+        }
     }
 
 }

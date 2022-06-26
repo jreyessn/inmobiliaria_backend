@@ -71,7 +71,7 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
     public function save($furniture, $body){
         
         // Se calcula total sin el monto anticipado
-        $total_out_anticipated = $furniture->initial_price - (float) $body["credit_amount_anticipated"];
+        $total_out_anticipated = $furniture->unit_price - (float) $body["credit_amount_anticipated"];
 
         $store = $this->create([
             "furniture_id"       => $furniture->id,
@@ -97,7 +97,7 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
        
         $store = $this->create([
             "furniture_id"        => $furniture->id,
-            "total"               => $furniture->initial_price,
+            "total"               => $furniture->unit_price,
             "amount_anticipated"  => 0,
             "interest_percentage" => 0,
         ]);

@@ -30,6 +30,7 @@ class CreditPayment extends Model implements Transformable
         "payment_method_id",
         "note",
         "nfc",
+        "interest_percentage"
     ];
 
     protected $with = [
@@ -38,11 +39,13 @@ class CreditPayment extends Model implements Transformable
     ];
 
     protected $appends = [
-        "remaining_balance"   
+        "remaining_balance",
+        "total" 
     ];
 
     protected $casts = [
-        "amount" => "float"
+        "amount"              => "float",
+        "interest_percentage" => "float",
     ];
 
     public function currency()
@@ -68,5 +71,9 @@ class CreditPayment extends Model implements Transformable
         $totalCredit      =  $this->credit_cuote()->select("total")->first()->total;
 
         return $totalCredit - $paymentsPrevious - $this->amount;
+    }
+
+    public function getTotalAttribute(){
+        return $this->amount * (($this->interest_percentage / 100) + 1);
     }
 }

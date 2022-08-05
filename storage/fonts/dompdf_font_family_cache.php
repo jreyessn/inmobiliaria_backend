@@ -78,6 +78,6 @@
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'anton' => array(
-    'normal' => $fontDir . '/anton_normal_5fd666ca34c7071fb0a5abdb03fcf2aa',
+    'normal' => $fontDir . '/anton_normal_ecdea38843925ff117147e01c07fba16',
   ),
 ) ?>

@@ -78,7 +78,7 @@
                         {{ number_format($item->amount_pending, 2) }}
                     </td>
                     <td class="align-center" >
-                        {{ number_format($item->total - $item->amount_pending, 2) }}
+                        {{ number_format($item->payments->sum("total"), 2) }}
                     </td>
                     <td class="align-center" >
                         {{ $item->status_text }}

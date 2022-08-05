@@ -295,7 +295,7 @@ class DashboardController extends Controller
                                 ->selectRaw("
                                     credit_cuotes.id,
                                     (credit_cuotes.total - SUM(credit_payments.amount)) AS amount_pending,
-                                    SUM(credit_payments.amount) as total_paid,
+                                    SUM(credit_payments.amount * ((credit_payments.interest_percentage / 100) +1)) as total_paid,
                                     credit_payments.created_at
                                 ")
                                 ->join("credit_payments", "credit_payments.credit_cuote_id", "=", "credit_cuotes.id", "left")

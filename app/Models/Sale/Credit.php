@@ -37,7 +37,8 @@ class Credit extends Model implements Transformable
         "amount_payment",
         "amount_pending",
         "status_text",
-        "tax_amount"
+        "tax_amount",
+        "cuotes_expired"
     ];
 
     protected $with = [
@@ -80,6 +81,12 @@ class Credit extends Model implements Transformable
 
     public function getStatusTextAttribute(){
         return $this->status == 1? "Pagado" : "Pendiente";
+    }
+
+    public function getCuotesExpiredAttribute(){
+        return $this->cuotes()->get()->filter(function($item){
+            return $item->is_expired;
+        })->count();
     }
 
 }

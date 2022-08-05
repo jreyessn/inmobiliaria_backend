@@ -100,8 +100,9 @@ class CreditController extends Controller
         $request->merge(["credit_cuote_id" => $credit_cuote_id]);
 
         $request->validate([
-            'credit_cuote_id'   => new CuoteValid,
-            'amount'            => [
+            'credit_cuote_id'     => new CuoteValid,
+            "interest_percentage" => "numeric",
+            'amount'              => [
                 'required',
                 'numeric',
                 new AmountLessCuote($request->credit_cuote_id)

@@ -35,6 +35,7 @@ class CreditCuote extends Model implements Transformable
         "status",
         "status_text",
         "days_late",
+        "is_expired",
         "amount", // Utilizado por el componente de modal de créditos
         "periods_days" // Utilizado por el componente de modal de créditos
     ];
@@ -79,6 +80,10 @@ class CreditCuote extends Model implements Transformable
         }
 
         return 0;
+    }
+
+    public function getIsExpiredAttribute(){
+        return now()->gt($this->expiration_at) && $this->status == 0? true: false;
     }
 
     public function getAmountAttribute(){

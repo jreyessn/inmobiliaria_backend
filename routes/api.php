@@ -101,6 +101,7 @@ Route::group(['middleware' => ['auth:api']], function(){
     Route::apiResources([
         'users'         => 'UserController',
         'cities'        => 'Country\CityController',
+        'branch_offices'=> 'BranchOffice\BranchOfficeController',
         'urbanitations' => 'Furniture\UrbanitationController',
         'customers'     => 'Customer\CustomerController',
         'furnitures'    => 'Furniture\FurnitureController',

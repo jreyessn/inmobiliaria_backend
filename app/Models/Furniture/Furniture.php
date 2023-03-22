@@ -3,6 +3,8 @@
 namespace App\Models\Furniture;
 
 use App\Models\Audit;
+use App\Models\BranchOffices\BranchOffice;
+use App\Models\BranchOffices\ModelHasBranchOffice;
 use App\Models\Country\City;
 use App\Models\Currency\Currency;
 use App\Models\Customer\Customer;
@@ -170,6 +172,13 @@ class Furniture extends Model implements Transformable
     {
         return $this->hasOneThrough(User::class, Audit::class, "model_id", "id", "id", "user_id")->where([
             "action"     => "CREAR",
+            "model_type" => static::class
+        ]);
+    }
+
+    public function branch_offices()
+    {
+        return $this->hasManyThrough(BranchOffice::class, ModelHasBranchOffice::class, "model_id", "id", "id", "branch_office_id")->where([
             "model_type" => static::class
         ]);
     }

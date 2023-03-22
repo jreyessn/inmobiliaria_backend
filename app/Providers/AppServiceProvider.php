@@ -67,12 +67,12 @@ class AppServiceProvider extends ServiceProvider
 
             foreach ($all as $setting) {
 
-                if($setting->key == "country_id"){
+                if($setting->key == "country_id" && Schema::hasTable("countries")){
                     $country_name = Country::find($setting->value)->name ?? '';
                     Config::set('app.country_name', $country_name);
                 }
 
-                if($setting->key == "city_id"){
+                if($setting->key == "city_id" && Schema::hasTable("cities")){
                     $city_name = City::find($setting->value)->name ?? '';
                     Config::set('app.city_name', $city_name);
                 }

@@ -76,7 +76,6 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
      */
     public function saveUpdate(array $data, int $id)
     {
-        
         $store = $this->find($id);
         $store->fill($data);
         $store->save();

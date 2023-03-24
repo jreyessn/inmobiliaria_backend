@@ -31,7 +31,7 @@
                     <b>Cliente</b>
                 </td>
                 <td class="align-center fcw bg-blue">
-                    <b>Letra de Cuota</b>
+                    <b>Cuota</b>
                 </td>
                 <td class="align-center fcw bg-blue">
                     <b>Fecha</b>

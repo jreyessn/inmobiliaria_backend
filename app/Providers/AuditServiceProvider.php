@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Furniture\Furniture;
+use App\Models\Sale\Credit;
+use App\Models\Sale\CreditCuote;
 use App\Models\Sale\CreditPayment;
 use App\Models\Sale\Sale;
 use App\Models\User;
@@ -37,6 +39,8 @@ class AuditServiceProvider extends ServiceProvider
         // Historial
         User::observe(AuditObserver::class);
         Furniture::observe(AuditObserver::class);
+        Credit::observe(AuditObserver::class);
+        CreditCuote::observe(AuditObserver::class);
         CreditPayment::observe(AuditObserver::class);
     }
 }

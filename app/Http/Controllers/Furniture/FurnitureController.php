@@ -148,38 +148,40 @@ class FurnitureController extends Controller
      */
     public function update(FurnitureStoreRequest $request, $id)
     {
+        $furniture = $this->FurnitureRepositoryEloquent->find($id);
+        $request->validate([
+            "credit_cuotes" => function($attribute, $value, $fail) use ($furniture){
+
+                $cuoteRegistered = $furniture->credit->cuotes->slice(count($value));
+                $paymentsRegistered = $cuoteRegistered->flatMap(function($cuote) {
+                    return $cuote->payments;
+                })->count();
+
+                if($paymentsRegistered > 0){
+                    return $fail("No puede reducir la cantidad de cuotas. Ya existen {$paymentsRegistered} pagos realizados en las cuotas que intenta eliminar");
+                }
+            }
+        ]);
+
         DB::beginTransaction();
 
         try{
-            $furniture = $this->FurnitureRepositoryEloquent->find($id);
-            $data      = $request->all();
-
-            // Si tiene pagos, no se actualizara ningun precio
-            if(($furniture->credit->amount_payment ?? 0) > 0){
-                $data  = $request->except(["unit_price", "initial_price"]);
-            }
+            $data = $request->all();
 
             $store = $this->FurnitureRepositoryEloquent->saveUpdate($data, $id);
-            
-            // Si no tiene pagos, se vuelven a regenerar
-            if(($furniture->credit->amount_payment ?? 0) == 0){
-                
-                // Se eliminan fisicamente todos los registros anteriores
-                if($furniture->credit){
-                    foreach ($furniture->credit->cuotes as $cuote) {
-                        $cuote->payments()->forceDelete();
-                        $cuote->forceDelete();
-                    }
-                    $furniture->credit->forceDelete();
-                }
-                
+    
+            if($data["is_credit"] == 1){
                 $this->CreditRepositoryEloquent->save($store, [
                     "credit_amount_anticipated"  => $request->credit_amount_anticipated,
                     "credit_interest_percentage" => $request->credit_interest_percentage,
                     "credit_cuotes"              => $request->credit_cuotes ?? []
                 ]);
             }
-
+            else{
+                $credit = $this->CreditRepositoryEloquent->saveCounted($store, []);
+                $this->CreditRepositoryEloquent->updateFirstPaidCounted($credit->id, $store);
+            }
+            
             $this->ImageRepositoryEloquent->saveMany($request->file("images") ?? [], $store, [
                 "path" => "furnitures"
             ]);

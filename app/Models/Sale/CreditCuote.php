@@ -76,7 +76,7 @@ class CreditCuote extends Model implements Transformable
 
         if($this->status == 1){
             $last_payment = $this->payments()->orderBy("created_at", "desc")->first();
-            return $last_payment->created_at->gt($this->expiration_at . " 23:59:59")? 
+            return $last_payment->created_at->gt($this->expiration_at)? 
                     $last_payment->created_at->diff($this->expiration_at, "days")->days : 
                     0;
         }
@@ -93,7 +93,7 @@ class CreditCuote extends Model implements Transformable
     }
 
     public function getNumberLetterAttribute($text){
-        return $text == "Contado"? $text : "Letra " . $text;
+        return $text;
     }
 
     public function getPeriodsDaysAttribute(){

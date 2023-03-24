@@ -44,9 +44,27 @@ class CreditCuoteRepositoryEloquent extends BaseRepository implements CreditCuot
      * @param array $cuotes[expiration_at] Fecha de Expiración
      */
     public function save($credit, $cuotes){
-        foreach ($cuotes as $cuote) {
-            $this->createOneCuote($credit, $cuote, count($cuotes));
+        $cuotesRegistered = $this->where("credit_id", $credit->id)->get();
+
+        // Si anteriormente habian 3 cuotas y ahora son 2, entonces se elimina la restante
+        $cuotesRegistered->slice(count($cuotes))->each(function($cuoteModel){
+            $cuoteModel->forceDelete();
+        });
+
+        foreach ($cuotes as $key => $cuote) {
+            $cuoteRegistered = $cuotesRegistered[$key] ?? null;
+
+            // Actualizar las cuotas registradas
+            if($cuoteRegistered){
+                $cuoteRegistered->total = $credit->total / count($cuotes);
+                $cuoteRegistered->number_letter = $cuote["number_letter"];
+                $cuoteRegistered->save();
+            }
+            else{
+                $this->createOneCuote($credit, $cuote, count($cuotes));
+            }
         }
+
     }
 
     /**
@@ -55,8 +73,8 @@ class CreditCuoteRepositoryEloquent extends BaseRepository implements CreditCuot
     public function createOneCuote($credit, $cuote, $countCuotes = 1){
         $cuote["credit_id"] = $credit->id;
         $cuote["total"]     = $credit->total / $countCuotes; 
-
-        return $this->create($cuote);
+        
+        return CreditCuote::create($cuote);
     }
     
 }

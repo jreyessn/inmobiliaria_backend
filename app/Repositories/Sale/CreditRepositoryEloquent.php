@@ -69,8 +69,12 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
         // Se calcula total sin el monto anticipado
         $total_out_anticipated = $furniture->unit_price - (float) $body["credit_amount_anticipated"];
 
-        $store = $this->create([
+        $store = $this->updateOrCreate(
+        [
             "furniture_id"       => $furniture->id,
+        ], 
+        [
+            "furniture_id"        => $furniture->id,
             "total"               => sum_amount_tax($total_out_anticipated, $body["credit_interest_percentage"]),
             "amount_anticipated"  => $body["credit_amount_anticipated"],
             "interest_percentage" => $body["credit_interest_percentage"],
@@ -91,27 +95,56 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
      */
     public function saveCounted($furniture, array $payment){
        
-        $store = $this->create([
+        $store = $this->updateOrCreate(
+        [
+            "furniture_id"        => $furniture->id,
+        ],  
+        [
             "furniture_id"        => $furniture->id,
             "total"               => $furniture->unit_price,
             "amount_anticipated"  => 0,
             "interest_percentage" => 0,
         ]);
 
-        $cuote = $this->CreditCuoteRepositoryEloquent->createOneCuote($store, [
+        if(count($payment) > 0){
+            $cuote = $this->CreditCuoteRepositoryEloquent->createOneCuote($store, [
                 "number_letter"       => "Contado",
                 "giro_at"             => now(),
                 "expiration_at"       => now(),
             ]);
+    
+            $this->CreditPaymentRepositoryEloquent->save([
+                "currency_id"       => $furniture->currency_id,
+                "amount"            => $furniture->initial_price,
+                "credit_cuote_id"   => $cuote->id,
+                "payment_method_id" => $payment["payment_method_id"],
+                "note"              => $payment["note"],
+                "nfc"               => $payment["nfc"],
+            ]);
+        }
 
-        $this->CreditPaymentRepositoryEloquent->save([
-            "currency_id"       => $furniture->currency_id,
-            "amount"            => $furniture->initial_price,
-            "credit_cuote_id"   => $cuote->id,
-            "payment_method_id" => $payment["payment_method_id"],
-            "note"              => $payment["note"],
-            "nfc"               => $payment["nfc"],
-        ]);
+        return $store;
+    }
+
+    /**
+     * Actualizar manualmente el primer pago del tipo de pago contado
+     */
+    public function updateFirstPaidCounted($credit_id, $furniture){
+        $credit    = $this->find($credit_id);
+        $cuote     = $credit->cuotes[0] ?? null;
+
+        if(!$cuote){
+            return;
+        }
+        $cuote->total = $furniture->unit_price;
+        $cuote->save();
+
+        $firstPaid = $cuote->payments->last();
+
+        if($firstPaid){
+            $firstPaid->amount = $furniture->initial_price;
+            $firstPaid->save();
+        }
     }
     
 }

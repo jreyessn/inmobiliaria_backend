@@ -168,7 +168,7 @@
                                 {{ $payment->created_at->format("d/m/Y") }}
                             </td>
                             <td class="align-center">
-                                Letra {{ $payment->credit_cuote->number_letter }}
+                                {{ $payment->credit_cuote->number_letter }}
                             </td>
                             <td class="align-center">
                                 {{ $payment->payment_method->name ?? '' }}

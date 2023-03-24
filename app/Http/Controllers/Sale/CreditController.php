@@ -48,7 +48,7 @@ class CreditController extends Controller
         $perPage = $request->get('perPage', config('repository.pagination.limit'));
 
         $this->CreditRepositoryEloquent->pushCriteria(CreditCriteria::class);
-
+        
         return $this->CreditRepositoryEloquent->paginate($perPage);
     }
 

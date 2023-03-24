@@ -54,7 +54,7 @@ class SalesStoreRequest extends FormRequest
         $validationMessages = [];
 
         foreach ($this->get('credit_cuotes') ?? [] as $key => $val) {
-            $validationMessages["credit_cuotes." . $key . ".number_letter"] = "Letra de Cuota N° ".($key + 1);
+            $validationMessages["credit_cuotes." . $key . ".number_letter"] = "Cuota N° ".($key + 1);
             $validationMessages["credit_cuotes." . $key . ".giro_at"]       = "Fecha Giro de Cuota N° ".($key + 1);
             $validationMessages["credit_cuotes." . $key . ".expiration_at"] = "Fecha de Vencimiento de Cuota N° ".($key + 1);
         }

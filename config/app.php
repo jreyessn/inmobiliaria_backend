@@ -178,7 +178,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\AuditServiceProvider::class,
-
+        App\Providers\BranchOfficeProvider::class,
+        
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 

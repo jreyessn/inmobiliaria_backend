@@ -2,6 +2,8 @@
 
 namespace App\Models\Sale;
 
+use App\Models\BranchOffices\BranchOffice;
+use App\Models\BranchOffices\ModelHasBranchOffice;
 use App\Models\Currency\Currency;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -75,5 +77,12 @@ class CreditPayment extends Model implements Transformable
 
     public function getTotalAttribute(){
         return $this->amount * (($this->interest_percentage / 100) + 1);
+    }
+
+    public function branch_offices()
+    {
+        return $this->hasManyThrough(BranchOffice::class, ModelHasBranchOffice::class, "model_id", "id", "id", "branch_office_id")->where([
+            "model_type" => static::class
+        ]);
     }
 }

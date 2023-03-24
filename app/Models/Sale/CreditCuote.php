@@ -2,6 +2,8 @@
 
 namespace App\Models\Sale;
 
+use App\Models\BranchOffices\BranchOffice;
+use App\Models\BranchOffices\ModelHasBranchOffice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
@@ -96,6 +98,13 @@ class CreditCuote extends Model implements Transformable
 
     public function getPeriodsDaysAttribute(){
         return $this->expiration_at->diff($this->giro_at, "days")->days ?? 1;
+    }
+
+    public function branch_offices()
+    {
+        return $this->hasManyThrough(BranchOffice::class, ModelHasBranchOffice::class, "model_id", "id", "id", "branch_office_id")->where([
+            "model_type" => static::class
+        ]);
     }
 
 }

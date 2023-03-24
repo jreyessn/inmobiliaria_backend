@@ -14,4 +14,6 @@ class ModelHasBranchOffice extends Model
         "model_type",
         "model_id",
     ];
+
+    public $timestamps = false;
 }

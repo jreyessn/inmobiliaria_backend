@@ -30,13 +30,10 @@ class FurnitureRepositoryEloquent extends BaseRepository implements FurnitureRep
 
     private $CustomerRepositoryEloquent;
 
-    function __construct(
-        CustomerRepositoryEloquent $CustomerRepositoryEloquent,
-        Application $app
-    )
+    function __construct(Application $app)
     {
         parent::__construct($app);
-        $this->CustomerRepositoryEloquent = $CustomerRepositoryEloquent;
+        $this->CustomerRepositoryEloquent = app(CustomerRepositoryEloquent::class);
     }
 
     /**

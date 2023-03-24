@@ -2,6 +2,8 @@
 
 namespace App\Models\Customer;
 
+use App\Models\BranchOffices\BranchOffice;
+use App\Models\BranchOffices\ModelHasBranchOffice;
 use App\Models\Furniture\Furniture;
 use App\Models\Sale\Credit;
 use Illuminate\Database\Eloquent\Model;
@@ -33,6 +35,13 @@ class Customer extends Model implements Transformable
     public function credits()
     {
         return $this->hasManyThrough(Credit::class, Furniture::class);
+    }
+
+    public function branch_offices()
+    {
+        return $this->hasManyThrough(BranchOffice::class, ModelHasBranchOffice::class, "model_id", "id", "id", "branch_office_id")->where([
+            "model_type" => static::class
+        ]);
     }
 
 }

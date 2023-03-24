@@ -2,6 +2,8 @@
 
 namespace App\Models\Sale;
 
+use App\Models\BranchOffices\BranchOffice;
+use App\Models\BranchOffices\ModelHasBranchOffice;
 use App\Models\Currency\Currency;
 use App\Models\Furniture\Furniture;
 use Illuminate\Database\Eloquent\Model;
@@ -87,6 +89,13 @@ class Credit extends Model implements Transformable
         return $this->cuotes()->get()->filter(function($item){
             return $item->is_expired;
         })->count();
+    }
+
+    public function branch_offices()
+    {
+        return $this->hasManyThrough(BranchOffice::class, ModelHasBranchOffice::class, "model_id", "id", "id", "branch_office_id")->where([
+            "model_type" => static::class
+        ]);
     }
 
 }

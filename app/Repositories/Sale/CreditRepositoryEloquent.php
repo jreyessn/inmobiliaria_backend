@@ -28,16 +28,12 @@ class CreditRepositoryEloquent extends BaseRepository implements CreditRepositor
 
     private $CreditPaymentRepositoryEloquent;
 
-    function __construct(
-        CreditCuoteRepositoryEloquent $CreditCuoteRepositoryEloquent,
-        CreditPaymentRepositoryEloquent $CreditPaymentRepositoryEloquent,
-        Application $app
-    )
+    function __construct(Application $app)
     {
         parent::__construct($app);
 
-        $this->CreditCuoteRepositoryEloquent    = $CreditCuoteRepositoryEloquent;
-        $this->CreditPaymentRepositoryEloquent  = $CreditPaymentRepositoryEloquent;
+        $this->CreditCuoteRepositoryEloquent    = app(CreditCuoteRepositoryEloquent::class);
+        $this->CreditPaymentRepositoryEloquent  = app(CreditPaymentRepositoryEloquent::class);
     }
 
     /**

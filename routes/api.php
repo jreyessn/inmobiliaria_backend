@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth:api']], function(){
         Route::get('{id}', 'Sale\CreditController@show');
 
         Route::put("pay/{credit_cuote_id}", 'Sale\CreditController@pay');
+        Route::delete("pay/{credit_cuote_id}", 'Sale\CreditController@deletePay');
         Route::get("print/pay/{payment_id}", 'Sale\CreditController@printPay');
 
         Route::patch("cuote_reference/{credit_cuote_id}", 'Sale\CreditController@patchCuoteReference');

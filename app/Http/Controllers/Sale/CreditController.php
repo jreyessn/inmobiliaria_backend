@@ -136,6 +136,23 @@ class CreditController extends Controller
     }
 
     /**
+     * Eliminar un pago
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deletePay($payment_id)
+    {
+        try{
+            $this->CreditPaymentRepositoryEloquent->delete($payment_id);
+
+            return response()->json(null, 204);
+
+        }catch(\Exception $e){
+            return response()->json(null, 404);
+        }
+    }
+
+    /**
      * Actualizar cuota de referencia
      *
      * @return \Illuminate\Http\Response

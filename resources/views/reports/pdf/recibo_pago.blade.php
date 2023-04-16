@@ -56,12 +56,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="campos-recibo">Número de NFC:</td>
-                    <td class="line value-recibo">
-                        {{ $payment->nfc ?? '' }}
-                    </td>
-                </tr>
-                <tr>
                     <td class="campos-recibo">Fecha:</td>
                     <td class="line value-recibo">
                         {{ $payment->created_at->isoFormat("LL") }}

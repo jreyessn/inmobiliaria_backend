@@ -23,13 +23,11 @@ class FurnitureStoreRequest extends FormRequest
      */
     public function rules()
     {
-        $id = $this->route("furniture");
-
         return [
             "customer_name"           => "required_unless:customer_dni,null",
             "customer_dni"            => "nullable",
 
-            "name"                    => "required|string|max:200|unique:furniture,name,{$id},id,deleted_at,NULL",
+            "name"                    => "required|string|max:200",
             "description"             => "nullable|string|max:200",
             
             "bathrooms"               => "required|numeric|min:0",

@@ -97,8 +97,8 @@
     <table cellspacing="0" class="col-10 table-conceptos">
         <tr>
             <td style="width: 17%" class="line concepto">La Cantidad de:</td>
-            <td class="line">
-                {{  strtoupper(number_words($payment->total, ($payment->currency->name ?? "Pesos"), ",", ".")) }}
+            <td class="line" style="text-transform:uppercase;">
+                {{  number_words(round($payment->total, 0), ($payment->currency->name ?? "Pesos"), ",", ".") }}
             </td>
         </tr>
     </table>
